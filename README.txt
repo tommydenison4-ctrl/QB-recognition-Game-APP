@@ -1,20 +1,16 @@
-QB Conflict Defender - Supabase Connected (Correct ULM v4 Base)
+QB Conflict Defender - Supabase Password Recovery Build
 
-This build uses the uploaded index-5.html as the base.
+ADDED:
+- Forgot password button in Coach Setup.
+- Supabase recovery email uses the URL of the hosted QB app.
+- Recovery link automatically opens Set New Password.
+- New password + confirm password.
+- Supabase auth.updateUser() saves the replacement password.
+- After update, user returns signed in to Coach Setup.
 
-CONNECTED NOW:
-- Coach sign-in through existing Supabase Auth.
-- Film screenshots upload to Storage bucket: qb-conflict-images.
-- Question name, opponent, Practice/Live/Both setting, status, two defender coordinates and target radii save to public.qb_questions.
-- Question bank reloads from Supabase, so the same bank is available on every device.
-- Take-Home Practice only uses Published questions marked Practice or Both.
-- Host Game only uses Published questions marked Live or Both.
-- 6-second scoring remains unchanged: full credit through 1.5 seconds, then continuous decline to zero at 6.0 seconds.
-- Existing ULM player-card design is preserved.
+IMPORTANT:
+Password recovery must be initiated from the deployed HTTPS/Vercel version, not by opening index.html as a local file.
 
-STILL LOCAL IN THIS MILESTONE:
-- QB cumulative profile stats/results.
-- Completed-game leaderboard.
-- Host/Join synchronization is still same-device BroadcastChannel/localStorage.
-
-Those are the next Supabase milestones after confirming that one saved question appears on another device.
+NEXT DEPLOYMENT STEP:
+Deploy this index.html to Vercel, then add that exact Vercel URL to Supabase Authentication -> URL Configuration -> Redirect URLs.
+You can then make that URL the Site URL if this QB app becomes the primary auth destination for this Supabase project.

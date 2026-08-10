@@ -46,6 +46,11 @@ body{background:radial-gradient(circle at 70% 0%,rgba(80,0,18,.18),transparent 3
 .saveState{font-size:12px;color:var(--muted);margin-top:8px;min-height:18px}
 @media(max-width:800px){.authGrid,.coachMetaGrid{grid-template-columns:1fr}.authGrid .btn{width:100%}}
 
+
+.recoveryPanel{max-width:620px;margin:28px auto;background:linear-gradient(180deg,#151a20,#0f1317);border:1px solid #39414a;border-radius:16px;padding:22px;box-shadow:0 18px 45px rgba(0,0,0,.35)}
+.recoveryPanel h1{margin-bottom:8px}.recoveryPanel .field{margin-bottom:12px}.recoveryActions{display:flex;gap:10px;flex-wrap:wrap}.recoveryMessage{min-height:20px;margin-top:10px;font-size:13px;color:var(--muted)}
+.forgotBtn{background:none;border:0;color:var(--ulm-gold);cursor:pointer;font-weight:800;padding:6px 0;text-align:left}
+
 </style>
 </head>
 <body>
@@ -79,6 +84,7 @@ body{background:radial-gradient(circle at 70% 0%,rgba(80,0,18,.18),transparent 3
             <button class="btn primary" id="signInBtn">Sign In</button>
             <button class="btn hidden" id="signOutBtn">Sign Out</button>
           </div>
+          <button class="forgotBtn" id="forgotPasswordBtn" type="button">Forgot password?</button>
           <div class="saveState" id="authMessage"></div>
         </div>
 
@@ -178,6 +184,21 @@ body{background:radial-gradient(circle at 70% 0%,rgba(80,0,18,.18),transparent 3
       <div class="toolbar" style="margin-top:14px"><button class="btn primary" id="playAgain">Play Again</button><button class="btn" id="goCoach">Coach Setup</button></div>
     </div>
   </section>
+
+  <section id="recoveryView" class="hidden">
+    <div class="recoveryPanel">
+      <div class="heroTitle">Account Recovery</div>
+      <h1>Set New Password</h1>
+      <p class="muted">Enter a new password for your Supabase coach account.</p>
+      <div class="field"><label>New password</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="New password" /></div>
+      <div class="field"><label>Confirm new password</label><input id="confirmPassword" type="password" autocomplete="new-password" placeholder="Confirm new password" /></div>
+      <div class="recoveryActions">
+        <button class="btn primary" id="updatePasswordBtn">Update Password</button>
+        <button class="btn" id="cancelRecoveryBtn">Back to App</button>
+      </div>
+      <div class="recoveryMessage" id="recoveryMessage"></div>
+    </div>
+  </section>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -255,6 +276,49 @@ $('signInBtn').onclick=async()=>{
 };
 $('signOutBtn').onclick=async()=>{await sb.auth.signOut();currentUser=null;questions=[];renderQuestionList();updateBankCount();await refreshAuth()};
 
+function recoveryRedirectUrl(){
+  if(location.protocol==='http:'||location.protocol==='https:'){
+    return location.origin + location.pathname;
+  }
+  return null;
+}
+$('forgotPasswordBtn').onclick=async()=>{
+  const email=$('coachEmail').value.trim();
+  if(!email){$('authMessage').textContent='Enter your coach email first, then click Forgot password.';return}
+  const redirectTo=recoveryRedirectUrl();
+  if(!redirectTo){
+    $('authMessage').textContent='Password recovery must be used from the hosted Vercel version of this app, not a local file.';
+    return;
+  }
+  $('authMessage').textContent='Sending password recovery email…';
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo});
+  if(error){$('authMessage').textContent=error.message;return}
+  $('authMessage').textContent='Recovery email sent. Open the newest email and use its reset link.';
+};
+
+async function enterRecoveryMode(){
+  show('recoveryView');
+  $('newPassword').value='';
+  $('confirmPassword').value='';
+  $('recoveryMessage').textContent='Recovery link verified. Choose your new password.';
+}
+$('updatePasswordBtn').onclick=async()=>{
+  const p1=$('newPassword').value,p2=$('confirmPassword').value;
+  if(p1.length<6){$('recoveryMessage').textContent='Use a password with at least 6 characters.';return}
+  if(p1!==p2){$('recoveryMessage').textContent='The two passwords do not match.';return}
+  const btn=$('updatePasswordBtn');btn.disabled=true;btn.textContent='Updating…';
+  const {error}=await sb.auth.updateUser({password:p1});
+  if(error){
+    $('recoveryMessage').textContent=error.message;
+    btn.disabled=false;btn.textContent='Update Password';
+    return;
+  }
+  $('recoveryMessage').textContent='✓ Password updated. You are signed in.';
+  history.replaceState({},document.title,location.pathname);
+  setTimeout(()=>{show('coachView');refreshAuth();btn.disabled=false;btn.textContent='Update Password'},700);
+};
+$('cancelRecoveryBtn').onclick=()=>{history.replaceState({},document.title,location.pathname);show('coachView')};
+
 async function loadQuestionsFromSupabase(){
   const {data,error}=await sb.from('qb_questions').select('*').order('created_at',{ascending:false});
   if(error){$('saveMessage').textContent='Could not load question bank: '+error.message;return}
@@ -266,7 +330,7 @@ function updateBankCount(){
   const publishedPractice=questions.filter(q=>q.status==='published'&&(q.availability==='practice'||q.availability==='both')).length;
   $('bankCount').textContent=`${publishedPractice} practice question${publishedPractice===1?'':'s'} loaded`;
 }
-function show(view){['coachView','hostView','joinView','profilesView','playView'].forEach(v=>$(v).classList.add('hidden'));$(view).classList.remove('hidden');$('coachTab').classList.toggle('primary',view==='coachView');$('playTab').classList.toggle('primary',view==='playView')}
+function show(view){['coachView','hostView','joinView','profilesView','playView','recoveryView'].forEach(v=>$(v).classList.add('hidden'));$(view).classList.remove('hidden');$('coachTab').classList.toggle('primary',view==='coachView');$('playTab').classList.toggle('primary',view==='playView')}
 $('coachTab').onclick=()=>show('coachView'); $('hostTab').onclick=()=>show('hostView'); $('joinTab').onclick=()=>show('joinView');
 $('profilesTab').onclick=()=>show('profilesView'); $('playTab').onclick=()=>show('playView'); $('goCoach').onclick=()=>show('coachView'); $('viewMyStats').onclick=()=>show('profilesView'); $('snapCount').addEventListener('change',()=>{$('startSnapLabel').textContent=$('snapCount').value==='all'?'ALL SNAPS':$('snapCount').value+' SNAPS'});
 
@@ -408,7 +472,16 @@ function runLiveSnap(msg){let q=msg.q,picks=[],done=false,start=performance.now(
 
 renderQuestionList();updateBankCount();renderBoard($('scoreboard'));renderCoachImage();renderProfiles();
 refreshAuth();
-sb.auth.onAuthStateChange(()=>setTimeout(refreshAuth,0));
+sb.auth.onAuthStateChange((event,session)=>{
+  if(event==='PASSWORD_RECOVERY'){
+    setTimeout(enterRecoveryMode,0);
+    return;
+  }
+  setTimeout(refreshAuth,0);
+});
+if(location.hash.includes('type=recovery') || new URLSearchParams(location.search).has('code')){
+  setTimeout(()=>sb.auth.getSession().then(({data})=>{ if(data?.session) enterRecoveryMode(); }),250);
+}
 
 </script>
 </body>
