@@ -325,6 +325,115 @@ body{
   #scoreScreen,#finalScreen{margin:12px!important;border-radius:14px!important}
 }
 
+
+/* =========================================================
+   MOBILE FILM-FIRST GAMEPLAY - SAFE PATCH
+   ========================================================= */
+@media(max-width:760px){
+  /* Top navigation remains fully functional; Take-Home Practice is the only practice button. */
+  .tabs{gap:6px!important}
+  .tabs .btn{padding:0 11px!important;font-size:9.5px!important}
+  #playTab{
+    background:linear-gradient(180deg,#ffca44,#eda91c)!important;
+    color:#211200!important;
+    border-color:#ffd667!important;
+  }
+
+  /* Use nearly the full phone width for the actual football image. */
+  #gameScreen{
+    padding:5px 5px 24px!important;
+    width:100%!important;
+  }
+  #gameScreen .grid{
+    display:block!important;
+    width:100%!important;
+  }
+  #gameScreen .grid > .card:first-child{
+    padding:9px 5px 8px!important;
+    margin:0!important;
+    border-radius:12px!important;
+    width:100%!important;
+  }
+  #gameScreen .gameBrandStrip{
+    margin:0 5px 6px!important;
+    font-size:8px!important;
+    min-height:24px!important;
+  }
+  #gameScreen .miniULM{
+    width:24px!important;
+    height:24px!important;
+    border-radius:6px!important;
+  }
+  #gameScreen #playLabel{
+    font-size:16px!important;
+    line-height:1.2!important;
+  }
+  #gameScreen #pickStatus{
+    padding:6px 8px!important;
+    font-size:9px!important;
+  }
+  #gameScreen .progress{
+    margin-top:6px!important;
+  }
+  #gameScreen .timer{
+    font-size:40px!important;
+    line-height:1!important;
+    margin:6px 0 7px!important;
+  }
+
+  #gameScreen #gameImageWrap{
+    width:calc(100vw - 20px)!important;
+    max-width:none!important;
+    min-height:0!important;
+    height:auto!important;
+    aspect-ratio:16 / 9!important;
+    margin-left:calc(50% - 50vw + 10px)!important;
+    border-radius:10px!important;
+    overflow:hidden!important;
+  }
+  #gameScreen #gameImageWrap img{
+    width:100%!important;
+    height:100%!important;
+    max-width:none!important;
+    object-fit:contain!important;
+    display:block!important;
+  }
+
+  /* Current game becomes a compact score strip instead of a second giant card. */
+  #gameScreen .grid > .card:nth-child(2){
+    margin-top:7px!important;
+    padding:8px!important;
+    border-radius:11px!important;
+  }
+  #gameScreen .grid > .card:nth-child(2) h3{
+    font-size:10px!important;
+    color:#9aa4b2!important;
+    text-transform:uppercase!important;
+    letter-spacing:.11em!important;
+    margin:0 0 6px!important;
+  }
+  #gameScreen .stats{
+    grid-template-columns:repeat(4,1fr)!important;
+    gap:4px!important;
+    margin:0!important;
+  }
+  #gameScreen .stat{
+    padding:6px 2px!important;
+    min-height:49px!important;
+    border-radius:8px!important;
+  }
+  #gameScreen .stat strong{
+    font-size:20px!important;
+  }
+  #gameScreen .stat span{
+    font-size:6.5px!important;
+    letter-spacing:.04em!important;
+  }
+  #gameScreen .grid > .card:nth-child(2) p{
+    display:none!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -660,7 +769,7 @@ function updateBankCount(){
 }
 function show(view){['coachView','hostView','joinView','profilesView','playView','recoveryView'].forEach(v=>$(v).classList.add('hidden'));$(view).classList.remove('hidden');$('coachTab').classList.toggle('primary',view==='coachView');$('playTab').classList.toggle('primary',view==='playView')}
 $('coachTab').onclick=()=>show('coachView'); $('hostTab').onclick=()=>show('hostView'); $('joinTab').onclick=()=>show('joinView');
-$('profilesTab').onclick=()=>show('profilesView'); $('playTab').onclick=()=>show('playView'); $('goCoach').onclick=()=>show('coachView'); $('viewMyStats').onclick=()=>show('profilesView'); $('snapCount').addEventListener('change',()=>{$('startSnapLabel').textContent=$('snapCount').value==='all'?'ALL SNAPS':$('snapCount').value+' SNAPS'});
+$('profilesTab').onclick=()=>show('profilesView'); $('playTab').onclick=()=>{show('playView');loadQuestionsFromSupabase();}; $('goCoach').onclick=()=>show('coachView'); $('viewMyStats').onclick=()=>show('profilesView'); $('snapCount').addEventListener('change',()=>{$('startSnapLabel').textContent=$('snapCount').value==='all'?'ALL SNAPS':$('snapCount').value+' SNAPS'});
 
 $('imageInput').addEventListener('change',e=>{
   const f=e.target.files[0];if(!f)return;

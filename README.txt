@@ -1,21 +1,19 @@
-QB Conflict Defender - Premium ULM Build v3
+QB Conflict Defender Premium ULM v4.2 SAFE
+
+This build was rebuilt from the last known-working premium v3 file rather than patching the broken v4.1 file.
 
 FIXED
-- Published Supabase questions now load on unsigned-in QB devices.
-- The phone no longer depends on a coach/auth session before querying qb_questions.
-- Anonymous devices explicitly request Published rows and rely on Supabase RLS.
-- Question bank refreshes when the app returns to the foreground.
-- MS01 saved as availability=both + status=published will count as a Practice question.
+- All top navigation handlers preserved and JavaScript syntax checked with Node.
+- Only ONE practice navigation button: TAKE-HOME PRACTICE.
+- Take-Home Practice explicitly refreshes the Supabase question bank when opened.
+- Larger mobile football image preserved.
+- Mobile image uses nearly full phone width in 16:9.
+- Current Game panel is compressed on mobile.
+- Existing Supabase question-bank fix, ULM branding, profiles, coach setup, Host Game, Join Game, scoring and recovery are preserved.
 
-PREMIUM UI
-- ULM Football Intelligence branded header.
-- ULM logo slot using the athletics site's logo URL with an embedded ULM fallback mark.
-- Premium maroon/gold header, cards, shadows and controls.
-- Mobile QB cards are now a compact horizontal carousel instead of giant one-card rows.
-- Live cloud/question-bank status appears on Take-Home Practice.
-- Game screen includes ULM conflict-recognition branding.
-- Existing QB photos, 6-second scoring, 1.5-second full-credit protection, Coach Setup and password-recovery behavior are preserved.
+VALIDATION
+- node --check passed on the inline application JavaScript.
+- Coach / Host / Join / QB Profiles / Take-Home Practice IDs and handlers verified.
 
 DEPLOY
-Replace the existing Vercel index.html with this index.html and redeploy.
-Then refresh the phone page. MS01 should report as 1 published practice question ready.
+Replace the current Vercel index.html with this index.html and redeploy.
