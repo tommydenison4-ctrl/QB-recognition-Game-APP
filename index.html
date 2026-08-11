@@ -432,9 +432,245 @@ body{
   }
 }
 
+
+/* =========================================================
+   LANDSCAPE FULL-SCREEN SNAP MODE v5.1
+   Keeps the film container at 16:9 so defender coordinates
+   remain identical across desktop, tablet and phone.
+   ========================================================= */
+body.game-mode{
+  overflow:hidden!important;
+  background:#000!important;
+  overscroll-behavior:none;
+}
+body.game-mode .topbar{display:none!important}
+body.game-mode .app{
+  width:100vw!important;
+  max-width:none!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  margin:0!important;
+  padding:0!important;
+}
+body.game-mode #playView{
+  width:100vw!important;
+  height:100dvh!important;
+  padding:0!important;
+  margin:0!important;
+}
+body.game-mode #gameScreen{
+  position:fixed!important;
+  inset:0!important;
+  z-index:9999!important;
+  width:100vw!important;
+  height:100dvh!important;
+  padding:0!important;
+  margin:0!important;
+  background:#000!important;
+}
+body.game-mode #gameScreen .grid{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+}
+body.game-mode #gameScreen .grid > .card:first-child{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100dvh!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:#000!important;
+  overflow:hidden!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+body.game-mode #gameScreen .grid > .card:nth-child(2){
+  display:none!important;
+}
+
+/* The film itself defines the clickable coordinate box. */
+body.game-mode #gameImageWrap{
+  position:relative!important;
+  width:min(100vw, calc(100dvh * 16 / 9))!important;
+  height:min(100dvh, calc(100vw * 9 / 16))!important;
+  aspect-ratio:16 / 9!important;
+  min-height:0!important;
+  max-width:none!important;
+  margin:auto!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#000!important;
+  overflow:hidden!important;
+  z-index:1!important;
+}
+body.game-mode #gameImageWrap img{
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  object-fit:fill!important;
+  display:block!important;
+}
+
+/* Floating HUD */
+body.game-mode #gameScreen .gameBrandStrip{
+  position:fixed!important;
+  top:max(10px, env(safe-area-inset-top))!important;
+  left:max(12px, env(safe-area-inset-left))!important;
+  z-index:20!important;
+  margin:0!important;
+  padding:7px 10px!important;
+  border-radius:9px!important;
+  background:rgba(34,0,9,.78)!important;
+  border:1px solid rgba(246,185,39,.42)!important;
+  backdrop-filter:blur(12px);
+  color:#ffd65f!important;
+}
+body.game-mode #gameScreen .gameBrandStrip .miniULM{
+  width:25px!important;
+  height:25px!important;
+}
+body.game-mode #playLabel{
+  position:fixed!important;
+  top:max(12px, env(safe-area-inset-top))!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  z-index:20!important;
+  padding:9px 14px!important;
+  border-radius:10px!important;
+  background:rgba(7,10,14,.76)!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+  backdrop-filter:blur(12px);
+  font-size:clamp(13px,2.2vw,18px)!important;
+  white-space:nowrap!important;
+}
+body.game-mode #pickStatus{
+  position:fixed!important;
+  top:max(12px, env(safe-area-inset-top))!important;
+  right:max(12px, env(safe-area-inset-right))!important;
+  z-index:20!important;
+  padding:9px 13px!important;
+  background:rgba(7,10,14,.76)!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+  backdrop-filter:blur(12px);
+  font-size:clamp(11px,1.8vw,15px)!important;
+}
+body.game-mode #timer{
+  position:fixed!important;
+  top:50%!important;
+  right:max(14px, calc(env(safe-area-inset-right) + 6px))!important;
+  transform:translateY(-50%)!important;
+  z-index:20!important;
+  min-width:82px!important;
+  margin:0!important;
+  padding:8px 12px!important;
+  border-radius:13px!important;
+  background:rgba(0,0,0,.62)!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  backdrop-filter:blur(10px);
+  font-size:clamp(34px,7vw,62px)!important;
+  line-height:1!important;
+  text-align:center!important;
+  text-shadow:0 2px 12px rgba(0,0,0,.65)!important;
+}
+body.game-mode #gameScreen .progress{
+  position:fixed!important;
+  left:max(12px, env(safe-area-inset-left))!important;
+  right:max(12px, env(safe-area-inset-right))!important;
+  bottom:max(10px, env(safe-area-inset-bottom))!important;
+  z-index:20!important;
+  height:5px!important;
+  margin:0!important;
+  background:rgba(255,255,255,.18)!important;
+}
+body.game-mode #resultArea{
+  position:fixed!important;
+  left:50%!important;
+  bottom:max(24px, calc(env(safe-area-inset-bottom) + 14px))!important;
+  transform:translateX(-50%)!important;
+  z-index:30!important;
+  margin:0!important;
+}
+
+/* If Safari will not programmatically lock orientation, give a clean prompt. */
+.rotatePrompt{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:12000;
+  background:linear-gradient(180deg,#120007,#030406);
+  color:#fff;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:30px;
+}
+.rotatePromptInner{
+  max-width:330px;
+  padding:28px 24px;
+  border:1px solid rgba(246,185,39,.35);
+  border-radius:20px;
+  background:rgba(14,17,21,.94);
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+.rotateIcon{
+  font-size:50px;
+  line-height:1;
+  margin-bottom:14px;
+  color:#f6b927;
+}
+.rotatePrompt strong{
+  display:block;
+  font-size:22px;
+  margin-bottom:7px;
+}
+.rotatePrompt span{
+  display:block;
+  color:#aab3bf;
+  line-height:1.45;
+  font-size:14px;
+}
+@media (orientation:portrait) and (max-width:900px){
+  body.game-mode .rotatePrompt{display:flex}
+}
+@media (orientation:landscape){
+  body.game-mode .rotatePrompt{display:none!important}
+}
+
+/* Score screens stay clean, but remain landscape-friendly after each rep. */
+body.game-mode #scoreScreen,
+body.game-mode #finalScreen{
+  position:fixed!important;
+  inset:0!important;
+  z-index:10000!important;
+  width:100vw!important;
+  max-width:none!important;
+  height:100dvh!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:auto!important;
+  padding:clamp(18px,3vw,36px)!important;
+  background:
+    radial-gradient(circle at 15% 0%,rgba(92,0,24,.25),transparent 35%),
+    #090c10!important;
+}
+
 </style>
 </head>
 <body>
+<div class="rotatePrompt" id="rotatePrompt">
+  <div class="rotatePromptInner">
+    <div class="rotateIcon">↻</div>
+    <strong>Rotate to Landscape</strong>
+    <span>The film will fill the screen when your phone is sideways.</span>
+  </div>
+</div>
 <div class="app">
   <div class="topbar">
     <div class="brand">
@@ -679,9 +915,10 @@ $('signInBtn').onclick=async()=>{
   $('authMessage').textContent='Signing in…';
   const {data,error}=await sb.auth.signInWithPassword({email,password});
   if(error){$('authMessage').textContent=error.message;return}
-  currentUser=data.user;$('coachPassword').value='';$('authMessage').textContent='Signed in.';
-  await $('practiceTab').onclick=()=>{showView('playView');renderProfiles();updateBankCount();loadQuestionsFromSupabase()};
-refreshAuth();
+  currentUser=data.user;
+  $('coachPassword').value='';
+  $('authMessage').textContent='Signed in.';
+  await refreshAuth();
 };
 $('signOutBtn').onclick=async()=>{await sb.auth.signOut();currentUser=null;questions=[];renderQuestionList();updateBankCount();await refreshAuth()};
 
@@ -769,7 +1006,12 @@ function updateBankCount(){
 }
 function show(view){['coachView','hostView','joinView','profilesView','playView','recoveryView'].forEach(v=>$(v).classList.add('hidden'));$(view).classList.remove('hidden');$('coachTab').classList.toggle('primary',view==='coachView');$('playTab').classList.toggle('primary',view==='playView')}
 $('coachTab').onclick=()=>show('coachView'); $('hostTab').onclick=()=>show('hostView'); $('joinTab').onclick=()=>show('joinView');
-$('profilesTab').onclick=()=>show('profilesView'); $('playTab').onclick=()=>show('playView'); $('goCoach').onclick=()=>show('coachView'); $('viewMyStats').onclick=()=>show('profilesView'); $('snapCount').addEventListener('change',()=>{$('startSnapLabel').textContent=$('snapCount').value==='all'?'ALL SNAPS':$('snapCount').value+' SNAPS'});
+$('profilesTab').onclick=()=>show('profilesView');
+$('playTab').onclick=()=>{show('playView');loadQuestionsFromSupabase();};
+$('practiceTab').onclick=()=>{show('playView');renderProfiles();updateBankCount();loadQuestionsFromSupabase();};
+$('goCoach').onclick=async()=>{await exitLandscapeGameMode();show('coachView');};
+$('viewMyStats').onclick=()=>show('profilesView');
+$('snapCount').addEventListener('change',()=>{$('startSnapLabel').textContent=$('snapCount').value==='all'?'ALL SNAPS':$('snapCount').value+' SNAPS'});
 
 $('imageInput').addEventListener('change',e=>{
   const f=e.target.files[0];if(!f)return;
@@ -866,8 +1108,40 @@ $('exportBank').onclick=()=>{
 };
 $('importBankBtn').onclick=()=>alert('Connected mode is active. Build/upload questions in Coach Setup so images and defender tags are stored centrally in Supabase.');
 
+
+async function enterLandscapeGameMode(){
+  document.body.classList.add('game-mode');
+
+  // Fullscreen support varies by browser. Failure should never break gameplay.
+  try{
+    const el=document.documentElement;
+    if(el.requestFullscreen && !document.fullscreenElement){
+      await el.requestFullscreen({navigationUI:'hide'});
+    }else if(el.webkitRequestFullscreen){
+      el.webkitRequestFullscreen();
+    }
+  }catch(e){}
+
+  // Screen Orientation lock is not available in every iPhone Safari version.
+  try{
+    if(screen.orientation && screen.orientation.lock){
+      await screen.orientation.lock('landscape');
+    }
+  }catch(e){}
+}
+
+async function exitLandscapeGameMode(){
+  document.body.classList.remove('game-mode');
+  try{
+    if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+  }catch(e){}
+  try{
+    if(document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
+  }catch(e){}
+}
+
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
-$('startGame').onclick=()=>{const availableQuestions=questions.filter(q=>q.status==='published'&&(q.availability==='practice'||q.availability==='both'));if(!availableQuestions.length){alert('No published practice questions are available yet.');show('coachView');return}const name=$('playerName').value.trim()||'QB';let n=$('snapCount').value==='all'?availableQuestions.length:+$('snapCount').value;const pool=$('randomizeOrder')?.checked?shuffle(availableQuestions):[...availableQuestions];game={name,items:pool.slice(0,Math.min(n,availableQuestions.length)),index:0,score:0,both:0,partial:0,streak:0,bestStreak:0,times:[],picks:[],startedAt:0,done:false,timerId:null,lastPoints:0,lastResult:'',lastTime:6};$('startScreen').classList.add('hidden');$('finalScreen').classList.add('hidden');$('scoreScreen').classList.add('hidden');$('gameScreen').classList.remove('hidden');loadSnap()};
+$('startGame').onclick=async()=>{const availableQuestions=questions.filter(q=>q.status==='published'&&(q.availability==='practice'||q.availability==='both'));if(!availableQuestions.length){alert('No published practice questions are available yet.');show('coachView');return}const name=$('playerName').value.trim()||'QB';let n=$('snapCount').value==='all'?availableQuestions.length:+$('snapCount').value;const pool=$('randomizeOrder')?.checked?shuffle(availableQuestions):[...availableQuestions];game={name,items:pool.slice(0,Math.min(n,availableQuestions.length)),index:0,score:0,both:0,partial:0,streak:0,bestStreak:0,times:[],picks:[],startedAt:0,done:false,timerId:null,lastPoints:0,lastResult:'',lastTime:6};$('startScreen').classList.add('hidden');$('finalScreen').classList.add('hidden');$('scoreScreen').classList.add('hidden');$('gameScreen').classList.remove('hidden');await enterLandscapeGameMode();loadSnap()};
 function loadSnap(){clearInterval(game.timerId);game.picks=[];game.done=false;const q=game.items[game.index];$('playLabel').textContent=`Snap ${game.index+1} of ${game.items.length} · ${q.name}`;$('pickStatus').textContent='Pick 2 defenders';$('progressBar').style.width=`${(game.index/game.items.length)*100}%`;$('resultArea').classList.add('hidden');const w=$('gameImageWrap');w.innerHTML='';const img=document.createElement('img');img.src=q.image;w.appendChild(img);game.startedAt=performance.now(); const learn=$('practiceMode').value==='learn'; $('timer').textContent=learn?'LEARN':'6.0';$('timer').classList.remove('low'); if(!learn) game.timerId=setInterval(()=>{const elapsed=(performance.now()-game.startedAt)/1000;const left=Math.max(0,6-elapsed);$('timer').textContent=left.toFixed(1);$('timer').classList.toggle('low',left<=1);if(left<=0)finishSnap()},50);renderLive()}
 $('gameImageWrap').addEventListener('click',e=>{if(game.done||game.picks.length>=2)return;const rect=e.currentTarget.getBoundingClientRect();game.picks.push({x:(e.clientX-rect.left)/rect.width,y:(e.clientY-rect.top)/rect.height});addMarker(e.currentTarget,game.picks.at(-1),game.picks.length,'pick');$('pickStatus').textContent=game.picks.length===1?'Pick 1 more defender':'Locked';if(game.picks.length===2)finishSnap()});
 function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
@@ -881,7 +1155,7 @@ function getBoard(){return JSON.parse(localStorage.getItem(STORE_L)||'[]')}
 function saveBoard(entry){let board=getBoard();board.push(entry);board=board.sort((a,b)=>b.score-a.score||a.avgTime-b.avgTime).slice(0,20);localStorage.setItem(STORE_L,JSON.stringify(board));return board}
 function renderBoard(el,includeCurrent=false){let board=getBoard();if(includeCurrent)board=[...board,{name:game.name,score:game.score,temp:true}].sort((a,b)=>b.score-a.score).slice(0,8);el.innerHTML='';if(!board.length){el.innerHTML='<p class="muted">No completed games yet.</p>';return}board.slice(0,8).forEach((r,i)=>{const row=document.createElement('div');row.className='row';row.innerHTML=`<div class="rank">${i+1}</div><div><strong>${escapeHtml(r.name)}</strong>${r.temp?'<div class="fine">Current game</div>':''}</div><div class="pts">${r.score}</div>`;el.appendChild(row)})}
 function finishGame(){const avg=game.times.reduce((a,b)=>a+b,0)/game.times.length;saveBoard({name:game.name,score:game.score,accuracy:game.both/game.items.length,partial:game.partial,avgTime:avg,date:new Date().toISOString()});$('scoreScreen').classList.add('hidden');$('finalScreen').classList.remove('hidden');$('finalPlayer').textContent=`${game.name} · ${game.items.length} snaps`;$('finalScore').textContent=game.score;$('finalAccuracy').textContent=Math.round(game.both/game.items.length*100)+'%';$('finalPartial').textContent=game.partial;$('finalAvg').textContent=avg.toFixed(2)+'s';$('finalBestStreak').textContent=game.bestStreak;renderBoard($('finalBoard'))}
-$('playAgain').onclick=()=>{$('finalScreen').classList.add('hidden');$('startScreen').classList.remove('hidden')};
+$('playAgain').onclick=async()=>{$('finalScreen').classList.add('hidden');$('startScreen').classList.remove('hidden');await exitLandscapeGameMode()};
 
 
 // Live room prototype: works across tabs/windows on one device immediately via BroadcastChannel.
