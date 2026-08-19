@@ -567,6 +567,18 @@ body.game-mode #finalScreen #goCoach{
   }
 }
 
+
+.cloudSaveStatus{
+  display:flex;align-items:center;gap:8px;
+  margin-top:8px;padding:8px 10px;border-radius:9px;
+  background:#0d1116;border:1px solid #2a3139;
+  color:#9da7b4;font-size:10px;font-weight:850;
+}
+.cloudSaveStatus .cloudDot{flex:0 0 8px}
+.cloudSaveStatus.saving{color:#ffd36b}
+.cloudSaveStatus.saved{color:#79e99a;border-color:rgba(50,199,102,.28)}
+.cloudSaveStatus.error{color:#ff9c9c;border-color:rgba(255,93,93,.32)}
+
 </style>
 </head>
 <body>
@@ -587,7 +599,7 @@ body.game-mode #finalScreen #goCoach{
         <div class="brandWords">
           <div class="brandTitle">Conflict Defender</div>
           <div class="brandSub">Pre-Snap Recognition</div>
-          <div class="brandDivision">ULM Football Intelligence</div><div class="liveVersionBadge">Live + Cloud Stats v6.5</div>
+          <div class="brandDivision">ULM Football Intelligence</div><div class="liveVersionBadge">Live + Cloud Stats v6.6</div>
         </div>
       </div>
     </div>
@@ -740,6 +752,7 @@ body.game-mode #finalScreen #goCoach{
       </div>
       <div class="practiceActions"><button class="btn statsBtn" id="viewMyStats">▥ &nbsp; VIEW MY STATS</button><button class="btn primary startPracticeBtn" id="startGame"><span>START PRACTICE</span><span id="startSnapLabel">10 SNAPS</span></button></div>
       <div class="bankNote"><span class="pill" id="bankCount">0 questions loaded</span> &nbsp; Timed mode: 6 seconds per snap. Full credit through 1.5s.</div>
+      <div class="cloudSaveStatus" id="cloudSaveStatus"><span class="cloudDot" id="cloudSaveDot"></span><span id="cloudSaveText">Cloud results ready</span></div>
     </div>
 
     <div id="gameScreen" class="hidden">
@@ -830,7 +843,7 @@ async function loadProfileStatsFromSupabase(){
   profileStatsLoading=true;
   try{
     const {data,error}=await sb
-      .from('qb_profile_results')
+      .from('qb_conflict_results')
       .select('qb_profile_id,mode,correct_count,response_time,points');
     if(error)throw error;
     const agg={};
@@ -855,23 +868,35 @@ async function loadProfileStatsFromSupabase(){
   }
 }
 
-async function saveProfileResult({profileId,questionId,mode,correct,time,points,roomCode=null}){
+async function saveProfileResult({profileId,questionId,mode,correct,time,points,roomCode=null,gameScore=null}){
   if(!profileId)return false;
+
+  const status=$('cloudSaveStatus'),dot=$('cloudSaveDot'),txt=$('cloudSaveText');
+  if(status){status.className='cloudSaveStatus saving';}
+  if(dot){dot.classList.remove('good','bad');}
+  if(txt)txt.textContent='Saving result to Supabase…';
+
   const payload={
     qb_profile_id:profileId,
-    question_id:questionId||null,
+    question_id:questionId==null?null:String(questionId),
     mode,
     correct_count:Math.max(0,Math.min(2,Number(correct)||0)),
     response_time:Math.max(0,Math.min(6,Number(time)||0)),
     points:Math.max(0,Number(points)||0),
     room_code:roomCode||null,
+    game_score:gameScore==null?null:Number(gameScore)||0,
     played_at:new Date().toISOString()
   };
-  const {error}=await sb.from('qb_profile_results').insert(payload);
+
+  const {error}=await sb.from('qb_conflict_results').insert(payload);
   if(error){
-    console.warn('Could not save QB result:',error);
+    console.error('Supabase result save failed:',error);
+    if(status)status.className='cloudSaveStatus error';
+    if(dot)dot.classList.add('bad');
+    if(txt)txt.textContent='Cloud save failed: '+error.message;
     return false;
   }
+
   const x=cloudProfileStats[profileId]||(cloudProfileStats[profileId]=emptyProfileStat());
   x.snaps++;
   if(payload.correct_count===2)x.both++;
@@ -881,6 +906,10 @@ async function saveProfileResult({profileId,questionId,mode,correct,time,points,
   if(mode==='live')x.liveSnaps++;
   if(mode==='practice')x.practiceSnaps++;
   renderProfiles();
+
+  if(status)status.className='cloudSaveStatus saved';
+  if(dot)dot.classList.add('good');
+  if(txt)txt.textContent='Saved to cloud · available on all devices';
   return true;
 }
 
@@ -1080,7 +1109,8 @@ function updateBankCount(){
 }
 function show(view){['coachView','hostView','joinView','profilesView','playView','recoveryView'].forEach(v=>$(v).classList.add('hidden'));$(view).classList.remove('hidden');$('coachTab').classList.toggle('primary',view==='coachView');$('playTab').classList.toggle('primary',view==='playView')}
 $('coachTab').onclick=()=>show('coachView'); $('hostTab').onclick=()=>show('hostView'); $('joinTab').onclick=()=>show('joinView');
-$('profilesTab').onclick=()=>{show('profilesView');loadProfileStatsFromSupabase();};
+$('profilesTab').onclick=()=>{show('profilesView');loadProfileStatsFromSupabase();
+loadCloudBoard();};
 $('playTab').onclick=()=>{show('playView');loadQuestionsFromSupabase();loadProfileStatsFromSupabase();};
 $('practiceTab').onclick=()=>{show('playView');renderProfiles();updateBankCount();loadQuestionsFromSupabase();loadProfileStatsFromSupabase();};
 $('goCoach').onclick=async()=>{await exitLandscapeGameMode();show('coachView');};
@@ -1201,13 +1231,67 @@ $('gameImageWrap').addEventListener('click',e=>{if(game.done||game.picks.length>
 function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
 function scoreByTime(maxPoints,elapsed){if(elapsed<=1.5)return maxPoints;if(elapsed>=6)return 0;return Math.max(0,Math.round(maxPoints*((6-elapsed)/4.5)))}
 function matchPicks(picks,targets){const threshold=.065;let used=new Set(),correct=0;for(const p of picks){let best=-1,bestD=Infinity;targets.forEach((t,i)=>{if(used.has(i))return;const d=dist(p,t);if(d<bestD){bestD=d;best=i}});if(best>=0&&bestD<=threshold){correct++;used.add(best)}}return correct}
-function finishSnap(){if(game.done)return;game.done=true;clearInterval(game.timerId);const q=game.items[game.index];const elapsed=Math.min(6,(performance.now()-game.startedAt)/1000);const correct=matchPicks(game.picks,q.targets);game.times.push(elapsed);let points=0,result='';if(correct===2){points=scoreByTime(1000,elapsed);game.both++;game.streak++;game.bestStreak=Math.max(game.bestStreak,game.streak);result='Both correct'}else if(correct===1){points=scoreByTime(500,elapsed);game.partial++;game.streak=0;result='One correct'}else{game.streak=0;result='Incorrect'}game.score+=points;game.lastPoints=points;game.lastResult=result;game.lastTime=elapsed;saveProfileResult({profileId:selectedPracticeQB,questionId:q.id,mode:'practice',correct,time:elapsed,points});const w=$('gameImageWrap');game.picks.forEach((p,i)=>addMarker(w,p,i+1,'wrong'));q.targets.forEach((t,i)=>addMarker(w,t,i+1,'correct'));$('pickStatus').textContent=`${correct}/2 correct`;$('timer').textContent=elapsed.toFixed(1)+'s';renderLive();setTimeout(showScore,900)}
+function finishSnap(){if(game.done)return;game.done=true;clearInterval(game.timerId);const q=game.items[game.index];const elapsed=Math.min(6,(performance.now()-game.startedAt)/1000);const correct=matchPicks(game.picks,q.targets);game.times.push(elapsed);let points=0,result='';if(correct===2){points=scoreByTime(1000,elapsed);game.both++;game.streak++;game.bestStreak=Math.max(game.bestStreak,game.streak);result='Both correct'}else if(correct===1){points=scoreByTime(500,elapsed);game.partial++;game.streak=0;result='One correct'}else{game.streak=0;result='Incorrect'}game.score+=points;game.lastPoints=points;game.lastResult=result;game.lastTime=elapsed;saveProfileResult({profileId:selectedPracticeQB,questionId:q.id,mode:'practice',correct,time:elapsed,points,gameScore:game.score});const w=$('gameImageWrap');game.picks.forEach((p,i)=>addMarker(w,p,i+1,'wrong'));q.targets.forEach((t,i)=>addMarker(w,t,i+1,'correct'));$('pickStatus').textContent=`${correct}/2 correct`;$('timer').textContent=elapsed.toFixed(1)+'s';renderLive();setTimeout(showScore,900)}
 function renderLive(){$('liveScore').textContent=game.score;$('liveCorrect').textContent=game.both;$('livePartial').textContent=game.partial;$('liveStreak').textContent=game.streak}
 function showScore(){$('gameScreen').classList.add('hidden');$('scoreScreen').classList.remove('hidden');const b=$('snapResult');b.textContent=`${game.lastResult} · ${game.lastTime.toFixed(2)}s`;b.className='resultBanner '+(game.lastResult==='Both correct'?'good':game.lastResult==='One correct'?'partial':'bad');$('snapPoints').textContent='+'+game.lastPoints;$('scoreTotal').textContent=game.score;$('scoreAccuracy').textContent=Math.round(game.both/(game.index+1)*100)+'%';$('scoreAvgTime').textContent=(game.times.reduce((a,b)=>a+b,0)/game.times.length).toFixed(2)+'s';$('scoreStreak').textContent=game.streak;renderBoard($('scoreboard'),true);$('nextSnap').textContent=game.index===game.items.length-1?'Finish Game':'Next Snap'}
 $('nextSnap').onclick=()=>{if(game.index>=game.items.length-1){finishGame();return}game.index++;$('scoreScreen').classList.add('hidden');$('gameScreen').classList.remove('hidden');loadSnap()};
-function getBoard(){return JSON.parse(localStorage.getItem(STORE_L)||'[]')}
-function saveBoard(entry){let board=getBoard();board.push(entry);board=board.sort((a,b)=>b.score-a.score||a.avgTime-b.avgTime).slice(0,20);localStorage.setItem(STORE_L,JSON.stringify(board));return board}
-function renderBoard(el,includeCurrent=false){let board=getBoard();if(includeCurrent)board=[...board,{name:game.name,score:game.score,temp:true}].sort((a,b)=>b.score-a.score).slice(0,8);el.innerHTML='';if(!board.length){el.innerHTML='<p class="muted">No completed games yet.</p>';return}board.slice(0,8).forEach((r,i)=>{const row=document.createElement('div');row.className='row';row.innerHTML=`<div class="rank">${i+1}</div><div><strong>${escapeHtml(r.name)}</strong>${r.temp?'<div class="fine">Current game</div>':''}</div><div class="pts">${r.score}</div>`;el.appendChild(row)})}
+
+let cloudBoardCache=[];
+
+async function loadCloudBoard(){
+  try{
+    const {data,error}=await sb
+      .from('qb_conflict_results')
+      .select('qb_profile_id,points,response_time,played_at,mode')
+      .eq('mode','practice')
+      .order('played_at',{ascending:false})
+      .limit(500);
+    if(error)throw error;
+
+    const grouped={};
+    for(const r of (data||[])){
+      const key=r.qb_profile_id;
+      if(!key)continue;
+      const g=grouped[key]||(grouped[key]={profileId:key,score:0,snaps:0,totalTime:0});
+      g.score+=Number(r.points)||0;
+      g.snaps++;
+      g.totalTime+=Number(r.response_time)||0;
+    }
+    cloudBoardCache=Object.values(grouped)
+      .map(g=>{
+        const qb=QB_PROFILES.find(q=>q.id===g.profileId);
+        return {
+          name:qb?.name||g.profileId,
+          score:g.score,
+          avgTime:g.snaps?g.totalTime/g.snaps:6
+        };
+      })
+      .sort((a,b)=>b.score-a.score||a.avgTime-b.avgTime)
+      .slice(0,20);
+  }catch(err){
+    console.warn('Cloud leaderboard unavailable:',err);
+    cloudBoardCache=[];
+  }
+  return cloudBoardCache;
+}
+function getBoard(){return cloudBoardCache}
+function saveBoard(entry){
+  // Completed-game summary is derived from cloud snap rows; no localStorage write.
+  loadCloudBoard().then(()=>{renderBoard($('scoreboard'));renderBoard($('finalBoard'));});
+  return cloudBoardCache;
+}
+function renderBoard(el,includeCurrent=false){
+  let board=[...cloudBoardCache];
+  if(includeCurrent)board=[...board,{name:game.name,score:game.score,temp:true}].sort((a,b)=>b.score-a.score).slice(0,8);
+  el.innerHTML='';
+  if(!board.length){el.innerHTML='<p class="muted">No cloud results yet.</p>';return}
+  board.slice(0,8).forEach((r,i)=>{
+    const row=document.createElement('div');row.className='row';
+    row.innerHTML=`<div class="rank">${i+1}</div><div><strong>${escapeHtml(r.name)}</strong>${r.temp?'<div class="fine">Current game</div>':''}</div><div class="pts">${r.score}</div>`;
+    el.appendChild(row)
+  })
+}
+
 function finishGame(){const avg=game.times.reduce((a,b)=>a+b,0)/game.times.length;saveBoard({name:game.name,score:game.score,accuracy:game.both/game.items.length,partial:game.partial,avgTime:avg,date:new Date().toISOString()});$('scoreScreen').classList.add('hidden');$('finalScreen').classList.remove('hidden');$('finalPlayer').textContent=`${game.name} · ${game.items.length} snaps`;$('finalScore').textContent=game.score;$('finalAccuracy').textContent=Math.round(game.both/game.items.length*100)+'%';$('finalPartial').textContent=game.partial;$('finalAvg').textContent=avg.toFixed(2)+'s';$('finalBestStreak').textContent=game.bestStreak;renderBoard($('finalBoard'))}
 $('playAgain').onclick=async()=>{$('finalScreen').classList.add('hidden');$('startScreen').classList.remove('hidden');await exitLandscapeGameMode()};
 
@@ -1257,7 +1341,7 @@ if(location.hash.includes('type=recovery') || new URLSearchParams(location.searc
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible') loadQuestionsFromSupabase();
 });
-window.addEventListener('focus',()=>{loadQuestionsFromSupabase();loadProfileStatsFromSupabase();});
+window.addEventListener('focus',()=>{loadQuestionsFromSupabase();loadProfileStatsFromSupabase();loadCloudBoard();});
 
 
 </script>
