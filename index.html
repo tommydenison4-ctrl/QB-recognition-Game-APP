@@ -433,367 +433,89 @@ body{
 }
 
 
-/* =========================================================
-   LANDSCAPE FULL-SCREEN SNAP MODE v5.1
-   Keeps the film container at 16:9 so defender coordinates
-   remain identical across desktop, tablet and phone.
-   ========================================================= */
-body.game-mode{
-  overflow:hidden!important;
-  background:#000!important;
-  overscroll-behavior:none;
-}
+.profileCloudNote{margin-top:-4px;margin-bottom:12px;color:#7f8996;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+body.game-mode{overflow:hidden!important;background:#000!important;overscroll-behavior:none}
 body.game-mode .topbar{display:none!important}
-body.game-mode .app{
-  width:100vw!important;
-  max-width:none!important;
-  height:100dvh!important;
-  min-height:100dvh!important;
-  margin:0!important;
-  padding:0!important;
-}
-body.game-mode #playView{
-  width:100vw!important;
-  height:100dvh!important;
-  padding:0!important;
-  margin:0!important;
-}
-body.game-mode #gameScreen{
-  position:fixed!important;
-  inset:0!important;
-  z-index:9999!important;
-  width:100vw!important;
-  height:100dvh!important;
-  padding:0!important;
-  margin:0!important;
-  background:#000!important;
-}
-body.game-mode #gameScreen .grid{
-  display:block!important;
-  width:100%!important;
-  height:100%!important;
-}
-body.game-mode #gameScreen .grid > .card:first-child{
-  position:fixed!important;
-  inset:0!important;
-  width:100vw!important;
-  height:100dvh!important;
-  max-width:none!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-  background:#000!important;
-  overflow:hidden!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-}
-body.game-mode #gameScreen .grid > .card:nth-child(2){
-  display:none!important;
-}
+body.game-mode .app{width:100vw!important;max-width:none!important;height:100dvh!important;min-height:100dvh!important;margin:0!important;padding:0!important}
+body.game-mode #playView{width:100vw!important;height:100dvh!important;padding:0!important;margin:0!important}
+body.game-mode #gameScreen{position:fixed!important;inset:0!important;z-index:9999!important;width:100vw!important;height:100dvh!important;padding:0!important;margin:0!important;background:#000!important}
+body.game-mode #gameScreen .grid{display:block!important;width:100%!important;height:100%!important}
+body.game-mode #gameScreen .grid>.card:first-child{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#000!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important}
+body.game-mode #gameScreen .grid>.card:nth-child(2){display:none!important}
+body.game-mode #gameImageWrap{position:relative!important;width:min(100vw,calc(100dvh * 16 / 9))!important;height:min(100dvh,calc(100vw * 9 / 16))!important;aspect-ratio:16/9!important;min-height:0!important;max-width:none!important;margin:auto!important;border:0!important;border-radius:0!important;background:#000!important;overflow:hidden!important;z-index:1!important}
+body.game-mode #gameImageWrap img{width:100%!important;height:100%!important;max-width:none!important;object-fit:fill!important;display:block!important}
+body.game-mode #gameScreen .gameBrandStrip{position:fixed!important;top:max(10px,env(safe-area-inset-top))!important;left:max(12px,env(safe-area-inset-left))!important;z-index:20!important;margin:0!important;padding:7px 10px!important;border-radius:9px!important;background:rgba(34,0,9,.78)!important;border:1px solid rgba(246,185,39,.42)!important;backdrop-filter:blur(12px);color:#ffd65f!important}
+body.game-mode #playLabel{position:fixed!important;top:max(12px,env(safe-area-inset-top))!important;left:50%!important;transform:translateX(-50%)!important;z-index:20!important;padding:9px 14px!important;border-radius:10px!important;background:rgba(7,10,14,.76)!important;border:1px solid rgba(255,255,255,.14)!important;backdrop-filter:blur(12px);font-size:clamp(13px,2.2vw,18px)!important;white-space:nowrap!important}
+body.game-mode #pickStatus{position:fixed!important;top:max(12px,env(safe-area-inset-top))!important;right:max(12px,env(safe-area-inset-right))!important;z-index:20!important;padding:9px 13px!important;background:rgba(7,10,14,.76)!important;border:1px solid rgba(255,255,255,.14)!important;backdrop-filter:blur(12px);font-size:clamp(11px,1.8vw,15px)!important}
+body.game-mode #timer{position:fixed!important;top:50%!important;right:max(14px,calc(env(safe-area-inset-right) + 6px))!important;transform:translateY(-50%)!important;z-index:20!important;min-width:82px!important;margin:0!important;padding:8px 12px!important;border-radius:13px!important;background:rgba(0,0,0,.62)!important;border:1px solid rgba(255,255,255,.16)!important;backdrop-filter:blur(10px);font-size:clamp(34px,7vw,62px)!important;line-height:1!important;text-align:center!important}
+body.game-mode #gameScreen .progress{position:fixed!important;left:max(12px,env(safe-area-inset-left))!important;right:max(12px,env(safe-area-inset-right))!important;bottom:max(10px,env(safe-area-inset-bottom))!important;z-index:20!important;height:5px!important;margin:0!important;background:rgba(255,255,255,.18)!important}
+.rotatePrompt{display:none;position:fixed;inset:0;z-index:12000;background:linear-gradient(180deg,#120007,#030406);color:#fff;align-items:center;justify-content:center;text-align:center;padding:30px}
+.rotatePromptInner{max-width:330px;padding:28px 24px;border:1px solid rgba(246,185,39,.35);border-radius:20px;background:rgba(14,17,21,.94)}
+.rotateIcon{font-size:50px;line-height:1;margin-bottom:14px;color:#f6b927}
+.rotatePrompt strong{display:block;font-size:22px;margin-bottom:7px}.rotatePrompt span{display:block;color:#aab3bf;line-height:1.45;font-size:14px}
+@media(orientation:portrait) and (max-width:900px){body.game-mode .rotatePrompt{display:flex}}
+@media(orientation:landscape){body.game-mode .rotatePrompt{display:none!important}}
 
-/* The film itself defines the clickable coordinate box. */
-body.game-mode #gameImageWrap{
-  position:relative!important;
-  width:min(100vw, calc(100dvh * 16 / 9))!important;
-  height:min(100dvh, calc(100vw * 9 / 16))!important;
-  aspect-ratio:16 / 9!important;
-  min-height:0!important;
-  max-width:none!important;
-  margin:auto!important;
-  border:0!important;
-  border-radius:0!important;
-  background:#000!important;
-  overflow:hidden!important;
-  z-index:1!important;
-}
-body.game-mode #gameImageWrap img{
-  width:100%!important;
-  height:100%!important;
-  max-width:none!important;
-  object-fit:fill!important;
-  display:block!important;
-}
 
-/* Floating HUD */
-body.game-mode #gameScreen .gameBrandStrip{
-  position:fixed!important;
-  top:max(10px, env(safe-area-inset-top))!important;
-  left:max(12px, env(safe-area-inset-left))!important;
-  z-index:20!important;
-  margin:0!important;
-  padding:7px 10px!important;
-  border-radius:9px!important;
-  background:rgba(34,0,9,.78)!important;
-  border:1px solid rgba(246,185,39,.42)!important;
-  backdrop-filter:blur(12px);
-  color:#ffd65f!important;
-}
-body.game-mode #gameScreen .gameBrandStrip .miniULM{
-  width:25px!important;
-  height:25px!important;
-}
-body.game-mode #playLabel{
-  position:fixed!important;
-  top:max(12px, env(safe-area-inset-top))!important;
-  left:50%!important;
-  transform:translateX(-50%)!important;
-  z-index:20!important;
-  padding:9px 14px!important;
-  border-radius:10px!important;
-  background:rgba(7,10,14,.76)!important;
-  border:1px solid rgba(255,255,255,.14)!important;
-  backdrop-filter:blur(12px);
-  font-size:clamp(13px,2.2vw,18px)!important;
-  white-space:nowrap!important;
-}
-body.game-mode #pickStatus{
-  position:fixed!important;
-  top:max(12px, env(safe-area-inset-top))!important;
-  right:max(12px, env(safe-area-inset-right))!important;
-  z-index:20!important;
-  padding:9px 13px!important;
-  background:rgba(7,10,14,.76)!important;
-  border:1px solid rgba(255,255,255,.14)!important;
-  backdrop-filter:blur(12px);
-  font-size:clamp(11px,1.8vw,15px)!important;
-}
-body.game-mode #timer{
-  position:fixed!important;
-  top:50%!important;
-  right:max(14px, calc(env(safe-area-inset-right) + 6px))!important;
-  transform:translateY(-50%)!important;
-  z-index:20!important;
-  min-width:82px!important;
-  margin:0!important;
-  padding:8px 12px!important;
-  border-radius:13px!important;
-  background:rgba(0,0,0,.62)!important;
-  border:1px solid rgba(255,255,255,.16)!important;
-  backdrop-filter:blur(10px);
-  font-size:clamp(34px,7vw,62px)!important;
-  line-height:1!important;
-  text-align:center!important;
-  text-shadow:0 2px 12px rgba(0,0,0,.65)!important;
-}
-body.game-mode #gameScreen .progress{
-  position:fixed!important;
-  left:max(12px, env(safe-area-inset-left))!important;
-  right:max(12px, env(safe-area-inset-right))!important;
-  bottom:max(10px, env(safe-area-inset-bottom))!important;
-  z-index:20!important;
-  height:5px!important;
-  margin:0!important;
-  background:rgba(255,255,255,.18)!important;
-}
-body.game-mode #resultArea{
-  position:fixed!important;
-  left:50%!important;
-  bottom:max(24px, calc(env(safe-area-inset-bottom) + 14px))!important;
-  transform:translateX(-50%)!important;
-  z-index:30!important;
-  margin:0!important;
-}
+.liveLobbyCard{max-width:980px;margin:24px auto}.liveSetupGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.livePrimaryBtn{min-height:54px}
+.roomCodeHero{display:grid;place-items:center;text-align:center;padding:22px;margin:8px 0 14px;border-radius:16px;background:linear-gradient(145deg,#220007,#090c10);border:1px solid rgba(246,185,39,.32)}
+.roomCodeHero span{font-size:10px;letter-spacing:.2em;color:#aeb5bf;font-weight:900}.roomCodeHero strong{font-size:clamp(46px,8vw,78px);line-height:1;color:var(--ulm-gold);letter-spacing:.08em;margin:8px 0}.roomCodeHero small{color:var(--muted)}
+.liveConnectionRow{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #2e353e;border-radius:10px;background:#0d1116;font-size:12px;font-weight:800;margin:10px 0}
+.hostControls{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.liveRoundStatus{padding:13px 14px;border-radius:11px;background:#10151b;border:1px solid #2d343d;font-weight:850;color:#d9dee5;margin-bottom:14px}
+.livePlayerGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.livePlayerTile{position:relative;padding:11px;border-radius:12px;background:#121820;border:1px solid #2b333c;min-height:82px}.livePlayerTile.locked{border-color:rgba(50,199,102,.55)}
+.livePlayerTile strong{display:block;font-size:13px}.livePlayerTile span{display:block;color:var(--muted);font-size:10px;margin-top:4px}.livePlayerTile .lockTag{position:absolute;right:8px;top:8px;color:#7ff1a3;font-weight:1000;font-size:9px}.livePlayerTile .livePoints{font-size:18px;color:var(--ulm-gold);font-weight:1000;margin-top:7px}
+#livePlayerGame{position:fixed;inset:0;z-index:20000;background:#000;width:100vw;height:100dvh;overflow:hidden}.liveFilmStage{position:absolute;inset:0;display:grid;place-items:center;background:#000}
+.liveFilmWrap{position:relative;width:min(100vw,calc(100dvh * 16 / 9));height:min(100dvh,calc(100vw * 9 / 16));aspect-ratio:16/9;background:#000;overflow:hidden;touch-action:manipulation}.liveFilmWrap img{display:block;width:100%;height:100%;object-fit:fill}
+.liveHud{position:fixed;z-index:20020;background:rgba(5,8,12,.74);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(12px);border-radius:10px;color:#fff;font-weight:950}
+.liveHudLeft{top:max(10px,env(safe-area-inset-top));left:max(10px,env(safe-area-inset-left));padding:7px 10px;display:flex;align-items:center;gap:8px;font-size:12px}.liveHudCenter{top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);padding:7px 16px;font-size:clamp(28px,6vw,50px)}.liveHudRight{top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));padding:10px 13px;font-size:12px}
+.liveLockedOverlay,.liveRevealOverlay{position:fixed;z-index:20030;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);padding:10px 18px;border-radius:12px;text-align:center;background:rgba(0,0,0,.78);border:1px solid rgba(50,199,102,.55)}
+.liveScoreScreen{position:fixed;inset:0;z-index:21000;overflow:auto;background:#080b0f;padding:clamp(20px,4vw,45px)}.liveRotatePrompt{display:none;position:fixed;inset:0;z-index:22000;background:#050609;align-items:center;justify-content:center;text-align:center;padding:28px}
+@media(orientation:portrait) and (max-width:900px){#livePlayerGame:not(.hidden) .liveRotatePrompt{display:flex}}@media(max-width:850px){.liveSetupGrid{grid-template-columns:1fr}.livePlayerGrid{grid-template-columns:repeat(2,1fr)}}
 
-/* If Safari will not programmatically lock orientation, give a clean prompt. */
-.rotatePrompt{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:12000;
-  background:linear-gradient(180deg,#120007,#030406);
-  color:#fff;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:30px;
+.liveVersionBadge{display:inline-flex;margin-top:6px;padding:5px 8px;border-radius:999px;background:rgba(50,199,102,.12);border:1px solid rgba(50,199,102,.42);color:#82f1a5;font-size:9px;font-weight:1000;letter-spacing:.1em;text-transform:uppercase}
+
+.demoSectionLabel{
+  grid-column:1/-1;
+  margin:14px 0 2px;
+  padding-top:14px;
+  border-top:1px solid #303740;
+  color:var(--ulm-gold);
+  font-size:11px;
+  font-weight:1000;
+  letter-spacing:.14em;
+  text-transform:uppercase;
 }
-.rotatePromptInner{
-  max-width:330px;
-  padding:28px 24px;
-  border:1px solid rgba(246,185,39,.35);
-  border-radius:20px;
-  background:rgba(14,17,21,.94);
-  box-shadow:0 20px 60px rgba(0,0,0,.4);
+.demoProfile{
+  border-color:#5a3f17!important;
+  background:linear-gradient(180deg,#191710,#0d1014)!important;
 }
-.rotateIcon{
-  font-size:50px;
-  line-height:1;
-  margin-bottom:14px;
-  color:#f6b927;
+.demoBadge{
+  position:absolute;
+  top:9px;left:9px;
+  z-index:5;
+  padding:5px 7px;
+  border-radius:7px;
+  background:rgba(75,0,16,.88);
+  border:1px solid rgba(246,185,39,.55);
+  color:#ffd668;
+  font-size:8px;
+  font-weight:1000;
+  letter-spacing:.08em;
 }
-.rotatePrompt strong{
-  display:block;
-  font-size:22px;
-  margin-bottom:7px;
-}
-.rotatePrompt span{
-  display:block;
-  color:#aab3bf;
+.profileBio{
+  margin-top:9px;
+  padding-top:9px;
+  border-top:1px solid #2d343b;
+  color:#9ea8b5;
+  font-size:10px;
   line-height:1.45;
-  font-size:14px;
-}
-@media (orientation:portrait) and (max-width:900px){
-  body.game-mode .rotatePrompt{display:flex}
-}
-@media (orientation:landscape){
-  body.game-mode .rotatePrompt{display:none!important}
-}
-
-/* Score screens stay clean, but remain landscape-friendly after each rep. */
-body.game-mode #scoreScreen,
-body.game-mode #finalScreen{
-  position:fixed!important;
-  inset:0!important;
-  z-index:10000!important;
-  width:100vw!important;
-  max-width:none!important;
-  height:100dvh!important;
-  margin:0!important;
-  border:0!important;
-  border-radius:0!important;
-  overflow:auto!important;
-  padding:clamp(18px,3vw,36px)!important;
-  background:
-    radial-gradient(circle at 15% 0%,rgba(92,0,24,.25),transparent 35%),
-    #090c10!important;
-}
-
-
-/* =========================================================
-   SUPABASE REALTIME LIVE QB ROOM v6
-   ========================================================= */
-.liveLobbyCard{max-width:980px;margin:24px auto}
-.liveSetupGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.livePrimaryBtn{min-height:54px;padding-left:24px!important;padding-right:24px!important}
-.roomCodeHero{
-  display:grid;place-items:center;text-align:center;
-  padding:22px;margin:8px 0 14px;border-radius:16px;
-  background:
-    radial-gradient(circle at 50% 0%,rgba(246,185,39,.12),transparent 55%),
-    linear-gradient(145deg,#220007,#090c10);
-  border:1px solid rgba(246,185,39,.32);
-}
-.roomCodeHero span{font-size:10px;letter-spacing:.2em;color:#aeb5bf;font-weight:900}
-.roomCodeHero strong{font-size:clamp(46px,8vw,78px);line-height:1;color:var(--ulm-gold);letter-spacing:.08em;margin:8px 0}
-.roomCodeHero small{color:var(--muted)}
-.roomCodeHero.compact strong{font-size:50px}
-.liveConnectionRow{
-  display:flex;align-items:center;gap:10px;padding:10px 12px;
-  border:1px solid #2e353e;border-radius:10px;background:#0d1116;
-  font-size:12px;font-weight:800;margin:10px 0;
-}
-.hostControls{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
-.liveRoundStatus{
-  padding:13px 14px;border-radius:11px;
-  background:#10151b;border:1px solid #2d343d;
-  font-weight:850;color:#d9dee5;margin-bottom:14px;
-}
-.livePlayerGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.livePlayerTile{
-  position:relative;padding:11px;border-radius:12px;background:#121820;border:1px solid #2b333c;
-  min-height:82px;
-}
-.livePlayerTile strong{display:block;font-size:13px}
-.livePlayerTile span{display:block;color:var(--muted);font-size:10px;margin-top:4px}
-.livePlayerTile.locked{border-color:rgba(50,199,102,.55);box-shadow:inset 0 0 0 1px rgba(50,199,102,.1)}
-.livePlayerTile .lockTag{position:absolute;right:8px;top:8px;color:#7ff1a3;font-weight:1000;font-size:9px}
-.livePlayerTile .livePoints{font-size:18px;color:var(--ulm-gold);font-weight:1000;margin-top:7px}
-@media(max-width:850px){
-  .liveSetupGrid{grid-template-columns:1fr}
-  .livePlayerGrid{grid-template-columns:repeat(2,1fr)}
-}
-
-/* Player live snap is a separate full-screen experience. */
-#livePlayerGame{
-  position:fixed;inset:0;z-index:20000;background:#000;
-  width:100vw;height:100dvh;overflow:hidden;
-}
-.liveFilmStage{
-  position:absolute;inset:0;display:grid;place-items:center;background:#000;
-}
-.liveFilmWrap{
-  position:relative;
-  width:min(100vw, calc(100dvh * 16 / 9));
-  height:min(100dvh, calc(100vw * 9 / 16));
-  aspect-ratio:16/9;
-  background:#000;overflow:hidden;
-  touch-action:manipulation;
-}
-.liveFilmWrap img{display:block;width:100%;height:100%;object-fit:fill;user-select:none;-webkit-user-drag:none}
-.liveHud{
-  position:fixed;z-index:20020;
-  background:rgba(5,8,12,.74);border:1px solid rgba(255,255,255,.16);
-  backdrop-filter:blur(12px);border-radius:10px;color:#fff;font-weight:950;
-}
-.liveHudLeft{
-  top:max(10px,env(safe-area-inset-top));left:max(10px,env(safe-area-inset-left));
-  padding:7px 10px;display:flex;align-items:center;gap:8px;font-size:12px;
-}
-.liveHudLeft .miniULM{width:25px;height:25px}
-.liveHudCenter{
-  top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);
-  padding:7px 16px;font-size:clamp(28px,6vw,50px);font-variant-numeric:tabular-nums;
-}
-.liveHudRight{
-  top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));
-  padding:10px 13px;font-size:12px;
-}
-.liveLockedOverlay{
-  position:fixed;z-index:20030;left:50%;bottom:max(18px,env(safe-area-inset-bottom));
-  transform:translateX(-50%);padding:10px 18px;border-radius:12px;text-align:center;
-  background:rgba(0,0,0,.78);border:1px solid rgba(50,199,102,.55);backdrop-filter:blur(12px);
-}
-.liveLockedOverlay strong{display:block;color:#83f3a6;font-size:18px}
-.liveLockedOverlay span{display:block;color:#d8dce1;font-size:12px;margin-top:2px}
-.liveRevealOverlay{
-  position:fixed;z-index:20040;left:50%;bottom:max(18px,env(safe-area-inset-bottom));
-  transform:translateX(-50%);min-width:220px;text-align:center;padding:13px 18px;border-radius:12px;
-  background:rgba(7,10,14,.88);border:1px solid rgba(246,185,39,.48);backdrop-filter:blur(14px);
-}
-.liveRevealOverlay strong{display:block;font-size:18px}
-.liveRevealOverlay span{display:block;color:var(--ulm-gold);font-size:24px;font-weight:1000;margin-top:3px}
-.liveScoreScreen{
-  position:fixed;inset:0;z-index:21000;overflow:auto;
-  background:radial-gradient(circle at 20% 0%,rgba(92,0,24,.3),transparent 35%),#080b0f;
-  padding:clamp(20px,4vw,45px);
-}
-.liveScoreScreen .scoreboard{max-width:760px}
-.liveRotatePrompt{display:none;position:fixed;inset:0;z-index:22000;background:#050609;align-items:center;justify-content:center;text-align:center;padding:28px}
-.liveRotatePrompt>div{max-width:340px;padding:28px;border-radius:18px;border:1px solid rgba(246,185,39,.35);background:#101419}
-.liveRotatePrompt strong{display:block;font-size:22px;margin:9px 0}
-.liveRotatePrompt span{color:var(--muted)}
-@media(orientation:portrait) and (max-width:900px){
-  #livePlayerGame:not(.hidden) .liveRotatePrompt{display:flex}
-}
-
-
-.liveVersionBadge{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:6px 9px;border-radius:999px;
-  background:rgba(50,199,102,.12);
-  border:1px solid rgba(50,199,102,.42);
-  color:#82f1a5;font-size:9px;font-weight:1000;
-  letter-spacing:.12em;text-transform:uppercase;
-  white-space:nowrap;margin-top:6px;
-}
-.liveVersionBadge:before{
-  content:'';width:7px;height:7px;border-radius:50%;
-  background:#32c766;box-shadow:0 0 0 4px rgba(50,199,102,.08);
+  text-align:left;
 }
 
 </style>
 </head>
 <body>
-<div class="rotatePrompt" id="rotatePrompt">
-  <div class="rotatePromptInner">
-    <div class="rotateIcon">↻</div>
-    <strong>Rotate to Landscape</strong>
-    <span>The film will fill the screen when your phone is sideways.</span>
-  </div>
-</div>
+<div class="rotatePrompt" id="rotatePrompt"><div class="rotatePromptInner"><div class="rotateIcon">↻</div><strong>Rotate to Landscape</strong><span>The film will fill the screen when your phone is sideways.</span></div></div>
 <div class="app">
   <div class="topbar">
     <div class="brand">
@@ -810,8 +532,7 @@ body.game-mode #finalScreen{
         <div class="brandWords">
           <div class="brandTitle">Conflict Defender</div>
           <div class="brandSub">Pre-Snap Recognition</div>
-          <div class="brandDivision">ULM Football Intelligence</div>
-          <div class="liveVersionBadge">Live Realtime v6.1</div>
+          <div class="brandDivision">ULM Football Intelligence</div><div class="liveVersionBadge">Live + Cloud Stats v6.4</div>
         </div>
       </div>
     </div>
@@ -877,10 +598,8 @@ body.game-mode #finalScreen{
 
   <section id="hostView" class="hidden">
     <div class="card liveLobbyCard">
-      <div class="heroTitle">ULM QB ROOM</div>
-      <h1>Host Live Game</h1>
+      <div class="heroTitle">ULM QB ROOM</div><h1>Host Live Game</h1>
       <p class="muted">Create a room, let the QBs join from their phones, then release every snap together.</p>
-
       <div id="hostSetupFields">
         <div class="liveSetupGrid">
           <div class="field"><label>Room code</label><input id="hostCode" maxlength="6" placeholder="QB27" /></div>
@@ -889,102 +608,46 @@ body.game-mode #finalScreen{
         </div>
         <button class="btn primary livePrimaryBtn" id="createRoom">Create Live Room</button>
       </div>
-
       <div id="hostRoomPanel" class="hidden">
-        <div class="roomCodeHero">
-          <span>ROOM CODE</span>
-          <strong id="hostRoomCodeDisplay">—</strong>
-          <small>Players open Join Game and enter this code.</small>
-        </div>
-
-        <div class="liveConnectionRow">
-          <span class="cloudDot" id="hostRealtimeDot"></span>
-          <span id="hostRealtimeText">Connecting to Supabase Realtime…</span>
-        </div>
-
-        <div class="resultBanner good" style="margin:12px 0;text-align:left">
-          MULTI-DEVICE LIVE MODE · Supabase Realtime
-        </div>
-        <div class="hostControls">
-          <button class="btn primary" id="hostNext">Release First Snap</button>
-          <button class="btn" id="hostRevealBtn" disabled>Reveal Answer</button>
-          <button class="btn bad" id="endLiveGame">End Game</button>
-        </div>
-
+        <div class="roomCodeHero"><span>ROOM CODE</span><strong id="hostRoomCodeDisplay">—</strong><small>Players open Join Game and enter this code.</small></div>
+        <div class="liveConnectionRow"><span class="cloudDot" id="hostRealtimeDot"></span><span id="hostRealtimeText">Connecting to Supabase Realtime…</span></div>
+        <div class="hostControls"><button class="btn primary" id="hostNext">Release First Snap</button><button class="btn" id="hostRevealBtn" disabled>Reveal Answer</button><button class="btn bad" id="endLiveGame">End Game</button></div>
         <div class="liveRoundStatus" id="hostRoundStatus">Waiting for players.</div>
-
-        <h3>QB Room</h3>
-        <div class="livePlayerGrid" id="hostPlayers"></div>
-
-        <h3 style="margin-top:18px">Live Scoreboard</h3>
-        <div class="scoreboard" id="hostLiveBoard"></div>
+        <h3>QB Room</h3><div class="livePlayerGrid" id="hostPlayers"></div>
+        <h3 style="margin-top:18px">Live Scoreboard</h3><div class="scoreboard" id="hostLiveBoard"></div>
       </div>
     </div>
   </section>
 
   <section id="joinView" class="hidden">
     <div class="card liveLobbyCard">
-      <div class="heroTitle">ULM QB ROOM</div>
-      <h1>Join Live Game</h1>
+      <div class="heroTitle">ULM QB ROOM</div><h1>Join Live Game</h1>
       <p class="muted">Enter the room code, select your QB profile, then wait for the coach to release the snap.</p>
-
       <div id="joinSetup">
         <div class="field"><label>Room code</label><input id="joinCode" maxlength="6" placeholder="QB27" /></div>
-        <div class="field">
-          <label>Select your QB profile</label>
-          <div class="profileGrid" id="joinProfiles"></div>
-          <input id="joinName" class="hidden" />
-        </div>
+        <div class="field"><label>Select your QB profile</label><div class="profileGrid" id="joinProfiles"></div><input id="joinName" class="hidden" /></div>
         <button class="btn primary livePrimaryBtn" id="joinRoom">Join Room</button>
       </div>
-
       <div id="joinLobby" class="hidden">
-        <div class="roomCodeHero compact">
-          <span>CONNECTED TO</span>
-          <strong id="joinedRoomCode">—</strong>
-          <small id="joinedQBName">Waiting for coach.</small>
-        </div>
-        <div class="liveConnectionRow">
-          <span class="cloudDot" id="joinRealtimeDot"></span>
-          <span id="joinRealtimeText">Connecting…</span>
-        </div>
-        <div id="joinStatus" style="margin-top:16px">
-          <div class="resultBanner good">READY</div>
-          <p class="muted">Waiting for the coach to release the first snap.</p>
-        </div>
+        <div class="roomCodeHero compact"><span>CONNECTED TO</span><strong id="joinedRoomCode">—</strong><small id="joinedQBName">Waiting for coach.</small></div>
+        <div class="liveConnectionRow"><span class="cloudDot" id="joinRealtimeDot"></span><span id="joinRealtimeText">Connecting…</span></div>
+        <div id="joinStatus" style="margin-top:16px"><div class="resultBanner good">READY</div><p class="muted">Waiting for the coach to release the first snap.</p></div>
       </div>
     </div>
-
     <div id="livePlayerGame" class="hidden">
-      <div class="liveRotatePrompt">
-        <div>
-          <div class="rotateIcon">↻</div>
-          <strong>Rotate to Landscape</strong>
-          <span>The live snap will fill the screen when your phone is sideways.</span>
-        </div>
-      </div>
-
+      <div class="liveRotatePrompt"><div><div class="rotateIcon">↻</div><strong>Rotate to Landscape</strong><span>The live snap will fill the screen when your phone is sideways.</span></div></div>
       <div class="liveFilmStage">
         <div class="liveFilmWrap" id="liveJoinImage"></div>
-
         <div class="liveHud liveHudLeft"><span class="miniULM">ULM</span><span id="liveJoinLabel">Snap 1</span></div>
         <div class="liveHud liveHudCenter" id="liveJoinTimer">6.0</div>
         <div class="liveHud liveHudRight" id="liveJoinPickStatus">Pick 2 defenders</div>
-
-        <div class="liveLockedOverlay hidden" id="liveLockedOverlay">
-          <strong>LOCKED</strong>
-          <span id="liveLockedTime">—</span>
-        </div>
-
+        <div class="liveLockedOverlay hidden" id="liveLockedOverlay"><strong>LOCKED</strong><span id="liveLockedTime">—</span></div>
         <div class="liveRevealOverlay hidden" id="liveRevealOverlay"></div>
       </div>
     </div>
-
     <div id="livePlayerScoreboard" class="hidden liveScoreScreen">
-      <div class="heroTitle">LIVE QB ROOM</div>
-      <h1 id="livePlayerRoundTitle">Round Complete</h1>
-      <div class="resultBanner" id="livePlayerResult">—</div>
-      <div class="scoreboard" id="livePlayerBoard"></div>
+      <div class="heroTitle">LIVE QB ROOM</div><h1 id="livePlayerRoundTitle">Round Complete</h1>
+      <div class="resultBanner" id="livePlayerResult">—</div><div class="scoreboard" id="livePlayerBoard"></div>
       <p class="muted" style="margin-top:14px">Waiting for the coach to release the next snap.</p>
     </div>
   </section>
@@ -995,7 +658,7 @@ body.game-mode #finalScreen{
       <div class="heroTitle">2026 ULM Quarterbacks</div>
       <h1 style="margin-top:6px">QB Recognition Profiles</h1>
       <p class="muted">Each QB has one identity across take-home practice and live QB-room games. Recognition results build into the profile over time.</p>
-      <div class="profileGrid" id="profilesGrid"></div>
+      <div class="profileGrid" id="profilesGrid"></div><div class="profileCloudNote">Cloud stats · all devices</div>
     </div>
   </section>
 
@@ -1011,7 +674,7 @@ body.game-mode #finalScreen{
         <div class="cloudMeta" id="practiceCloudMeta">Supabase · ULM Conflict Bank</div>
       </div>
       <div class="sectionLabel">Select Your QB Profile</div>
-      <div class="profileGrid" id="practiceProfiles"></div><input id="playerName" class="hidden" /><div id="practiceSelected"></div>
+      <div class="profileGrid" id="practiceProfiles"></div><div class="profileCloudNote">Cloud stats · all devices</div><input id="playerName" class="hidden" /><div id="practiceSelected"></div>
       <div class="practiceSettings">
         <div class="field"><label>Practice Mode</label><select id="practiceMode"><option value="timed" selected>⏱ Timed – 6 Seconds</option><option value="learn">Learn – No Timer</option></select></div>
         <div class="field"><label>Number of Snaps</label><select id="snapCount"><option value="5">5 Snaps</option><option value="10" selected>10 Snaps</option><option value="15">15 Snaps</option><option value="20">20 Snaps</option><option value="all">All Snaps</option></select></div>
@@ -1091,15 +754,138 @@ const QB_PROFILES=[
  {id:'aidan-armenta',name:'Aidan Armenta',number:'10',classYear:'Senior',height:'6-3',weight:'210',hometown:'Albuquerque, N.M.',photo:'https://ulmwarhawks.com/images/2026/7/9/AidanArmenta.jpg?width=500'},
  {id:'austin-carlisle',name:'Austin Carlisle',number:'12',classYear:'Sophomore',height:'5-10',weight:'190',hometown:'Missouri City, Texas',photo:'https://ulmwarhawks.com/images/2026/7/9/AustinCarlisle.jpg?width=500'},
  {id:'bryson-kimbrough',name:'Bryson Kimbrough',number:'14',classYear:'Sophomore',height:'6-2',weight:'205',hometown:'Tuscaloosa, Ala.',photo:'https://ulmwarhawks.com/images/2026/7/9/BrysonKimbrough.jpg?width=500'},
- {id:'ty-purdy',name:'Ty Purdy',number:'16',classYear:'Senior',height:'6-2',weight:'180',hometown:'Raymond, Iowa',photo:'https://ulmwarhawks.com/images/2026/7/9/TyPurdy.jpg?width=500'}
+ {id:'ty-purdy',name:'Ty Purdy',number:'16',classYear:'Senior',height:'6-2',weight:'180',hometown:'Raymond, Iowa',photo:'https://ulmwarhawks.com/images/2026/7/9/TyPurdy.jpg?width=500'},
+ {id:'taylor-dupuis',name:'Taylor Dupuis',number:'STAFF',classYear:'Assistant Coach - Quarterbacks',height:'',weight:'',hometown:'',photo:'https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/ulm.sidearmsports.com/images/2025/6/16/TaylorDupuis2025.jpg?width=300',demo:true},
+ {id:'brayden-burkhardt',name:'Brayden Burkhardt',number:'STAFF',classYear:'Assistant Director of Football Operations / Assistant Quarterbacks Coach',height:'',weight:'',hometown:'',photo:'https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/ulm.sidearmsports.com/images/2025/6/16/BraydonBurkhart2025.jpg?width=300',demo:true},
+ {id:'tommy-denison',name:'Tommy Denison',number:'STAFF',classYear:'Analyst',height:'',weight:'',hometown:'',photo:'https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/yorku.sidearmsports.com/images/2021/9/16/COACH_Denison_Tommy.jpg?width=300',demo:true}
 ];
+
 let selectedPracticeQB=null, selectedJoinQB=null;
-function getProfileStats(){return JSON.parse(localStorage.getItem(STORE_P)||'{}')}
-function profileStat(id){const all=getProfileStats();return all[id]||{snaps:0,both:0,partial:0,totalTime:0,points:0,liveSnaps:0}}
-function addProfileStats(id,d){if(!id)return;const all=getProfileStats(),x=all[id]||{snaps:0,both:0,partial:0,totalTime:0,points:0,liveSnaps:0};for(const [k,v] of Object.entries(d))x[k]=(x[k]||0)+v;all[id]=x;localStorage.setItem(STORE_P,JSON.stringify(all));renderProfiles();}
-function pCard(qb,stats,mode,selected){const acc=stats.snaps?Math.round(stats.both/stats.snaps*100):0,avg=stats.snaps?(stats.totalTime/stats.snaps).toFixed(2):'—';return `<button class="profileCard ${selected?'selected':''}" data-profile="${qb.id}" data-mode="${mode}"><img class="profilePhoto" src="${qb.photo}" alt="${qb.name}"><span class="profileCheck">✓</span><div class="profileBody"><div class="profileName">${qb.name}</div><div class="profileMeta">QB &nbsp;•&nbsp; ${qb.classYear}<br>${qb.height.replace('-',"'")}" &nbsp;•&nbsp; ${qb.weight} lbs</div><div class="profileMini"><div><strong>${acc}%</strong><span>Perfect</span></div><div><strong>${avg}${avg==='—'?'':'s'}</strong><span>Avg Time</span></div></div></div></button>`}
-function renderProfiles(){const all=getProfileStats();$('profilesGrid').innerHTML=QB_PROFILES.map(q=>pCard(q,all[q.id]||profileStat(q.id),'view',false)).join('');$('practiceProfiles').innerHTML=QB_PROFILES.map(q=>pCard(q,all[q.id]||profileStat(q.id),'practice',selectedPracticeQB===q.id)).join('');$('joinProfiles').innerHTML=QB_PROFILES.map(q=>pCard(q,all[q.id]||profileStat(q.id),'join',selectedJoinQB===q.id)).join('');}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-profile]');if(!b)return;const id=b.dataset.profile,mode=b.dataset.mode,qb=QB_PROFILES.find(q=>q.id===id);if(mode==='practice'){selectedPracticeQB=id;$('playerName').value=qb.name;$('practiceSelected').innerHTML=`<div class="selectedQB"><img src="${qb.photo}"><div><strong>#${qb.number} ${qb.name}</strong><span class="muted">Profile selected · results will save here</span></div></div>`;renderProfiles()}else if(mode==='join'){selectedJoinQB=id;$('joinName').value=qb.name;renderProfiles();}});
+let cloudProfileStats={};
+let profileStatsLoading=false;
+
+function emptyProfileStat(){
+  return {snaps:0,both:0,partial:0,totalTime:0,points:0,liveSnaps:0,practiceSnaps:0};
+}
+function getProfileStats(){ return cloudProfileStats; }
+function profileStat(id){ return cloudProfileStats[id]||emptyProfileStat(); }
+
+async function loadProfileStatsFromSupabase(){
+  if(profileStatsLoading)return;
+  profileStatsLoading=true;
+  try{
+    const {data,error}=await sb
+      .from('qb_profile_results')
+      .select('qb_profile_id,mode,correct_count,response_time,points');
+    if(error)throw error;
+    const agg={};
+    for(const row of (data||[])){
+      const id=row.qb_profile_id;
+      if(!id)continue;
+      const x=agg[id]||(agg[id]=emptyProfileStat());
+      x.snaps++;
+      if(Number(row.correct_count)===2)x.both++;
+      if(Number(row.correct_count)===1)x.partial++;
+      x.totalTime+=Number(row.response_time)||0;
+      x.points+=Number(row.points)||0;
+      if(row.mode==='live')x.liveSnaps++;
+      if(row.mode==='practice')x.practiceSnaps++;
+    }
+    cloudProfileStats=agg;
+    renderProfiles();
+  }catch(err){
+    console.warn('Cloud QB stats unavailable:',err);
+  }finally{
+    profileStatsLoading=false;
+  }
+}
+
+async function saveProfileResult({profileId,questionId,mode,correct,time,points,roomCode=null}){
+  if(!profileId)return false;
+  const payload={
+    qb_profile_id:profileId,
+    question_id:questionId||null,
+    mode,
+    correct_count:Math.max(0,Math.min(2,Number(correct)||0)),
+    response_time:Math.max(0,Math.min(6,Number(time)||0)),
+    points:Math.max(0,Number(points)||0),
+    room_code:roomCode||null,
+    played_at:new Date().toISOString()
+  };
+  const {error}=await sb.from('qb_profile_results').insert(payload);
+  if(error){
+    console.warn('Could not save QB result:',error);
+    return false;
+  }
+  const x=cloudProfileStats[profileId]||(cloudProfileStats[profileId]=emptyProfileStat());
+  x.snaps++;
+  if(payload.correct_count===2)x.both++;
+  if(payload.correct_count===1)x.partial++;
+  x.totalTime+=payload.response_time;
+  x.points+=payload.points;
+  if(mode==='live')x.liveSnaps++;
+  if(mode==='practice')x.practiceSnaps++;
+  renderProfiles();
+  return true;
+}
+
+function pCard(qb,stats,mode,selected){
+  const acc=stats.snaps?Math.round(stats.both/stats.snaps*100):0;
+  const avg=stats.snaps?(stats.totalTime/stats.snaps).toFixed(2):'—';
+  const meta=qb.demo
+    ? `${qb.classYear}`
+    : `QB &nbsp;•&nbsp; ${qb.classYear}<br>${qb.height.replace('-',"'")}" &nbsp;•&nbsp; ${qb.weight} lbs`;
+  const demoBadge=qb.demo?'<span class="demoBadge">DEMO / STAFF</span>':'';
+  return `<button class="profileCard ${selected?'selected':''} ${qb.demo?'demoProfile':''}" data-profile="${qb.id}" data-mode="${mode}">
+    ${demoBadge}
+    <img class="profilePhoto" src="${qb.photo}" alt="${qb.name}">
+    <span class="profileCheck">✓</span>
+    <div class="profileBody">
+      <div class="profileName">${qb.name}</div>
+      <div class="profileMeta">${meta}</div>
+      <div class="profileMini">
+        <div><strong>${acc}%</strong><span>Perfect</span></div>
+        <div><strong>${avg}${avg==='—'?'':'s'}</strong><span>Avg Time</span></div>
+      </div>
+    </div>
+  </button>`;
+}
+function renderProfiles(){
+  const all=getProfileStats();
+  const qbs=QB_PROFILES.filter(q=>!q.demo);
+  const demos=QB_PROFILES.filter(q=>q.demo);
+
+  $('profilesGrid').innerHTML =
+    qbs.map(q=>pCard(q,all[q.id]||profileStat(q.id),'view',false)).join('') +
+    `<div class="demoSectionLabel">Demo / Staff Profiles</div>` +
+    demos.map(q=>pCard(q,all[q.id]||profileStat(q.id),'view',false)).join('');
+
+  $('practiceProfiles').innerHTML =
+    qbs.map(q=>pCard(q,all[q.id]||profileStat(q.id),'practice',selectedPracticeQB===q.id)).join('') +
+    `<div class="demoSectionLabel">Demo / Staff Profiles</div>` +
+    demos.map(q=>pCard(q,all[q.id]||profileStat(q.id),'practice',selectedPracticeQB===q.id)).join('');
+
+  $('joinProfiles').innerHTML =
+    qbs.map(q=>pCard(q,all[q.id]||profileStat(q.id),'join',selectedJoinQB===q.id)).join('') +
+    `<div class="demoSectionLabel">Demo / Staff Profiles</div>` +
+    demos.map(q=>pCard(q,all[q.id]||profileStat(q.id),'join',selectedJoinQB===q.id)).join('');
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-profile]');
+  if(!b)return;
+  const id=b.dataset.profile,mode=b.dataset.mode,qb=QB_PROFILES.find(q=>q.id===id);
+  if(mode==='practice'){
+    selectedPracticeQB=id;
+    $('playerName').value=qb.name;
+    $('practiceSelected').innerHTML=`<div class="selectedQB"><img src="${qb.photo}"><div><strong>#${qb.number} ${qb.name}</strong><span class="muted">Profile selected · results save to Supabase</span></div></div>`;
+    renderProfiles();
+  }else if(mode==='join'){
+    selectedJoinQB=id;
+    $('joinName').value=qb.name;
+    renderProfiles();
+  }
+});
+
 
 
 let questions=[];
@@ -1239,11 +1025,11 @@ function updateBankCount(){
 }
 function show(view){['coachView','hostView','joinView','profilesView','playView','recoveryView'].forEach(v=>$(v).classList.add('hidden'));$(view).classList.remove('hidden');$('coachTab').classList.toggle('primary',view==='coachView');$('playTab').classList.toggle('primary',view==='playView')}
 $('coachTab').onclick=()=>show('coachView'); $('hostTab').onclick=()=>show('hostView'); $('joinTab').onclick=()=>show('joinView');
-$('profilesTab').onclick=()=>show('profilesView');
-$('playTab').onclick=()=>{show('playView');loadQuestionsFromSupabase();};
-$('practiceTab').onclick=()=>{show('playView');renderProfiles();updateBankCount();loadQuestionsFromSupabase();};
+$('profilesTab').onclick=()=>{show('profilesView');loadProfileStatsFromSupabase();};
+$('playTab').onclick=()=>{show('playView');loadQuestionsFromSupabase();loadProfileStatsFromSupabase();};
+$('practiceTab').onclick=()=>{show('playView');renderProfiles();updateBankCount();loadQuestionsFromSupabase();loadProfileStatsFromSupabase();};
 $('goCoach').onclick=async()=>{await exitLandscapeGameMode();show('coachView');};
-$('viewMyStats').onclick=()=>show('profilesView');
+$('viewMyStats').onclick=()=>{show('profilesView');loadProfileStatsFromSupabase();};
 $('snapCount').addEventListener('change',()=>{$('startSnapLabel').textContent=$('snapCount').value==='all'?'ALL SNAPS':$('snapCount').value+' SNAPS'});
 
 $('imageInput').addEventListener('change',e=>{
@@ -1344,33 +1130,13 @@ $('importBankBtn').onclick=()=>alert('Connected mode is active. Build/upload que
 
 async function enterLandscapeGameMode(){
   document.body.classList.add('game-mode');
-
-  // Fullscreen support varies by browser. Failure should never break gameplay.
-  try{
-    const el=document.documentElement;
-    if(el.requestFullscreen && !document.fullscreenElement){
-      await el.requestFullscreen({navigationUI:'hide'});
-    }else if(el.webkitRequestFullscreen){
-      el.webkitRequestFullscreen();
-    }
-  }catch(e){}
-
-  // Screen Orientation lock is not available in every iPhone Safari version.
-  try{
-    if(screen.orientation && screen.orientation.lock){
-      await screen.orientation.lock('landscape');
-    }
-  }catch(e){}
+  try{if(document.documentElement.requestFullscreen&&!document.fullscreenElement)await document.documentElement.requestFullscreen({navigationUI:'hide'})}catch(e){}
+  try{if(screen.orientation?.lock)await screen.orientation.lock('landscape')}catch(e){}
 }
-
 async function exitLandscapeGameMode(){
   document.body.classList.remove('game-mode');
-  try{
-    if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
-  }catch(e){}
-  try{
-    if(document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
-  }catch(e){}
+  try{if(screen.orientation?.unlock)screen.orientation.unlock()}catch(e){}
+  try{if(document.fullscreenElement&&document.exitFullscreen)await document.exitFullscreen()}catch(e){}
 }
 
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
@@ -1380,7 +1146,7 @@ $('gameImageWrap').addEventListener('click',e=>{if(game.done||game.picks.length>
 function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
 function scoreByTime(maxPoints,elapsed){if(elapsed<=1.5)return maxPoints;if(elapsed>=6)return 0;return Math.max(0,Math.round(maxPoints*((6-elapsed)/4.5)))}
 function matchPicks(picks,targets){const threshold=.065;let used=new Set(),correct=0;for(const p of picks){let best=-1,bestD=Infinity;targets.forEach((t,i)=>{if(used.has(i))return;const d=dist(p,t);if(d<bestD){bestD=d;best=i}});if(best>=0&&bestD<=threshold){correct++;used.add(best)}}return correct}
-function finishSnap(){if(game.done)return;game.done=true;clearInterval(game.timerId);const q=game.items[game.index];const elapsed=Math.min(6,(performance.now()-game.startedAt)/1000);const correct=matchPicks(game.picks,q.targets);game.times.push(elapsed);let points=0,result='';if(correct===2){points=scoreByTime(1000,elapsed);game.both++;game.streak++;game.bestStreak=Math.max(game.bestStreak,game.streak);result='Both correct'}else if(correct===1){points=scoreByTime(500,elapsed);game.partial++;game.streak=0;result='One correct'}else{game.streak=0;result='Incorrect'}game.score+=points;game.lastPoints=points;game.lastResult=result;game.lastTime=elapsed;addProfileStats(selectedPracticeQB,{snaps:1,both:correct===2?1:0,partial:correct===1?1:0,totalTime:elapsed,points});const w=$('gameImageWrap');game.picks.forEach((p,i)=>addMarker(w,p,i+1,'wrong'));q.targets.forEach((t,i)=>addMarker(w,t,i+1,'correct'));$('pickStatus').textContent=`${correct}/2 correct`;$('timer').textContent=elapsed.toFixed(1)+'s';renderLive();setTimeout(showScore,900)}
+function finishSnap(){if(game.done)return;game.done=true;clearInterval(game.timerId);const q=game.items[game.index];const elapsed=Math.min(6,(performance.now()-game.startedAt)/1000);const correct=matchPicks(game.picks,q.targets);game.times.push(elapsed);let points=0,result='';if(correct===2){points=scoreByTime(1000,elapsed);game.both++;game.streak++;game.bestStreak=Math.max(game.bestStreak,game.streak);result='Both correct'}else if(correct===1){points=scoreByTime(500,elapsed);game.partial++;game.streak=0;result='One correct'}else{game.streak=0;result='Incorrect'}game.score+=points;game.lastPoints=points;game.lastResult=result;game.lastTime=elapsed;saveProfileResult({profileId:selectedPracticeQB,questionId:q.id,mode:'practice',correct,time:elapsed,points});const w=$('gameImageWrap');game.picks.forEach((p,i)=>addMarker(w,p,i+1,'wrong'));q.targets.forEach((t,i)=>addMarker(w,t,i+1,'correct'));$('pickStatus').textContent=`${correct}/2 correct`;$('timer').textContent=elapsed.toFixed(1)+'s';renderLive();setTimeout(showScore,900)}
 function renderLive(){$('liveScore').textContent=game.score;$('liveCorrect').textContent=game.both;$('livePartial').textContent=game.partial;$('liveStreak').textContent=game.streak}
 function showScore(){$('gameScreen').classList.add('hidden');$('scoreScreen').classList.remove('hidden');const b=$('snapResult');b.textContent=`${game.lastResult} · ${game.lastTime.toFixed(2)}s`;b.className='resultBanner '+(game.lastResult==='Both correct'?'good':game.lastResult==='One correct'?'partial':'bad');$('snapPoints').textContent='+'+game.lastPoints;$('scoreTotal').textContent=game.score;$('scoreAccuracy').textContent=Math.round(game.both/(game.index+1)*100)+'%';$('scoreAvgTime').textContent=(game.times.reduce((a,b)=>a+b,0)/game.times.length).toFixed(2)+'s';$('scoreStreak').textContent=game.streak;renderBoard($('scoreboard'),true);$('nextSnap').textContent=game.index===game.items.length-1?'Finish Game':'Next Snap'}
 $('nextSnap').onclick=()=>{if(game.index>=game.items.length-1){finishGame();return}game.index++;$('scoreScreen').classList.add('hidden');$('gameScreen').classList.remove('hidden');loadSnap()};
@@ -1392,492 +1158,34 @@ $('playAgain').onclick=async()=>{$('finalScreen').classList.add('hidden');$('sta
 
 
 
-// ============================================================
-// SUPABASE REALTIME LIVE QB ROOM v6
-// Broadcast = game events / answers.
-// Presence = who is currently in the room.
-// ============================================================
-let liveRealtimeChannel=null;
-let liveRoom=null;
-let livePlayer=null;
-let liveRoundTimer=null;
-let livePlayerTimer=null;
-let livePlayerState=null;
+// Supabase Realtime live room
+let liveRealtimeChannel=null,liveRoom=null,livePlayer=null,liveRoundTimer=null,livePlayerTimer=null,livePlayerState=null;
+function liveCode(){return ($('hostCode').value.trim().toUpperCase()||('QB'+Math.floor(100+Math.random()*900))).replace(/[^A-Z0-9]/g,'').slice(0,6)}
+function liveTopic(code){return `qb-live-${String(code).toUpperCase()}`}
+async function cleanupLiveChannel(){if(liveRoundTimer)clearInterval(liveRoundTimer);if(livePlayerTimer)clearInterval(livePlayerTimer);liveRoundTimer=livePlayerTimer=null;if(liveRealtimeChannel){try{await liveRealtimeChannel.untrack()}catch(e){}try{await sb.removeChannel(liveRealtimeChannel)}catch(e){}}liveRealtimeChannel=null}
+function livePresencePlayers(){if(!liveRealtimeChannel)return[];const st=liveRealtimeChannel.presenceState(),out=[];Object.values(st||{}).forEach(a=>(a||[]).forEach(p=>{if(p.role==='player'&&p.profileId)out.push(p)}));const u=new Map();out.forEach(p=>u.set(p.profileId,p));return[...u.values()]}
+function renderHostLive(){if(!liveRoom)return;const pres=livePresencePlayers();pres.forEach(p=>{if(!liveRoom.players[p.profileId])liveRoom.players[p.profileId]={profileId:p.profileId,name:p.name||'QB',score:0,locked:false,last:null,online:true};else liveRoom.players[p.profileId].online=true});Object.values(liveRoom.players).forEach(p=>p.online=pres.some(x=>x.profileId===p.profileId));const ps=Object.values(liveRoom.players).sort((a,b)=>b.score-a.score);$('hostPlayers').innerHTML=ps.length?ps.map(p=>`<div class="livePlayerTile ${p.locked?'locked':''}">${p.locked?'<div class="lockTag">LOCKED</div>':''}<strong>${escapeHtml(p.name)}</strong><span>${p.online?'ONLINE':'OFFLINE'}${p.last?` · ${p.last.correct}/2 · ${p.last.time.toFixed(2)}s`:''}</span><div class="livePoints">${p.score||0} pts</div></div>`).join(''):'<p class="muted">No QBs joined yet.</p>';$('hostLiveBoard').innerHTML=ps.length?ps.map((p,i)=>`<div class="row"><div class="rank">${i+1}</div><div><strong>${escapeHtml(p.name)}</strong><div class="fine">${p.locked?'LOCKED':'READY'}</div></div><div class="pts">${p.score||0}</div></div>`).join(''):'<p class="muted">Scoreboard appears when players join.</p>'}
+async function hostBroadcast(event,payload={}){if(liveRealtimeChannel)await liveRealtimeChannel.send({type:'broadcast',event,payload:{room:liveRoom.code,...payload}})}
+function subscribeHostRoom(code){return new Promise((resolve,reject)=>{liveRealtimeChannel=sb.channel(liveTopic(code),{config:{broadcast:{self:false},presence:{key:'host'}}});liveRealtimeChannel.on('presence',{event:'sync'},renderHostLive).on('broadcast',{event:'player-ready'},({payload})=>{if(payload?.room!==liveRoom.code)return;if(!liveRoom.players[payload.profileId])liveRoom.players[payload.profileId]={profileId:payload.profileId,name:payload.name,score:0,locked:false,last:null,online:true};renderHostLive()}).on('broadcast',{event:'answer'},({payload})=>{if(!payload||payload.room!==liveRoom.code||!liveRoom.roundOpen||payload.roundToken!==liveRoom.roundToken)return;const p=liveRoom.players[payload.profileId]||(liveRoom.players[payload.profileId]={profileId:payload.profileId,name:payload.name,score:0,locked:false});if(p.locked)return;p.locked=true;p.last=payload;p.score=(p.score||0)+(payload.points||0);renderHostLive();const online=livePresencePlayers();if(online.length&&online.every(x=>liveRoom.players[x.profileId]?.locked))hostRevealRound()}).subscribe(async(status,err)=>{if(status==='SUBSCRIBED'){$('hostRealtimeDot').classList.add('good');$('hostRealtimeText').textContent='Live room connected';try{await liveRealtimeChannel.track({role:'host',room:code,online_at:new Date().toISOString()})}catch(e){}resolve()}else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){reject(err||new Error(status))}})})}
+$('createRoom').onclick=async()=>{const qs=questions.filter(q=>q.status==='published'&&(q.availability==='live'||q.availability==='both'));if(!qs.length){alert('No published Live or Both questions are available yet.');return}await cleanupLiveChannel();const code=liveCode(),n=Math.min(+$('hostSnaps').value,qs.length),bank=$('hostOrder').value==='random'?shuffle(qs):[...qs];liveRoom={code,items:bank.slice(0,n),index:-1,players:{},roundOpen:false,roundToken:null,revealed:false};$('hostCode').value=code;$('hostRoomCodeDisplay').textContent=code;$('hostSetupFields').classList.add('hidden');$('hostRoomPanel').classList.remove('hidden');await subscribeHostRoom(code);$('hostRoundStatus').textContent='Room open. Waiting for QBs to join.';renderHostLive()}
+$('hostNext').onclick=async()=>{if(!liveRoom||liveRoom.roundOpen)return;if(liveRoom.index>=liveRoom.items.length-1){await hostBroadcast('game-over',{scoreboard:Object.values(liveRoom.players).map(p=>({profileId:p.profileId,name:p.name,score:p.score||0}))});$('hostRoundStatus').textContent='Game complete.';$('hostNext').disabled=true;return}liveRoom.index++;liveRoom.revealed=false;liveRoom.roundOpen=true;liveRoom.roundToken=crypto.randomUUID?.()||`${Date.now()}-${Math.random()}`;Object.values(liveRoom.players).forEach(p=>{p.locked=false;p.last=null});const q=liveRoom.items[liveRoom.index],startsAt=Date.now()+900;liveRoom.roundStartAt=startsAt;$('hostNext').disabled=true;$('hostRevealBtn').disabled=false;await hostBroadcast('start-snap',{index:liveRoom.index,total:liveRoom.items.length,roundToken:liveRoom.roundToken,startsAt,question:{id:q.id,name:q.name,image:q.image,targets:q.targets,opponent:q.opponent||''}});liveRoundTimer=setInterval(()=>{const left=Math.max(0,6-(Date.now()-startsAt)/1000);$('hostRoundStatus').textContent=`Snap ${liveRoom.index+1} of ${liveRoom.items.length} · ${left.toFixed(1)}s`;if(left<=0){clearInterval(liveRoundTimer);liveRoundTimer=null;hostRevealRound()}},80)}
+async function hostRevealRound(){if(!liveRoom||!liveRoom.roundOpen||liveRoom.revealed)return;liveRoom.revealed=true;liveRoom.roundOpen=false;if(liveRoundTimer)clearInterval(liveRoundTimer);const q=liveRoom.items[liveRoom.index],board=Object.values(liveRoom.players).map(p=>({profileId:p.profileId,name:p.name,score:p.score||0,last:p.last||null})).sort((a,b)=>b.score-a.score);await hostBroadcast('reveal',{index:liveRoom.index,roundToken:liveRoom.roundToken,targets:q.targets,scoreboard:board});$('hostRevealBtn').disabled=true;$('hostNext').disabled=false;$('hostNext').textContent=liveRoom.index>=liveRoom.items.length-1?'Finish Game':'Release Next Snap';renderHostLive()}
+$('hostRevealBtn').onclick=()=>hostRevealRound();$('endLiveGame').onclick=async()=>{if(liveRoom)await hostBroadcast('game-over',{scoreboard:Object.values(liveRoom.players).map(p=>({profileId:p.profileId,name:p.name,score:p.score||0}))});await cleanupLiveChannel();liveRoom=null;$('hostRoomPanel').classList.add('hidden');$('hostSetupFields').classList.remove('hidden')}
 
-function liveCode(){
-  return ($('hostCode').value.trim().toUpperCase() || ('QB'+Math.floor(100+Math.random()*900))).replace(/[^A-Z0-9]/g,'').slice(0,6);
-}
-function liveTopic(code){ return `qb-live-${String(code).toUpperCase()}`; }
-
-async function cleanupLiveChannel(){
-  if(liveRoundTimer){clearInterval(liveRoundTimer);liveRoundTimer=null}
-  if(livePlayerTimer){clearInterval(livePlayerTimer);livePlayerTimer=null}
-  if(liveRealtimeChannel){
-    try{await liveRealtimeChannel.untrack()}catch(e){}
-    try{await sb.removeChannel(liveRealtimeChannel)}catch(e){}
-  }
-  liveRealtimeChannel=null;
-}
-
-function livePresencePlayers(){
-  if(!liveRealtimeChannel)return [];
-  const state=liveRealtimeChannel.presenceState();
-  const found=[];
-  Object.values(state||{}).forEach(arr=>{
-    (arr||[]).forEach(p=>{
-      if(p.role==='player' && p.profileId) found.push(p);
-    });
-  });
-  const unique=new Map();
-  found.forEach(p=>unique.set(p.profileId,p));
-  return [...unique.values()];
-}
-
-function renderHostLive(){
-  if(!liveRoom)return;
-  const presence=livePresencePlayers();
-  // Presence is authoritative for online players, while answers/scores live in host state.
-  presence.forEach(p=>{
-    if(!liveRoom.players[p.profileId]){
-      liveRoom.players[p.profileId]={
-        profileId:p.profileId,name:p.name||'QB',score:0,locked:false,last:null,online:true
-      };
-    } else liveRoom.players[p.profileId].online=true;
-  });
-  Object.values(liveRoom.players).forEach(p=>p.online=presence.some(x=>x.profileId===p.profileId));
-
-  const players=Object.values(liveRoom.players).sort((a,b)=>b.score-a.score);
-  $('hostPlayers').innerHTML=players.length?players.map(p=>`
-    <div class="livePlayerTile ${p.locked?'locked':''}">
-      ${p.locked?'<div class="lockTag">LOCKED</div>':''}
-      <strong>${escapeHtml(p.name)}</strong>
-      <span>${p.online?'ONLINE':'OFFLINE'}${p.last?` · ${p.last.correct}/2 · ${p.last.time.toFixed(2)}s`:''}</span>
-      <div class="livePoints">${p.score||0} pts</div>
-    </div>`).join(''):'<p class="muted">No QBs joined yet.</p>';
-
-  $('hostLiveBoard').innerHTML=players.length?players.map((p,i)=>`
-    <div class="row"><div class="rank">${i+1}</div><div><strong>${escapeHtml(p.name)}</strong><div class="fine">${p.locked?'LOCKED':'READY'}</div></div><div class="pts">${p.score||0}</div></div>
-  `).join(''):'<p class="muted">Scoreboard appears when players join.</p>';
-
-  if(liveRoom.roundOpen){
-    const total=presence.length;
-    const locked=presence.filter(p=>liveRoom.players[p.profileId]?.locked).length;
-    $('hostRoundStatus').textContent=`Snap ${liveRoom.index+1} of ${liveRoom.items.length} · ${locked}/${total} locked`;
-  }
-}
-
-async function hostBroadcast(event,payload={}){
-  if(!liveRealtimeChannel)return;
-  await liveRealtimeChannel.send({type:'broadcast',event,payload:{room:liveRoom.code,...payload}});
-}
-
-function subscribeHostRoom(code){
-  return new Promise((resolve,reject)=>{
-    liveRealtimeChannel=sb.channel(liveTopic(code),{
-      config:{broadcast:{self:false},presence:{key:'host'}}
-    });
-
-    liveRealtimeChannel
-      .on('presence',{event:'sync'},()=>renderHostLive())
-      .on('presence',{event:'join'},()=>renderHostLive())
-      .on('presence',{event:'leave'},()=>renderHostLive())
-      .on('broadcast',{event:'player-ready'},({payload})=>{
-        if(!payload||payload.room!==liveRoom.code)return;
-        if(!liveRoom.players[payload.profileId]){
-          liveRoom.players[payload.profileId]={profileId:payload.profileId,name:payload.name,score:0,locked:false,last:null,online:true};
-        }
-        renderHostLive();
-      })
-      .on('broadcast',{event:'answer'},({payload})=>{
-        if(!payload||payload.room!==liveRoom.code||!liveRoom.roundOpen)return;
-        if(payload.roundToken!==liveRoom.roundToken)return;
-        const p=liveRoom.players[payload.profileId] || (liveRoom.players[payload.profileId]={profileId:payload.profileId,name:payload.name,score:0,locked:false});
-        if(p.locked)return; // one locked result per QB per round
-        p.locked=true;
-        p.last=payload;
-        p.score=(p.score||0)+(payload.points||0);
-        renderHostLive();
-
-        const online=livePresencePlayers();
-        const allLocked=online.length>0 && online.every(x=>liveRoom.players[x.profileId]?.locked);
-        if(allLocked) hostRevealRound();
-      })
-      .subscribe(async(status,err)=>{
-        if(status==='SUBSCRIBED'){
-          $('hostRealtimeDot').classList.add('good');
-          $('hostRealtimeText').textContent='Live room connected';
-          try{await liveRealtimeChannel.track({role:'host',room:code,online_at:new Date().toISOString()})}catch(e){}
-          resolve();
-        }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){
-          $('hostRealtimeDot').classList.add('bad');
-          $('hostRealtimeText').textContent='Realtime connection failed';
-          reject(err||new Error(status));
-        }
-      });
-  });
-}
-
-$('createRoom').onclick=async()=>{
-  const liveQuestions=questions.filter(q=>q.status==='published'&&(q.availability==='live'||q.availability==='both'));
-  if(!liveQuestions.length){alert('No published Live or Both questions are available yet.');show('coachView');return}
-  await cleanupLiveChannel();
-
-  const code=liveCode();
-  const n=Math.min(+$('hostSnaps').value,liveQuestions.length);
-  const bank=$('hostOrder').value==='random'?shuffle(liveQuestions):[...liveQuestions];
-
-  liveRoom={
-    code,
-    items:bank.slice(0,n),
-    index:-1,
-    players:{},
-    roundOpen:false,
-    roundToken:null,
-    roundStartAt:null,
-    revealed:false
-  };
-
-  $('hostCode').value=code;
-  $('hostRoomCodeDisplay').textContent=code;
-  $('hostSetupFields').classList.add('hidden');
-  $('hostRoomPanel').classList.remove('hidden');
-  $('hostRoundStatus').textContent='Connecting live room…';
-
-  try{
-    await subscribeHostRoom(code);
-    $('hostRoundStatus').textContent='Room open. Waiting for QBs to join.';
-    renderHostLive();
-  }catch(e){
-    $('hostRoundStatus').textContent='Could not connect live room. Refresh and try again.';
-  }
-};
-
-$('hostNext').onclick=async()=>{
-  if(!liveRoom||liveRoom.roundOpen)return;
-  if(liveRoom.index>=liveRoom.items.length-1){
-    await hostBroadcast('game-over',{scoreboard:Object.values(liveRoom.players).map(p=>({profileId:p.profileId,name:p.name,score:p.score||0}))});
-    $('hostRoundStatus').textContent='Game complete.';
-    $('hostNext').disabled=true;
-    return;
-  }
-
-  liveRoom.index++;
-  liveRoom.revealed=false;
-  liveRoom.roundOpen=true;
-  liveRoom.roundToken=crypto.randomUUID?.() || `${Date.now()}-${Math.random()}`;
-  Object.values(liveRoom.players).forEach(p=>{p.locked=false;p.last=null});
-
-  const q=liveRoom.items[liveRoom.index];
-  // Give every phone enough time to receive the event before the official clock begins.
-  const startsAt=Date.now()+900;
-  liveRoom.roundStartAt=startsAt;
-
-  $('hostNext').disabled=true;
-  $('hostRevealBtn').disabled=false;
-  $('hostNext').textContent='Round Active';
-  renderHostLive();
-
-  await hostBroadcast('start-snap',{
-    index:liveRoom.index,
-    total:liveRoom.items.length,
-    roundToken:liveRoom.roundToken,
-    startsAt,
-    question:{
-      id:q.id,name:q.name,image:q.image,targets:q.targets,opponent:q.opponent||''
-    }
-  });
-
-  if(liveRoundTimer)clearInterval(liveRoundTimer);
-  liveRoundTimer=setInterval(()=>{
-    const left=Math.max(0,6-(Date.now()-startsAt)/1000);
-    if(liveRoom?.roundOpen){
-      const online=livePresencePlayers().length;
-      const locked=livePresencePlayers().filter(x=>liveRoom.players[x.profileId]?.locked).length;
-      $('hostRoundStatus').textContent=`Snap ${liveRoom.index+1} of ${liveRoom.items.length} · ${left.toFixed(1)}s · ${locked}/${online} locked`;
-    }
-    if(left<=0){clearInterval(liveRoundTimer);liveRoundTimer=null;hostRevealRound()}
-  },80);
-};
-
-async function hostRevealRound(){
-  if(!liveRoom||!liveRoom.roundOpen||liveRoom.revealed)return;
-  liveRoom.revealed=true;
-  liveRoom.roundOpen=false;
-  if(liveRoundTimer){clearInterval(liveRoundTimer);liveRoundTimer=null}
-
-  const q=liveRoom.items[liveRoom.index];
-  const board=Object.values(liveRoom.players)
-    .map(p=>({profileId:p.profileId,name:p.name,score:p.score||0,last:p.last||null}))
-    .sort((a,b)=>b.score-a.score);
-
-  await hostBroadcast('reveal',{
-    index:liveRoom.index,
-    roundToken:liveRoom.roundToken,
-    targets:q.targets,
-    scoreboard:board
-  });
-
-  $('hostRevealBtn').disabled=true;
-  $('hostRoundStatus').textContent=`Snap ${liveRoom.index+1} revealed. Scoreboard sent to all QBs.`;
-  $('hostNext').disabled=false;
-  $('hostNext').textContent=liveRoom.index>=liveRoom.items.length-1?'Finish Game':'Release Next Snap';
-  renderHostLive();
-}
-
-$('hostRevealBtn').onclick=()=>hostRevealRound();
-
-$('endLiveGame').onclick=async()=>{
-  if(liveRoom){
-    await hostBroadcast('game-over',{scoreboard:Object.values(liveRoom.players).map(p=>({profileId:p.profileId,name:p.name,score:p.score||0}))});
-  }
-  await cleanupLiveChannel();
-  liveRoom=null;
-  $('hostRoomPanel').classList.add('hidden');
-  $('hostSetupFields').classList.remove('hidden');
-  $('hostNext').disabled=false;
-  $('hostNext').textContent='Release First Snap';
-};
-
-// ---------------- PLAYER SIDE ----------------
-
-function subscribePlayerRoom(code){
-  return new Promise((resolve,reject)=>{
-    liveRealtimeChannel=sb.channel(liveTopic(code),{
-      config:{broadcast:{self:false},presence:{key:`player-${livePlayer.profileId}`}}
-    });
-
-    liveRealtimeChannel
-      .on('broadcast',{event:'start-snap'},({payload})=>{
-        if(!payload||payload.room!==livePlayer.room)return;
-        startLivePlayerSnap(payload);
-      })
-      .on('broadcast',{event:'reveal'},({payload})=>{
-        if(!payload||payload.room!==livePlayer.room)return;
-        revealLivePlayerSnap(payload);
-      })
-      .on('broadcast',{event:'game-over'},({payload})=>{
-        if(!payload||payload.room!==livePlayer.room)return;
-        showLivePlayerFinal(payload.scoreboard||[]);
-      })
-      .subscribe(async(status,err)=>{
-        if(status==='SUBSCRIBED'){
-          $('joinRealtimeDot').classList.add('good');
-          $('joinRealtimeText').textContent='Connected to live room';
-          await liveRealtimeChannel.track({
-            role:'player',
-            room:code,
-            profileId:livePlayer.profileId,
-            name:livePlayer.name,
-            online_at:new Date().toISOString()
-          });
-          await liveRealtimeChannel.send({
-            type:'broadcast',event:'player-ready',
-            payload:{room:code,profileId:livePlayer.profileId,name:livePlayer.name}
-          });
-          resolve();
-        }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){
-          $('joinRealtimeDot').classList.add('bad');
-          $('joinRealtimeText').textContent='Could not connect';
-          reject(err||new Error(status));
-        }
-      });
-  });
-}
-
-$('joinRoom').onclick=async()=>{
-  const room=$('joinCode').value.trim().toUpperCase();
-  const name=$('joinName').value.trim();
-  if(!room||!name||!selectedJoinQB){alert('Enter the room code and select your QB profile.');return}
-
-  await cleanupLiveChannel();
-  livePlayer={room,name,profileId:selectedJoinQB};
-  $('joinedRoomCode').textContent=room;
-  $('joinedQBName').textContent=name;
-  $('joinSetup').classList.add('hidden');
-  $('joinLobby').classList.remove('hidden');
-
-  try{
-    await subscribePlayerRoom(room);
-    $('joinStatus').innerHTML='<div class="resultBanner good">READY</div><p class="muted">Connected. Waiting for coach to release the first snap.</p>';
-  }catch(e){
-    $('joinStatus').innerHTML='<div class="resultBanner bad">CONNECTION FAILED</div><p class="muted">Check the room code and try again.</p>';
-  }
-};
-
-async function playerBroadcastAnswer(payload){
-  if(!liveRealtimeChannel)return;
-  await liveRealtimeChannel.send({
-    type:'broadcast',
-    event:'answer',
-    payload:{room:livePlayer.room,profileId:livePlayer.profileId,name:livePlayer.name,...payload}
-  });
-}
-
-async function enterLivePlayerFullscreen(){
-  try{
-    if(document.documentElement.requestFullscreen && !document.fullscreenElement){
-      await document.documentElement.requestFullscreen({navigationUI:'hide'});
-    }
-  }catch(e){}
-  try{
-    if(screen.orientation?.lock)await screen.orientation.lock('landscape');
-  }catch(e){}
-}
-
-function startLivePlayerSnap(msg){
-  if(livePlayerTimer){clearInterval(livePlayerTimer);livePlayerTimer=null}
-
-  $('joinLobby').classList.add('hidden');
-  $('livePlayerScoreboard').classList.add('hidden');
-  $('livePlayerGame').classList.remove('hidden');
-
-  const q=msg.question;
-  livePlayerState={
-    question:q,
-    roundToken:msg.roundToken,
-    startsAt:+msg.startsAt,
-    picks:[],
-    locked:false,
-    correct:0,
-    points:0,
-    elapsed:6
-  };
-
-  $('liveJoinLabel').textContent=`Snap ${msg.index+1} of ${msg.total} · ${q.name}`;
-  $('liveJoinPickStatus').textContent='Pick 2 defenders';
-  $('liveJoinTimer').textContent='6.0';
-  $('liveLockedOverlay').classList.add('hidden');
-  $('liveRevealOverlay').classList.add('hidden');
-
-  const wrap=$('liveJoinImage');
-  wrap.innerHTML='';
-  const img=document.createElement('img');
-  img.src=q.image;
-  wrap.appendChild(img);
-
-  enterLivePlayerFullscreen();
-
-  const tick=()=>{
-    if(!livePlayerState||livePlayerState.locked)return;
-    const elapsed=Math.max(0,(Date.now()-livePlayerState.startsAt)/1000);
-    if(elapsed<0){
-      $('liveJoinTimer').textContent='READY';
-      return;
-    }
-    const left=Math.max(0,6-elapsed);
-    $('liveJoinTimer').textContent=left.toFixed(1);
-    if(left<=0) lockLivePlayerAnswer();
-  };
-  tick();
-  livePlayerTimer=setInterval(tick,40);
-}
-
-$('liveJoinImage').addEventListener('click',e=>{
-  const s=livePlayerState;
-  if(!s||s.locked||Date.now()<s.startsAt||s.picks.length>=2)return;
-
-  const rect=e.currentTarget.getBoundingClientRect();
-  const p={x:(e.clientX-rect.left)/rect.width,y:(e.clientY-rect.top)/rect.height};
-  s.picks.push(p);
-  addMarker(e.currentTarget,p,s.picks.length,'pick');
-  $('liveJoinPickStatus').textContent=s.picks.length===1?'Pick 1 more':'Locked';
-
-  if(s.picks.length===2)lockLivePlayerAnswer();
-});
-
-async function lockLivePlayerAnswer(){
-  const s=livePlayerState;
-  if(!s||s.locked)return;
-  s.locked=true;
-  if(livePlayerTimer){clearInterval(livePlayerTimer);livePlayerTimer=null}
-
-  s.elapsed=Math.max(0,Math.min(6,(Date.now()-s.startsAt)/1000));
-  s.correct=matchPicks(s.picks,s.question.targets);
-  s.points=s.correct===2?scoreByTime(1000,s.elapsed):s.correct===1?scoreByTime(500,s.elapsed):0;
-
-  $('liveJoinTimer').textContent='LOCK';
-  $('liveLockedTime').textContent=`${s.picks.length}/2 selected · ${s.elapsed.toFixed(2)}s`;
-  $('liveLockedOverlay').classList.remove('hidden');
-
-  // Do NOT reveal correct defenders here. Everyone waits for host.
-  await playerBroadcastAnswer({
-    roundToken:s.roundToken,
-    questionId:s.question.id,
-    correct:s.correct,
-    points:s.points,
-    time:s.elapsed,
-    picks:s.picks
-  });
-}
-
-function revealLivePlayerSnap(msg){
-  const s=livePlayerState;
-  if(!s||msg.roundToken!==s.roundToken)return;
-
-  if(!s.locked){
-    // Six seconds may have ended on host before this client's last tick.
-    s.locked=true;
-    s.elapsed=6;
-    s.correct=matchPicks(s.picks,s.question.targets);
-    s.points=0;
-  }
-  if(livePlayerTimer){clearInterval(livePlayerTimer);livePlayerTimer=null}
-
-  const wrap=$('liveJoinImage');
-  (msg.targets||s.question.targets).forEach((t,i)=>addMarker(wrap,t,i+1,'correct'));
-
-  const resultText=s.correct===2?'BOTH CORRECT':s.correct===1?'ONE CORRECT':'INCORRECT';
-  $('liveRevealOverlay').innerHTML=`<strong>${resultText}</strong><span>+${s.points}</span><small>${s.elapsed.toFixed(2)}s</small>`;
-  $('liveRevealOverlay').classList.remove('hidden');
-  $('liveLockedOverlay').classList.add('hidden');
-
-  // Keep correct defenders visible briefly, then everyone gets scoreboard.
-  setTimeout(()=>showLivePlayerBoard(msg.scoreboard||[]),1200);
-}
-
-function showLivePlayerBoard(board){
-  $('livePlayerGame').classList.add('hidden');
-  $('livePlayerScoreboard').classList.remove('hidden');
-
-  const mine=board.find(x=>x.profileId===livePlayer.profileId);
-  const last=mine?.last;
-  $('livePlayerRoundTitle').textContent=last?`${last.correct}/2 correct · ${last.time.toFixed(2)}s`:'Round Complete';
-
-  const rb=$('livePlayerResult');
-  if(last){
-    rb.textContent=`+${last.points} · Total ${mine.score}`;
-    rb.className='resultBanner '+(last.correct===2?'good':last.correct===1?'partial':'bad');
-  }else{
-    rb.textContent='No answer recorded';
-    rb.className='resultBanner bad';
-  }
-
-  $('livePlayerBoard').innerHTML=board.length?board.map((p,i)=>`
-    <div class="row">
-      <div class="rank">${i+1}</div>
-      <div><strong>${escapeHtml(p.name)}</strong>${p.profileId===livePlayer.profileId?'<div class="fine">YOU</div>':''}</div>
-      <div class="pts">${p.score||0}</div>
-    </div>`).join(''):'<p class="muted">Waiting for scores.</p>';
-
-  $('joinLobby').classList.add('hidden');
-}
-
-function showLivePlayerFinal(board){
-  $('livePlayerGame').classList.add('hidden');
-  $('livePlayerScoreboard').classList.remove('hidden');
-  $('livePlayerRoundTitle').textContent='Game Complete';
-  $('livePlayerResult').textContent='Final Scoreboard';
-  $('livePlayerResult').className='resultBanner good';
-  $('livePlayerBoard').innerHTML=(board||[]).sort((a,b)=>b.score-a.score).map((p,i)=>`
-    <div class="row"><div class="rank">${i+1}</div><div><strong>${escapeHtml(p.name)}</strong></div><div class="pts">${p.score||0}</div></div>
-  `).join('');
-}
-
-// Clean up realtime if page exits.
+function subscribePlayerRoom(code){return new Promise((resolve,reject)=>{liveRealtimeChannel=sb.channel(liveTopic(code),{config:{broadcast:{self:false},presence:{key:`player-${livePlayer.profileId}`}}});liveRealtimeChannel.on('broadcast',{event:'start-snap'},({payload})=>{if(payload?.room===livePlayer.room)startLivePlayerSnap(payload)}).on('broadcast',{event:'reveal'},({payload})=>{if(payload?.room===livePlayer.room)revealLivePlayerSnap(payload)}).on('broadcast',{event:'game-over'},({payload})=>{if(payload?.room===livePlayer.room)showLivePlayerFinal(payload.scoreboard||[])}).subscribe(async(status,err)=>{if(status==='SUBSCRIBED'){$('joinRealtimeDot').classList.add('good');$('joinRealtimeText').textContent='Connected to live room';await liveRealtimeChannel.track({role:'player',room:code,profileId:livePlayer.profileId,name:livePlayer.name,online_at:new Date().toISOString()});await liveRealtimeChannel.send({type:'broadcast',event:'player-ready',payload:{room:code,profileId:livePlayer.profileId,name:livePlayer.name}});resolve()}else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){reject(err||new Error(status))}})})}
+$('joinRoom').onclick=async()=>{const room=$('joinCode').value.trim().toUpperCase(),name=$('joinName').value.trim();if(!room||!name||!selectedJoinQB){alert('Enter the room code and select your QB profile.');return}await cleanupLiveChannel();livePlayer={room,name,profileId:selectedJoinQB};$('joinedRoomCode').textContent=room;$('joinedQBName').textContent=name;$('joinSetup').classList.add('hidden');$('joinLobby').classList.remove('hidden');await subscribePlayerRoom(room);$('joinStatus').innerHTML='<div class="resultBanner good">READY</div><p class="muted">Connected. Waiting for coach to release the first snap.</p>'}
+async function playerBroadcastAnswer(payload){if(liveRealtimeChannel)await liveRealtimeChannel.send({type:'broadcast',event:'answer',payload:{room:livePlayer.room,profileId:livePlayer.profileId,name:livePlayer.name,...payload}})}
+function startLivePlayerSnap(msg){if(livePlayerTimer)clearInterval(livePlayerTimer);$('joinLobby').classList.add('hidden');$('livePlayerScoreboard').classList.add('hidden');$('livePlayerGame').classList.remove('hidden');const q=msg.question;livePlayerState={question:q,roundToken:msg.roundToken,startsAt:+msg.startsAt,picks:[],locked:false,correct:0,points:0,elapsed:6};$('liveJoinLabel').textContent=`Snap ${msg.index+1} of ${msg.total} · ${q.name}`;$('liveJoinPickStatus').textContent='Pick 2 defenders';$('liveJoinTimer').textContent='6.0';$('liveLockedOverlay').classList.add('hidden');$('liveRevealOverlay').classList.add('hidden');const w=$('liveJoinImage');w.innerHTML='';const img=document.createElement('img');img.src=q.image;w.appendChild(img);livePlayerTimer=setInterval(()=>{if(!livePlayerState||livePlayerState.locked)return;const elapsed=(Date.now()-livePlayerState.startsAt)/1000;if(elapsed<0){$('liveJoinTimer').textContent='READY';return}const left=Math.max(0,6-elapsed);$('liveJoinTimer').textContent=left.toFixed(1);if(left<=0)lockLivePlayerAnswer()},40)}
+$('liveJoinImage').addEventListener('click',e=>{const s=livePlayerState;if(!s||s.locked||Date.now()<s.startsAt||s.picks.length>=2)return;const r=e.currentTarget.getBoundingClientRect(),p={x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};s.picks.push(p);addMarker(e.currentTarget,p,s.picks.length,'pick');$('liveJoinPickStatus').textContent=s.picks.length===1?'Pick 1 more':'Locked';if(s.picks.length===2)lockLivePlayerAnswer()})
+async function lockLivePlayerAnswer(){const s=livePlayerState;if(!s||s.locked)return;s.locked=true;if(livePlayerTimer)clearInterval(livePlayerTimer);s.elapsed=Math.max(0,Math.min(6,(Date.now()-s.startsAt)/1000));s.correct=matchPicks(s.picks,s.question.targets);s.points=s.correct===2?scoreByTime(1000,s.elapsed):s.correct===1?scoreByTime(500,s.elapsed):0;$('liveJoinTimer').textContent='LOCK';$('liveLockedTime').textContent=`${s.picks.length}/2 selected · ${s.elapsed.toFixed(2)}s`;$('liveLockedOverlay').classList.remove('hidden');await Promise.all([playerBroadcastAnswer({roundToken:s.roundToken,questionId:s.question.id,correct:s.correct,points:s.points,time:s.elapsed,picks:s.picks}),saveProfileResult({profileId:livePlayer.profileId,questionId:s.question.id,mode:'live',correct:s.correct,time:s.elapsed,points:s.points,roomCode:livePlayer.room})])}
+function revealLivePlayerSnap(msg){const s=livePlayerState;if(!s||msg.roundToken!==s.roundToken)return;if(livePlayerTimer)clearInterval(livePlayerTimer);const w=$('liveJoinImage');(msg.targets||s.question.targets).forEach((t,i)=>addMarker(w,t,i+1,'correct'));const txt=s.correct===2?'BOTH CORRECT':s.correct===1?'ONE CORRECT':'INCORRECT';$('liveRevealOverlay').innerHTML=`<strong>${txt}</strong><span>+${s.points}</span>`;$('liveRevealOverlay').classList.remove('hidden');setTimeout(()=>showLivePlayerBoard(msg.scoreboard||[]),1200)}
+function showLivePlayerBoard(board){$('livePlayerGame').classList.add('hidden');$('livePlayerScoreboard').classList.remove('hidden');const mine=board.find(x=>x.profileId===livePlayer.profileId),last=mine?.last;$('livePlayerRoundTitle').textContent=last?`${last.correct}/2 correct · ${last.time.toFixed(2)}s`:'Round Complete';$('livePlayerResult').textContent=last?`+${last.points} · Total ${mine.score}`:'No answer recorded';$('livePlayerBoard').innerHTML=board.map((p,i)=>`<div class="row"><div class="rank">${i+1}</div><div><strong>${escapeHtml(p.name)}</strong></div><div class="pts">${p.score||0}</div></div>`).join('')}
+function showLivePlayerFinal(board){$('livePlayerGame').classList.add('hidden');$('livePlayerScoreboard').classList.remove('hidden');$('livePlayerRoundTitle').textContent='Game Complete';$('livePlayerResult').textContent='Final Scoreboard';$('livePlayerBoard').innerHTML=(board||[]).sort((a,b)=>b.score-a.score).map((p,i)=>`<div class="row"><div class="rank">${i+1}</div><div><strong>${escapeHtml(p.name)}</strong></div><div class="pts">${p.score||0}</div></div>`).join('')}
 window.addEventListener('beforeunload',()=>{try{cleanupLiveChannel()}catch(e){}});
 
 
 renderQuestionList();updateBankCount();renderBoard($('scoreboard'));renderCoachImage();renderProfiles();
+loadProfileStatsFromSupabase();
 refreshAuth();
 sb.auth.onAuthStateChange((event,session)=>{
   if(event==='PASSWORD_RECOVERY'){
@@ -1894,7 +1202,7 @@ if(location.hash.includes('type=recovery') || new URLSearchParams(location.searc
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible') loadQuestionsFromSupabase();
 });
-window.addEventListener('focus',()=>loadQuestionsFromSupabase());
+window.addEventListener('focus',()=>{loadQuestionsFromSupabase();loadProfileStatsFromSupabase();});
 
 
 </script>

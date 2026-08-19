@@ -1,19 +1,15 @@
-ULM QB Conflict Defender — LIVE REALTIME v6.1
+ULM QB Conflict Defender v6.4
 
-THIS IS THE MULTI-DEVICE BUILD.
+Demo / Staff profiles now:
+Taylor Dupuis — Assistant Coach - Quarterbacks
+Brayden Burkhardt — Assistant Director of Football Operations / Assistant Quarterbacks Coach
+Tommy Denison — Analyst
 
-How to identify it after deployment:
-- Header shows LIVE REALTIME v6.1.
-- Host screen title is Host Live Game.
-- Host setup includes Question order.
-- Button says Create Live Room.
-- After creation, host sees a Realtime connected indicator.
-- Host controls include Reveal Answer and End Game.
+Changes:
+- Added Brayden Burkhardt with ULM staff photo.
+- Removed staff bios. Cards show only name/title plus cloud performance stats.
+- Tommy title changed to Analyst.
+- Taylor and Brayden use their official 2026 ULM website titles.
+- Brayden added to Supabase cloud-stat permissions.
 
-If you instead see:
-- Host QB Room
-- Practice mode
-- Release Next Snap immediately
-then the OLD same-device prototype is deployed.
-
-Replace the site's current index.html with this index.html and redeploy.
+Run SUPABASE_SETUP.sql once before testing Brayden's profile.
