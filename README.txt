@@ -1,17 +1,18 @@
-ULM QB Conflict Defender v7.6
+ULM QB Conflict Defender v7.7
 
-LOOK COUNTDOWN
-- Removed the opaque/dark countdown box.
-- Countdown is now transparent over the film.
-- Players and formation remain visible beneath 3 / 2 / 1 / 0.
-- Countdown fades progressively:
-  3 = most visible
-  2 = lighter
-  1 = lighter again
-  0 / GO = nearly transparent
-- Overlay disappears completely as the answer window opens.
-- Applies to both Practice and Live QB Room.
-- Timing/scoring logic is unchanged.
+LANDSCAPE START FIX
+- Portrait keeps the full Rotate to Landscape instruction card.
+- As soon as landscape is detected, the card collapses to a compact horizontal layout.
+- Landscape layout contains:
+  roundel
+  Landscape Ready
+  green landscape-detected confirmation
+  large START button
+- Rotation instructions and 1/2/3 steps disappear once landscape is detected.
+- Compact card fits inside short iPhone landscape viewports without scrolling.
+- START remains fully visible above browser/safe-area controls.
+- The QB must still tap START, so the first LOOK countdown never begins unexpectedly.
 
-All v7.5 features remain intact.
+All v7.6 transparent LOOK countdown, mobile depth chart, player intel, PIN access, cloud stats, Practice and Live Game behavior remain intact.
+
 No Supabase SQL changes required.

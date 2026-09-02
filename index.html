@@ -896,6 +896,78 @@ body.game-mode #finalScreen #goCoach{
 .lookCountdown.look1{opacity:.34!important}
 .lookCountdown.look0{opacity:.20!important;transform:translate(-50%,-50%) scale(.96)!important}
 
+
+/* =========================================================
+   v7.7 LANDSCAPE READY COLLAPSE
+   Portrait = full instructions
+   Landscape = compact horizontal START panel
+   ========================================================= */
+@media (orientation:landscape) and (max-height:620px){
+  .landscapeReadyModal{
+    padding:
+      max(8px,env(safe-area-inset-top))
+      max(14px,env(safe-area-inset-right))
+      max(8px,env(safe-area-inset-bottom))
+      max(14px,env(safe-area-inset-left))!important;
+    align-items:center!important;
+  }
+  .landscapeReadyCard{
+    width:min(760px,92vw)!important;
+    max-height:calc(100dvh - 20px)!important;
+    padding:14px 16px!important;
+    border-radius:16px!important;
+    display:grid!important;
+    grid-template-columns:72px minmax(0,1fr) minmax(170px,220px)!important;
+    grid-template-rows:auto auto!important;
+    column-gap:15px!important;
+    row-gap:4px!important;
+    align-items:center!important;
+    text-align:left!important;
+    overflow:hidden!important;
+  }
+  .landscapeReadyRoundel{
+    grid-column:1!important;
+    grid-row:1 / span 2!important;
+    width:68px!important;
+    height:68px!important;
+    margin:0!important;
+  }
+  .landscapeReadyCard .heroTitle,
+  .landscapeReadyCard .landscapeRotateIcon,
+  .landscapeReadyCard p,
+  .landscapeReadySteps{
+    display:none!important;
+  }
+  .landscapeReadyCard h2{
+    grid-column:2!important;
+    grid-row:1!important;
+    margin:0!important;
+    font-size:22px!important;
+    line-height:1.05!important;
+  }
+  .landscapeOrientationStatus{
+    grid-column:2!important;
+    grid-row:2!important;
+    margin:0!important;
+    font-size:11px!important;
+    line-height:1.2!important;
+  }
+  #landscapeReadyContinue{
+    grid-column:3!important;
+    grid-row:1 / span 2!important;
+    align-self:stretch!important;
+    min-height:64px!important;
+    height:auto!important;
+    margin:0!important;
+    border-radius:13px!important;
+    font-size:18px!important;
+    font-weight:1000!important;
+  }
+  .landscapeOrientationStatus:not(.good){
+    color:#ffd36b!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -954,7 +1026,7 @@ body.game-mode #finalScreen #goCoach{
         <div class="brandWords">
           <div class="brandTitle">Conflict Defender</div>
           <div class="brandSub">Pre-Snap Recognition</div>
-          <div class="brandDivision">ULM Football Intelligence</div><div class="liveVersionBadge">Transparent Look v7.6</div>
+          <div class="brandDivision">ULM Football Intelligence</div><div class="liveVersionBadge">Landscape Start v7.7</div>
         </div>
       </div>
     </div>
@@ -2110,12 +2182,16 @@ let landscapeReadyResolve=null;
 
 function updateLandscapeReadyStatus(){
   const el=$('landscapeOrientationStatus');
+  const btn=$('landscapeReadyContinue');
+  const title=$('landscapeReadyModal')?.querySelector('h2');
   if(!el)return;
   const landscape=window.matchMedia?.('(orientation: landscape)')?.matches || window.innerWidth>window.innerHeight;
   el.classList.toggle('good',!!landscape);
   el.textContent=landscape
     ? '✓ Landscape detected. You are ready.'
     : 'Rotate your phone sideways, then continue.';
+  if(title)title.textContent=landscape?'Landscape Ready':'Rotate to Landscape';
+  if(btn)btn.textContent=landscape?'START':'I\'M READY · CONTINUE';
 }
 function confirmLandscapeBeforeFirstSnap(){
   return new Promise(resolve=>{
