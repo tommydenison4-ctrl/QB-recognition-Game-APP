@@ -645,10 +645,89 @@ body.game-mode #finalScreen #goCoach{
   .libraryHeader{align-items:flex-start;flex-direction:column}
 }
 
+
+/* =========================================================
+   PLAYER PROFILE PIN ACCESS v7.2
+   ========================================================= */
+.playerAccessBar{
+  display:flex;align-items:center;gap:9px;
+  margin:7px 0 10px;padding:9px 11px;border-radius:10px;
+  background:#0e1318;border:1px solid #2a3139;color:#a7b0bc;
+  font-size:11px;font-weight:850;
+}
+.playerAccessBar .accessDot{width:8px;height:8px;border-radius:50%;background:#7c8794;box-shadow:0 0 0 4px rgba(124,135,148,.08)}
+.playerAccessBar.signedIn{border-color:rgba(50,199,102,.3);color:#82eba0}
+.playerAccessBar.signedIn .accessDot{background:#32c766;box-shadow:0 0 0 4px rgba(50,199,102,.1)}
+.playerAccessBar button{
+  margin-left:auto;border:0;background:none;color:var(--ulm-gold);font-size:10px;font-weight:1000;cursor:pointer;text-transform:uppercase
+}
+.profileCard.lockedProfile:before{
+  content:'🔒';position:absolute;left:9px;top:9px;z-index:6;
+  width:29px;height:29px;display:grid;place-items:center;border-radius:50%;
+  background:rgba(5,8,12,.78);border:1px solid rgba(255,255,255,.18);font-size:12px
+}
+.profileCard.activeAccess{box-shadow:0 0 0 2px rgba(50,199,102,.34),0 0 22px rgba(50,199,102,.11)!important}
+.accessBadge{
+  position:absolute;left:8px;bottom:8px;z-index:6;padding:4px 7px;border-radius:999px;
+  background:rgba(14,78,37,.88);border:1px solid rgba(93,232,132,.45);
+  color:#96f2ae;font-size:7px;font-weight:1000;letter-spacing:.09em;text-transform:uppercase
+}
+.pinModal{
+  position:fixed;inset:0;z-index:30000;display:grid;place-items:center;
+  padding:20px;background:rgba(0,0,0,.78);backdrop-filter:blur(10px)
+}
+.pinCard{
+  position:relative;width:min(430px,100%);padding:23px;border-radius:20px;
+  background:linear-gradient(145deg,#151a20,#090d11);border:1px solid #363e47;
+  box-shadow:0 30px 90px rgba(0,0,0,.55)
+}
+.pinClose{position:absolute;right:13px;top:10px;border:0;background:none;color:#89939f;font-size:28px;cursor:pointer}
+.pinProfileHead{display:flex;align-items:center;gap:12px;margin:14px 0 20px;padding:10px;border-radius:13px;background:#10151a;border:1px solid #2c333b}
+.pinProfileHead img{width:62px;height:62px;object-fit:cover;object-position:top;border-radius:11px;background:#111}
+.pinProfileHead strong{display:block;font-size:17px}.pinProfileHead span{display:block;color:var(--ulm-gold);font-size:11px;font-weight:850;margin-top:3px}
+.pinInput{
+  width:100%;height:61px;margin:8px 0;padding:0 16px;text-align:center;
+  border-radius:12px;border:1px solid #3b444e;background:#090d11;color:#fff;
+  font-size:26px;font-weight:1000;letter-spacing:.28em
+}
+.pinInput:focus{outline:none;border-color:var(--ulm-gold);box-shadow:0 0 0 3px rgba(246,185,39,.10)}
+.pinAction{width:100%;height:52px;margin-top:7px}
+.pinMessage{min-height:19px;margin-top:9px;color:#ff9c9c;font-size:11px;font-weight:800}
+.pinChangeBadge{display:inline-flex;padding:5px 8px;border-radius:999px;background:rgba(246,185,39,.12);border:1px solid rgba(246,185,39,.35);color:var(--ulm-gold);font-size:8px;font-weight:1000;letter-spacing:.12em}
+@media(max-width:600px){.pinCard{padding:19px}.pinInput{height:58px}}
+
 </style>
 </head>
 <body>
 <div class="rotatePrompt" id="rotatePrompt"><div class="rotatePromptInner"><div class="rotateIcon">↻</div><strong>Rotate to Landscape</strong><span>The film will fill the screen when your phone is sideways.</span></div></div>
+<div class="pinModal hidden" id="pinModal">
+  <div class="pinCard">
+    <button class="pinClose" id="pinCloseBtn" type="button">×</button>
+    <div class="heroTitle">PLAYER ACCESS</div>
+    <div class="pinProfileHead">
+      <img id="pinProfilePhoto" alt="">
+      <div><strong id="pinProfileName">QB</strong><span id="pinProfileNumber">Quarterback</span></div>
+    </div>
+
+    <div id="pinLoginPanel">
+      <h2>Enter Your PIN</h2>
+      <p class="muted">Your first PIN is your jersey number repeated to six digits. You will be required to change it after your first sign-in.</p>
+      <input class="pinInput" id="playerPinInput" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="••••••">
+      <button class="btn primary pinAction" id="playerPinLoginBtn" type="button">Sign In</button>
+      <div class="pinMessage" id="playerPinMessage"></div>
+    </div>
+
+    <div id="pinChangePanel" class="hidden">
+      <div class="pinChangeBadge">FIRST SIGN-IN</div>
+      <h2>Create a New PIN</h2>
+      <p class="muted">Choose a new 6-digit PIN. Your jersey-number PIN will stop working immediately.</p>
+      <input class="pinInput" id="newPlayerPin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="New 6-digit PIN">
+      <input class="pinInput" id="confirmPlayerPin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Confirm PIN">
+      <button class="btn primary pinAction" id="changePlayerPinBtn" type="button">Save New PIN</button>
+      <div class="pinMessage" id="changePlayerPinMessage"></div>
+    </div>
+  </div>
+</div>
 <div class="app">
   <div class="topbar">
     <div class="brand">
@@ -775,7 +854,9 @@ body.game-mode #finalScreen #goCoach{
       <p class="muted">Enter the room code, select your QB profile, then wait for the coach to release the snap.</p>
       <div id="joinSetup">
         <div class="field"><label>Room code</label><input id="joinCode" maxlength="6" placeholder="QB27" /></div>
-        <div class="field"><label>Select your QB profile</label><div class="profileGrid" id="joinProfiles"></div><input id="joinName" class="hidden" /></div>
+        <div class="field"><label>Select your QB profile</label>
+          <div class="playerAccessBar" id="joinAccessBar"><span class="accessDot"></span><span>Choose your profile to sign in.</span></div>
+          <div class="profileGrid" id="joinProfiles"></div><input id="joinName" class="hidden" /></div>
         <button class="btn primary livePrimaryBtn" id="joinRoom">Join Room</button>
       </div>
       <div id="joinLobby" class="hidden">
@@ -826,6 +907,7 @@ body.game-mode #finalScreen #goCoach{
         <div class="cloudMeta" id="practiceCloudMeta">Supabase · ULM Conflict Bank</div>
       </div>
       <div class="sectionLabel">Select Your QB Profile</div>
+      <div class="playerAccessBar" id="playerAccessBar"><span class="accessDot"></span><span>Choose your profile to sign in.</span></div>
       <div class="profileGrid" id="practiceProfiles"></div><div class="profileCloudNote">Cloud stats · all devices</div><input id="playerName" class="hidden" /><div id="practiceSelected"></div>
       <div class="practiceSettings">
         <div class="field"><label>Practice Mode</label><select id="practiceMode"><option value="timed" selected>⏱ Timed – 3s Look + 7.5s Answer</option><option value="learn">Learn – No Timer</option></select></div>
@@ -914,6 +996,175 @@ const QB_PROFILES=[
  {id:'tommy-denison',name:'Tommy Denison',number:'STAFF',classYear:'Analyst',height:'',weight:'',hometown:'',photo:'https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/yorku.sidearmsports.com/images/2021/9/16/COACH_Denison_Tommy.jpg?width=300',demo:true}
 ];
 
+const PLAYER_SESSION_STORE='qb_player_session_v1';
+let playerSession=null;
+let pendingProfileLogin=null;
+
+function sessionQB(){
+  return playerSession?QB_PROFILES.find(q=>q.id===playerSession.profileId):null;
+}
+function isRealQB(qb){return qb && !qb.demo}
+
+function renderPlayerAccess(){
+  const qb=sessionQB();
+  for(const id of ['playerAccessBar','joinAccessBar']){
+    const el=$(id);if(!el)continue;
+    if(qb){
+      el.classList.add('signedIn');
+      el.innerHTML=`<span class="accessDot"></span><span>Signed in as <strong>${escapeHtml(qb.name)}</strong> · profile locked to this device</span><button type="button" data-player-signout>Sign Out</button>`;
+    }else{
+      el.classList.remove('signedIn');
+      el.innerHTML='<span class="accessDot"></span><span>Choose your QB profile to sign in.</span>';
+    }
+  }
+}
+
+function completeProfileSelection(qb,mode){
+  if(mode==='practice'){
+    selectedPracticeQB=qb.id;
+    $('playerName').value=qb.name;
+    $('practiceSelected').innerHTML=`<div class="selectedQB"><img src="${qb.photo}"><div><strong>#${qb.number} ${qb.name}</strong><span class="muted">${qb.demo?'Staff demo profile':'Signed-in profile'} · results save to Supabase</span></div></div>`;
+  }else if(mode==='join'){
+    selectedJoinQB=qb.id;
+    $('joinName').value=qb.name;
+  }
+  renderProfiles();
+  renderPlayerAccess();
+}
+
+function clearPlayerSelections(){
+  selectedPracticeQB=null;selectedJoinQB=null;
+  if($('playerName'))$('playerName').value='';
+  if($('joinName'))$('joinName').value='';
+  if($('practiceSelected'))$('practiceSelected').innerHTML='';
+  renderProfiles();renderPlayerAccess();
+}
+
+function openPinLogin(qb,mode){
+  pendingProfileLogin={qb,mode};
+  $('pinProfilePhoto').src=qb.photo;
+  $('pinProfileName').textContent=qb.name;
+  $('pinProfileNumber').textContent=`QB #${qb.number}`;
+  $('playerPinInput').value='';
+  $('playerPinMessage').textContent='';
+  $('pinLoginPanel').classList.remove('hidden');
+  $('pinChangePanel').classList.add('hidden');
+  $('pinModal').classList.remove('hidden');
+  setTimeout(()=>$('playerPinInput').focus(),100);
+}
+function closePinModal(){
+  $('pinModal').classList.add('hidden');
+  pendingProfileLogin=null;
+}
+$('pinCloseBtn').onclick=()=>closePinModal();
+
+async function restorePlayerSession(){
+  const saved=JSON.parse(localStorage.getItem(PLAYER_SESSION_STORE)||'null');
+  if(!saved?.token)return;
+  try{
+    const {data,error}=await sb.rpc('qb_validate_player_session',{p_token:saved.token});
+    if(error)throw error;
+    const row=Array.isArray(data)?data[0]:data;
+    if(!row?.profile_id)throw new Error('Expired player session');
+    playerSession={
+      token:saved.token,
+      profileId:row.profile_id,
+      displayName:row.display_name,
+      mustChange:!!row.must_change
+    };
+    localStorage.setItem(PLAYER_SESSION_STORE,JSON.stringify(playerSession));
+    const qb=sessionQB();
+    if(qb){
+      completeProfileSelection(qb,'practice');
+      selectedJoinQB=qb.id;$('joinName').value=qb.name;
+    }
+  }catch(e){
+    localStorage.removeItem(PLAYER_SESSION_STORE);
+    playerSession=null;
+  }
+  renderPlayerAccess();renderProfiles();
+}
+
+async function playerLogin(){
+  if(!pendingProfileLogin)return;
+  const pin=$('playerPinInput').value.trim();
+  if(!/^\d{6}$/.test(pin)){$('playerPinMessage').textContent='Enter your 6-digit PIN.';return}
+  const btn=$('playerPinLoginBtn');btn.disabled=true;btn.textContent='Checking…';
+  try{
+    const {data,error}=await sb.rpc('qb_player_login',{p_profile_id:pendingProfileLogin.qb.id,p_pin:pin});
+    if(error)throw error;
+    const row=Array.isArray(data)?data[0]:data;
+    if(!row?.session_token){$('playerPinMessage').textContent='Incorrect PIN.';return}
+    playerSession={
+      token:row.session_token,
+      profileId:row.profile_id,
+      displayName:row.display_name,
+      mustChange:!!row.must_change
+    };
+    localStorage.setItem(PLAYER_SESSION_STORE,JSON.stringify(playerSession));
+    if(playerSession.mustChange){
+      $('pinLoginPanel').classList.add('hidden');
+      $('pinChangePanel').classList.remove('hidden');
+      $('newPlayerPin').value='';$('confirmPlayerPin').value='';$('changePlayerPinMessage').textContent='';
+      setTimeout(()=>$('newPlayerPin').focus(),100);
+    }else{
+      const pending={...pendingProfileLogin};
+      closePinModal();
+      completeProfileSelection(pending.qb,pending.mode);
+      // lock same identity into both modes
+      selectedPracticeQB=pending.qb.id;selectedJoinQB=pending.qb.id;
+      $('playerName').value=pending.qb.name;$('joinName').value=pending.qb.name;
+      renderProfiles();renderPlayerAccess();
+    }
+  }catch(e){
+    $('playerPinMessage').textContent=e.message||String(e);
+  }finally{
+    btn.disabled=false;btn.textContent='Sign In';
+  }
+}
+$('playerPinLoginBtn').onclick=()=>playerLogin();
+$('playerPinInput').addEventListener('keydown',e=>{if(e.key==='Enter')playerLogin()});
+
+async function changePlayerPin(){
+  const p1=$('newPlayerPin').value.trim(),p2=$('confirmPlayerPin').value.trim();
+  if(!/^\d{6}$/.test(p1)){$('changePlayerPinMessage').textContent='Choose exactly 6 digits.';return}
+  if(p1!==p2){$('changePlayerPinMessage').textContent='The two PINs do not match.';return}
+  const btn=$('changePlayerPinBtn');btn.disabled=true;btn.textContent='Saving…';
+  try{
+    const {data,error}=await sb.rpc('qb_change_player_pin',{p_token:playerSession.token,p_new_pin:p1});
+    if(error)throw error;
+    if(data!==true)throw new Error('PIN change failed.');
+    playerSession.mustChange=false;
+    localStorage.setItem(PLAYER_SESSION_STORE,JSON.stringify(playerSession));
+    const qb=sessionQB();
+    const mode=pendingProfileLogin?.mode||'practice';
+    closePinModal();
+    if(qb){
+      completeProfileSelection(qb,mode);
+      selectedPracticeQB=qb.id;selectedJoinQB=qb.id;
+      $('playerName').value=qb.name;$('joinName').value=qb.name;
+      renderProfiles();renderPlayerAccess();
+    }
+  }catch(e){
+    $('changePlayerPinMessage').textContent=e.message||String(e);
+  }finally{
+    btn.disabled=false;btn.textContent='Save New PIN';
+  }
+}
+$('changePlayerPinBtn').onclick=()=>changePlayerPin();
+
+async function playerSignOut(){
+  if(playerSession?.token){
+    try{await sb.rpc('qb_player_logout',{p_token:playerSession.token})}catch(e){}
+  }
+  playerSession=null;localStorage.removeItem(PLAYER_SESSION_STORE);
+  clearPlayerSelections();
+}
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-player-signout]'))playerSignOut();
+});
+
+
 let selectedPracticeQB=null, selectedJoinQB=null;
 let cloudProfileStats={};
 let profileStatsLoading=false;
@@ -958,44 +1209,82 @@ async function saveProfileResult({profileId,questionId,mode,correct,time,points,
   if(!profileId)return false;
 
   const status=$('cloudSaveStatus'),dot=$('cloudSaveDot'),txt=$('cloudSaveText');
-  if(status){status.className='cloudSaveStatus saving';}
-  if(dot){dot.classList.remove('good','bad');}
+  if(status)status.className='cloudSaveStatus saving';
+  if(dot)dot.classList.remove('good','bad');
   if(txt)txt.textContent='Saving result to Supabase…';
 
-  const payload={
-    qb_profile_id:profileId,
-    question_id:questionId==null?null:String(questionId),
+  const qb=QB_PROFILES.find(q=>q.id===profileId);
+  const clean={
+    questionId:questionId==null?null:String(questionId),
     mode,
-    correct_count:Math.max(0,Math.min(2,Number(correct)||0)),
-    response_time:Math.max(0,Math.min(ANSWER_SECONDS,Number(time)||0)),
+    correct:Math.max(0,Math.min(2,Number(correct)||0)),
+    time:Math.max(0,Math.min(ANSWER_SECONDS,Number(time)||0)),
     points:Math.max(0,Number(points)||0),
-    room_code:roomCode||null,
-    game_score:gameScore==null?null:Number(gameScore)||0,
-    played_at:new Date().toISOString()
+    roomCode:roomCode||null,
+    gameScore:gameScore==null?null:Number(gameScore)||0
   };
 
-  const {error}=await sb.from('qb_conflict_results').insert(payload);
+  let error=null;
+
+  if(qb && !qb.demo){
+    // Player rows can only be written through the server-side session RPC.
+    if(!playerSession?.token || playerSession.profileId!==profileId){
+      error=new Error('Player profile is not authenticated on this device.');
+    }else{
+      const res=await sb.rpc('qb_save_player_result',{
+        p_token:playerSession.token,
+        p_question_id:clean.questionId,
+        p_mode:clean.mode,
+        p_correct_count:clean.correct,
+        p_response_time:clean.time,
+        p_points:clean.points,
+        p_room_code:clean.roomCode,
+        p_game_score:clean.gameScore
+      });
+      error=res.error;
+      if(!error && res.data!==true)error=new Error('Player session expired. Sign in again.');
+    }
+  }else{
+    // Staff/demo results remain available only through authenticated coach Supabase sessions.
+    if(!currentUser){
+      error=new Error('Coach sign-in required for staff/demo result.');
+    }else{
+      const res=await sb.from('qb_conflict_results').insert({
+        qb_profile_id:profileId,
+        question_id:clean.questionId,
+        mode:clean.mode,
+        correct_count:clean.correct,
+        response_time:clean.time,
+        points:clean.points,
+        room_code:clean.roomCode,
+        game_score:clean.gameScore,
+        played_at:new Date().toISOString()
+      });
+      error=res.error;
+    }
+  }
+
   if(error){
     console.error('Supabase result save failed:',error);
     if(status)status.className='cloudSaveStatus error';
     if(dot)dot.classList.add('bad');
-    if(txt)txt.textContent='Cloud save failed: '+error.message;
+    if(txt)txt.textContent='Cloud save failed: '+(error.message||String(error));
     return false;
   }
 
   const x=cloudProfileStats[profileId]||(cloudProfileStats[profileId]=emptyProfileStat());
   x.snaps++;
-  if(payload.correct_count===2)x.both++;
-  if(payload.correct_count===1)x.partial++;
-  x.totalTime+=payload.response_time;
-  x.points+=payload.points;
+  if(clean.correct===2)x.both++;
+  if(clean.correct===1)x.partial++;
+  x.totalTime+=clean.time;
+  x.points+=clean.points;
   if(mode==='live')x.liveSnaps++;
   if(mode==='practice')x.practiceSnaps++;
   renderProfiles();
 
   if(status)status.className='cloudSaveStatus saved';
   if(dot)dot.classList.add('good');
-  if(txt)txt.textContent='Saved to cloud · available on all devices';
+  if(txt)txt.textContent='Saved to cloud · profile verified';
   return true;
 }
 
@@ -1006,8 +1295,11 @@ function pCard(qb,stats,mode,selected){
     ? `${qb.classYear}`
     : `QB &nbsp;•&nbsp; ${qb.classYear}<br>${qb.height.replace('-',"'")}" &nbsp;•&nbsp; ${qb.weight} lbs`;
   const demoBadge=qb.demo?'<span class="demoBadge">DEMO / STAFF</span>':'';
-  return `<button class="profileCard ${selected?'selected':''} ${qb.demo?'demoProfile':''}" data-profile="${qb.id}" data-mode="${mode}">
-    ${demoBadge}
+  const sessionMatch=playerSession?.profileId===qb.id;
+  const locked=!qb.demo&&!sessionMatch;
+  const accessBadge=sessionMatch?'<span class="accessBadge">SIGNED IN</span>':'';
+  return `<button class="profileCard ${selected?'selected':''} ${qb.demo?'demoProfile':''} ${locked?'lockedProfile':''} ${sessionMatch?'activeAccess':''}" data-profile="${qb.id}" data-mode="${mode}">
+    ${demoBadge}${accessBadge}
     <img class="profilePhoto" src="${qb.photo}" alt="${qb.name}">
     <span class="profileCheck">✓</span>
     <div class="profileBody">
@@ -1044,16 +1336,27 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-profile]');
   if(!b)return;
   const id=b.dataset.profile,mode=b.dataset.mode,qb=QB_PROFILES.find(q=>q.id===id);
-  if(mode==='practice'){
-    selectedPracticeQB=id;
-    $('playerName').value=qb.name;
-    $('practiceSelected').innerHTML=`<div class="selectedQB"><img src="${qb.photo}"><div><strong>#${qb.number} ${qb.name}</strong><span class="muted">Profile selected · results save to Supabase</span></div></div>`;
-    renderProfiles();
-  }else if(mode==='join'){
-    selectedJoinQB=id;
-    $('joinName').value=qb.name;
-    renderProfiles();
+  if(!qb||mode==='view')return;
+
+  // Staff/demo profiles use the existing authenticated coach account.
+  if(qb.demo){
+    if(!currentUser){alert('Coach sign-in is required to use a staff/demo profile.');return}
+    completeProfileSelection(qb,mode);
+    return;
   }
+
+  // A device already signed into a QB cannot jump into another QB's profile.
+  if(playerSession){
+    if(playerSession.profileId!==qb.id){
+      const signed=sessionQB();
+      alert(`This device is signed in as ${signed?.name||'another QB'}. Sign out before changing profiles.`);
+      return;
+    }
+    completeProfileSelection(qb,mode);
+    return;
+  }
+
+  openPinLogin(qb,mode);
 });
 
 
@@ -1209,7 +1512,8 @@ function updateBankCount(){
 function show(view){['coachView','hostView','joinView','profilesView','playView','recoveryView'].forEach(v=>$(v).classList.add('hidden'));$(view).classList.remove('hidden');$('coachTab').classList.toggle('primary',view==='coachView');$('playTab').classList.toggle('primary',view==='playView')}
 $('coachTab').onclick=()=>show('coachView'); $('hostTab').onclick=()=>show('hostView'); $('joinTab').onclick=()=>show('joinView');
 $('profilesTab').onclick=()=>{show('profilesView');loadProfileStatsFromSupabase();
-loadCloudBoard();};
+loadCloudBoard();
+restorePlayerSession();};
 $('playTab').onclick=()=>{show('playView');loadQuestionsFromSupabase();loadProfileStatsFromSupabase();};
 $('practiceTab').onclick=()=>{show('playView');renderProfiles();updateBankCount();loadQuestionsFromSupabase();loadProfileStatsFromSupabase();};
 $('goCoach').onclick=async()=>{await exitLandscapeGameMode();show('coachView');};
@@ -1503,7 +1807,12 @@ function showLookOverlay(id,value,go=false){
 function hideLookOverlay(id){$(id)?.classList.add('hidden')}
 
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
-$('startGame').onclick=async()=>{const availableQuestions=questions.filter(q=>q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='practice'||q.availability==='both'));if(!availableQuestions.length){alert('No published practice questions are available yet.');show('coachView');return}const name=$('playerName').value.trim()||'QB';let n=$('snapCount').value==='all'?availableQuestions.length:+$('snapCount').value;const pool=$('randomizeOrder')?.checked?shuffle(availableQuestions):[...availableQuestions];game={name,items:pool.slice(0,Math.min(n,availableQuestions.length)),index:0,score:0,both:0,partial:0,streak:0,bestStreak:0,times:[],picks:[],startedAt:0,done:false,timerId:null,lastPoints:0,lastResult:'',lastTime:6};$('startScreen').classList.add('hidden');$('finalScreen').classList.add('hidden');$('scoreScreen').classList.add('hidden');$('gameScreen').classList.remove('hidden');await enterLandscapeGameMode();loadSnap()};
+$('startGame').onclick=async()=>{
+  if(!selectedPracticeQB){alert('Select and sign in to your profile first.');return}
+  const selectedQB=QB_PROFILES.find(q=>q.id===selectedPracticeQB);
+  if(selectedQB&&!selectedQB.demo&&playerSession?.profileId!==selectedPracticeQB){alert('Sign in to this QB profile before starting practice.');return}
+  if(selectedQB?.demo&&!currentUser){alert('Coach sign-in required for staff/demo practice.');return}
+  const availableQuestions=questions.filter(q=>q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='practice'||q.availability==='both'));if(!availableQuestions.length){alert('No published practice questions are available yet.');show('coachView');return}const name=$('playerName').value.trim()||'QB';let n=$('snapCount').value==='all'?availableQuestions.length:+$('snapCount').value;const pool=$('randomizeOrder')?.checked?shuffle(availableQuestions):[...availableQuestions];game={name,items:pool.slice(0,Math.min(n,availableQuestions.length)),index:0,score:0,both:0,partial:0,streak:0,bestStreak:0,times:[],picks:[],startedAt:0,done:false,timerId:null,lastPoints:0,lastResult:'',lastTime:6};$('startScreen').classList.add('hidden');$('finalScreen').classList.add('hidden');$('scoreScreen').classList.add('hidden');$('gameScreen').classList.remove('hidden');await enterLandscapeGameMode();loadSnap()};
 function loadSnap(){
   clearInterval(game.timerId);
   game.picks=[];game.done=false;game.phase='loading';game.answerStartedAt=0;
@@ -1726,7 +2035,12 @@ async function hostRevealRound(){if(!liveRoom||!liveRoom.roundOpen||liveRoom.rev
 $('hostRevealBtn').onclick=()=>hostRevealRound();$('endLiveGame').onclick=async()=>{if(liveRoom)await hostBroadcast('game-over',{scoreboard:Object.values(liveRoom.players).map(p=>({profileId:p.profileId,name:p.name,score:p.score||0}))});await cleanupLiveChannel();liveRoom=null;$('hostRoomPanel').classList.add('hidden');$('hostSetupFields').classList.remove('hidden')}
 
 function subscribePlayerRoom(code){return new Promise((resolve,reject)=>{liveRealtimeChannel=sb.channel(liveTopic(code),{config:{broadcast:{self:false},presence:{key:`player-${livePlayer.profileId}`}}});liveRealtimeChannel.on('broadcast',{event:'start-snap'},({payload})=>{if(payload?.room===livePlayer.room)startLivePlayerSnap(payload)}).on('broadcast',{event:'reveal'},({payload})=>{if(payload?.room===livePlayer.room)revealLivePlayerSnap(payload)}).on('broadcast',{event:'game-over'},({payload})=>{if(payload?.room===livePlayer.room)showLivePlayerFinal(payload.scoreboard||[])}).subscribe(async(status,err)=>{if(status==='SUBSCRIBED'){$('joinRealtimeDot').classList.add('good');$('joinRealtimeText').textContent='Connected to live room';await liveRealtimeChannel.track({role:'player',room:code,profileId:livePlayer.profileId,name:livePlayer.name,online_at:new Date().toISOString()});await liveRealtimeChannel.send({type:'broadcast',event:'player-ready',payload:{room:code,profileId:livePlayer.profileId,name:livePlayer.name}});resolve()}else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){reject(err||new Error(status))}})})}
-$('joinRoom').onclick=async()=>{const room=$('joinCode').value.trim().toUpperCase(),name=$('joinName').value.trim();if(!room||!name||!selectedJoinQB){alert('Enter the room code and select your QB profile.');return}await cleanupLiveChannel();livePlayer={room,name,profileId:selectedJoinQB};$('joinedRoomCode').textContent=room;$('joinedQBName').textContent=name;$('joinSetup').classList.add('hidden');$('joinLobby').classList.remove('hidden');await subscribePlayerRoom(room);$('joinStatus').innerHTML='<div class="resultBanner good">READY</div><p class="muted">Connected. Waiting for coach to release the first snap.</p>'}
+$('joinRoom').onclick=async()=>{
+  if(!selectedJoinQB){alert('Select and sign in to your profile first.');return}
+  const selectedQB=QB_PROFILES.find(q=>q.id===selectedJoinQB);
+  if(selectedQB&&!selectedQB.demo&&playerSession?.profileId!==selectedJoinQB){alert('Sign in to this QB profile before joining.');return}
+  if(selectedQB?.demo&&!currentUser){alert('Coach sign-in required for staff/demo join.');return}
+  const room=$('joinCode').value.trim().toUpperCase(),name=$('joinName').value.trim();if(!room||!name||!selectedJoinQB){alert('Enter the room code and select your QB profile.');return}await cleanupLiveChannel();livePlayer={room,name,profileId:selectedJoinQB};$('joinedRoomCode').textContent=room;$('joinedQBName').textContent=name;$('joinSetup').classList.add('hidden');$('joinLobby').classList.remove('hidden');await subscribePlayerRoom(room);$('joinStatus').innerHTML='<div class="resultBanner good">READY</div><p class="muted">Connected. Waiting for coach to release the first snap.</p>'}
 async function playerBroadcastAnswer(payload){if(liveRealtimeChannel)await liveRealtimeChannel.send({type:'broadcast',event:'answer',payload:{room:livePlayer.room,profileId:livePlayer.profileId,name:livePlayer.name,...payload}})}
 function startLivePlayerSnap(msg){
   if(livePlayerTimer)clearInterval(livePlayerTimer);
