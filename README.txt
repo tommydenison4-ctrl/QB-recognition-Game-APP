@@ -1,17 +1,17 @@
-ULM QB Conflict Defender v7.4
+ULM QB Conflict Defender v7.6
 
-MOBILE DEFENSIVE DEPTH CHART
-- Removed the desktop-width depth chart behavior on phones.
-- Each position becomes its own mobile block.
-- 1st / 2nd / Additional defenders stack vertically.
-- Full player names and profile status wrap instead of clipping.
-- Desktop/tablet depth chart remains a table.
+LOOK COUNTDOWN
+- Removed the opaque/dark countdown box.
+- Countdown is now transparent over the film.
+- Players and formation remain visible beneath 3 / 2 / 1 / 0.
+- Countdown fades progressively:
+  3 = most visible
+  2 = lighter
+  1 = lighter again
+  0 / GO = nearly transparent
+- Overlay disappears completely as the answer window opens.
+- Applies to both Practice and Live QB Room.
+- Timing/scoring logic is unchanged.
 
-LANDSCAPE REMINDER
-- Before Start Practice begins the first snap, QB gets a full-screen Rotate to Landscape reminder.
-- Before Join Game connects the QB to the room, the same reminder appears.
-- Reminder detects whether the phone is currently landscape.
-- The 3-second LOOK countdown cannot start behind the reminder.
-- Existing automatic fullscreen/orientation behavior remains in place once Practice gameplay starts.
-
-No new Supabase SQL required.
+All v7.5 features remain intact.
+No Supabase SQL changes required.

@@ -838,6 +838,64 @@ body.game-mode #finalScreen #goCoach{
 .landscapeOrientationStatus{font-size:10px;font-weight:850;color:#9ba6b2;margin:8px 0 12px}
 .landscapeOrientationStatus.good{color:#79e99a}
 
+
+/* =========================================================
+   v7.5 DEFENSE TAB SWITCH FIX
+   ========================================================= */
+.defIntelToolbar .btn.activeTab{
+  background:var(--ulm-gold)!important;
+  color:#090b0e!important;
+  border-color:var(--ulm-gold)!important;
+}
+#defPlayersPanel,#defDepthPanel{width:100%}
+
+
+/* =========================================================
+   v7.6 TRANSPARENT LOOK COUNTDOWN
+   Keep the formation/players visible underneath the timer.
+   ========================================================= */
+.lookCountdown{
+  min-width:0!important;
+  width:auto!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+  transition:opacity .32s ease, transform .22s ease!important;
+  pointer-events:none!important;
+  text-shadow:0 2px 12px rgba(0,0,0,.9),0 0 24px rgba(0,0,0,.7);
+}
+.lookCountdown span{
+  font-size:clamp(10px,2vw,16px)!important;
+  letter-spacing:.28em!important;
+  color:rgba(246,185,39,.78)!important;
+  text-shadow:0 2px 8px rgba(0,0,0,.95)!important;
+}
+.lookCountdown strong{
+  font-size:clamp(64px,15vw,128px)!important;
+  font-weight:1000!important;
+  color:rgba(255,255,255,.38)!important;
+  -webkit-text-stroke:1px rgba(255,255,255,.12);
+  text-shadow:0 3px 18px rgba(0,0,0,.85)!important;
+  margin:4px 0!important;
+}
+.lookCountdown small{
+  color:rgba(255,255,255,.66)!important;
+  font-size:clamp(9px,1.4vw,12px)!important;
+  text-shadow:0 2px 8px rgba(0,0,0,.95)!important;
+}
+.lookCountdown.go span,
+.lookCountdown.go strong{
+  color:rgba(121,233,154,.34)!important;
+}
+.lookCountdown.look3{opacity:.58!important}
+.lookCountdown.look2{opacity:.46!important}
+.lookCountdown.look1{opacity:.34!important}
+.lookCountdown.look0{opacity:.20!important;transform:translate(-50%,-50%) scale(.96)!important}
+
 </style>
 </head>
 <body>
@@ -896,7 +954,7 @@ body.game-mode #finalScreen #goCoach{
         <div class="brandWords">
           <div class="brandTitle">Conflict Defender</div>
           <div class="brandSub">Pre-Snap Recognition</div>
-          <div class="brandDivision">ULM Football Intelligence</div><div class="liveVersionBadge">Mobile Defense v7.4</div>
+          <div class="brandDivision">ULM Football Intelligence</div><div class="liveVersionBadge">Transparent Look v7.6</div>
         </div>
       </div>
     </div>
@@ -1062,8 +1120,8 @@ body.game-mode #finalScreen #goCoach{
         <div class="defIntelLive">WEEK 1 · DEFENSE</div>
       </div>
       <div class="defIntelToolbar">
-        <button class="btn primary" id="defDepthBtn">Depth Chart</button>
-        <button class="btn" id="defPlayersBtn">All Defenders</button>
+        <button class="btn primary activeTab" id="defDepthBtn" type="button">Depth Chart</button>
+        <button class="btn" id="defPlayersBtn" type="button">All Defenders</button>
         <input id="defPlayerSearch" placeholder="Search player, number or position">
       </div>
       <div id="defDepthPanel">
@@ -1647,12 +1705,43 @@ $('signInBtn').onclick=async()=>{
   await refreshAuth();
 };
 $('signOutBtn').onclick=async()=>{await sb.auth.signOut();currentUser=null;questions=[];
-$('defDepthBtn').onclick=()=>{$('defDepthPanel').classList.remove('hidden');$('defPlayersPanel').classList.add('hidden');$('defDepthBtn').classList.add('primary');$('defPlayersBtn').classList.remove('primary')};
-$('defPlayersBtn').onclick=()=>{$('defDepthPanel').classList.add('hidden');$('defPlayersPanel').classList.remove('hidden');$('defPlayersBtn').classList.add('primary');$('defDepthBtn').classList.remove('primary');renderDefensePlayers()};
 $('defPlayerSearch').addEventListener('input',renderDefensePlayers);
 document.querySelectorAll('[data-def-group]').forEach(b=>b.onclick=()=>{qbDefGroup=b.dataset.defGroup;document.querySelectorAll('[data-def-group]').forEach(x=>x.classList.toggle('active',x===b));renderDefensePlayers()});
 $('defProfileOverlay').addEventListener('click',closeDefenseProfile);
 renderDefenseDepth();
+
+
+function showDefenseDepth(){
+  const depth=$('defDepthPanel'),players=$('defPlayersPanel');
+  if(depth)depth.classList.remove('hidden');
+  if(players)players.classList.add('hidden');
+  $('defDepthBtn')?.classList.add('activeTab');
+  $('defPlayersBtn')?.classList.remove('activeTab');
+  renderDefenseDepth();
+}
+async function showDefensePlayers(){
+  const depth=$('defDepthPanel'),players=$('defPlayersPanel');
+  if(depth)depth.classList.add('hidden');
+  if(players)players.classList.remove('hidden');
+  $('defPlayersBtn')?.classList.add('activeTab');
+  $('defDepthBtn')?.classList.remove('activeTab');
+  if(!qbDefLoaded)await loadQBDefenseRoster();
+  renderDefensePlayers();
+}
+document.addEventListener('click',async e=>{
+  const depthBtn=e.target.closest('#defDepthBtn');
+  if(depthBtn){
+    e.preventDefault();
+    showDefenseDepth();
+    return;
+  }
+  const playersBtn=e.target.closest('#defPlayersBtn');
+  if(playersBtn){
+    e.preventDefault();
+    await showDefensePlayers();
+    return;
+  }
+});
 
 renderQuestionList();updateBankCount();await refreshAuth()};
 
@@ -1749,7 +1838,7 @@ $('profilesTab').onclick=()=>{show('profilesView');loadProfileStatsFromSupabase(
 loadCloudBoard();
 restorePlayerSession();};
 $('playTab').onclick=()=>{show('playView');loadQuestionsFromSupabase();loadProfileStatsFromSupabase();};
-$('defenseTab').onclick=()=>{show('defenseView');loadQBDefenseRoster();};
+$('defenseTab').onclick=()=>{show('defenseView');showDefenseDepth();loadQBDefenseRoster();};
 $('practiceTab').onclick=()=>{show('playView');renderProfiles();updateBankCount();loadQuestionsFromSupabase();loadProfileStatsFromSupabase();};
 $('goCoach').onclick=async()=>{await exitLandscapeGameMode();show('coachView');};
 $('viewMyStats').onclick=()=>{show('profilesView');loadProfileStatsFromSupabase();};
@@ -2058,8 +2147,10 @@ async function exitLandscapeGameMode(){
 
 function showLookOverlay(id,value,go=false){
   const el=$(id);if(!el)return;
-  el.classList.remove('hidden','go');
+  el.classList.remove('hidden','go','look3','look2','look1','look0');
   if(go)el.classList.add('go');
+  const fadeClass=value>=3?'look3':value===2?'look2':value===1?'look1':'look0';
+  el.classList.add(fadeClass);
   const strong=el.querySelector('strong');
   const span=el.querySelector('span');
   const small=el.querySelector('small');
@@ -2118,7 +2209,7 @@ function loadSnap(){
         game.answerStartedAt=game.startedAt+(LOOK_SECONDS*1000);
         $('pickStatus').textContent='Pick 2 defenders';
         showLookOverlay('lookCountdown',0,true);
-        setTimeout(()=>hideLookOverlay('lookCountdown'),250);
+        setTimeout(()=>hideLookOverlay('lookCountdown'),180);
       }
       const answerElapsed=Math.max(0,totalElapsed-LOOK_SECONDS);
       const left=Math.max(0,ANSWER_SECONDS-answerElapsed);
@@ -2322,7 +2413,7 @@ function startLivePlayerSnap(msg){
   $('liveLockedOverlay').classList.add('hidden');$('liveRevealOverlay').classList.add('hidden');
   const w=$('liveJoinImage');w.innerHTML='';const img=document.createElement('img');img.src=q.image;w.appendChild(img);
 
-  livePlayerTimer=setInterval(()=>{if(!livePlayerState||livePlayerState.locked)return;const totalElapsed=(Date.now()-livePlayerState.startsAt)/1000;if(totalElapsed<0){$('liveJoinTimer').textContent='READY';return}if(totalElapsed<LOOK_SECONDS){livePlayerState.phase='look';const countdown=Math.max(1,Math.ceil(LOOK_SECONDS-totalElapsed));showLookOverlay('liveLookCountdown',countdown,false);$('liveJoinTimer').textContent='LOOK';$('liveJoinPickStatus').textContent='Study formation';return}if(livePlayerState.phase!=='answer'){livePlayerState.phase='answer';livePlayerState.answerStartsAt=livePlayerState.startsAt+(LOOK_SECONDS*1000);showLookOverlay('liveLookCountdown',0,true);setTimeout(()=>hideLookOverlay('liveLookCountdown'),250);$('liveJoinPickStatus').textContent='Pick 2 defenders'}const answerElapsed=Math.max(0,totalElapsed-LOOK_SECONDS),left=Math.max(0,ANSWER_SECONDS-answerElapsed);$('liveJoinTimer').textContent=left.toFixed(1);if(answerElapsed>=ANSWER_SECONDS)lockLivePlayerAnswer()},40);
+  livePlayerTimer=setInterval(()=>{if(!livePlayerState||livePlayerState.locked)return;const totalElapsed=(Date.now()-livePlayerState.startsAt)/1000;if(totalElapsed<0){$('liveJoinTimer').textContent='READY';return}if(totalElapsed<LOOK_SECONDS){livePlayerState.phase='look';const countdown=Math.max(1,Math.ceil(LOOK_SECONDS-totalElapsed));showLookOverlay('liveLookCountdown',countdown,false);$('liveJoinTimer').textContent='LOOK';$('liveJoinPickStatus').textContent='Study formation';return}if(livePlayerState.phase!=='answer'){livePlayerState.phase='answer';livePlayerState.answerStartsAt=livePlayerState.startsAt+(LOOK_SECONDS*1000);showLookOverlay('liveLookCountdown',0,true);setTimeout(()=>hideLookOverlay('liveLookCountdown'),180);$('liveJoinPickStatus').textContent='Pick 2 defenders'}const answerElapsed=Math.max(0,totalElapsed-LOOK_SECONDS),left=Math.max(0,ANSWER_SECONDS-answerElapsed);$('liveJoinTimer').textContent=left.toFixed(1);if(answerElapsed>=ANSWER_SECONDS)lockLivePlayerAnswer()},40);
 }
 
 $('liveJoinImage').addEventListener('click',e=>{
