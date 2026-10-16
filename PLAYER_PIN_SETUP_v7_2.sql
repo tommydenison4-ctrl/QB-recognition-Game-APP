@@ -78,7 +78,7 @@ begin
   if not found then return; end if;
   if crypt(p_pin,a.pin_hash)<>a.pin_hash then return; end if;
 
-  delete from public.qb_player_sessions where expires_at<=now();
+  delete from public.qb_player_sessions as expired where expired.expires_at<=now();
 
   t:=encode(gen_random_bytes(32),'hex');
   exp:=now()+interval '30 days';
@@ -105,9 +105,9 @@ security definer
 set search_path=public,extensions
 as $$
 begin
-  update public.qb_player_sessions
+  update public.qb_player_sessions as active_session
   set last_seen_at=now()
-  where session_token=p_token and expires_at>now();
+  where active_session.session_token=p_token and active_session.expires_at>now();
 
   return query
   select a.profile_id,a.display_name,a.must_change,s.expires_at
