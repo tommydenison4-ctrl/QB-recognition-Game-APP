@@ -1155,7 +1155,7 @@ body.game-mode #finalScreen #goCoach{
         <div class="lookCountdown liveLookCountdown hidden" id="liveLookCountdown"><span>LOOK</span><strong>3</strong><small>Study the formation</small></div>
         <div class="liveHud liveHudLeft"><span class="miniULM">ULM</span><span id="liveJoinLabel">Snap 1</span></div>
         <div class="liveHud liveHudCenter" id="liveJoinTimer">LOOK 3.0</div>
-        <button type="button" class="liveHud liveHudRight" id="liveJoinPickStatus">Pick 2 defenders</button>
+        <div class="liveHud liveHudRight" id="liveJoinPickStatus">Pick 2 defenders</div>
         <div class="liveLockedOverlay hidden" id="liveLockedOverlay"><strong>LOCKED</strong><span id="liveLockedTime">—</span></div>
         <div class="liveRevealOverlay hidden" id="liveRevealOverlay"></div>
       </div>
@@ -1247,7 +1247,7 @@ body.game-mode #finalScreen #goCoach{
       <div class="grid">
         <div class="card">
           <div class="gameBrandStrip"><span class="miniULM">ULM</span><span>QB Conflict Recognition</span></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px"><strong id="playLabel">Snap 1</strong><button type="button" class="pill" id="pickStatus">Pick 2 defenders</button></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px"><strong id="playLabel">Snap 1</strong><span class="pill" id="pickStatus">Pick 2 defenders</span></div>
           <div class="progress"><div id="progressBar"></div></div>
           <div class="timer" id="timer">LOOK 3.0</div>
           <div class="imageWrap" id="gameImageWrap"></div>
@@ -2356,17 +2356,15 @@ function loadSnap(){
 }
 
 $('gameImageWrap').addEventListener('click',e=>{
-  if(game.done)return;
+  if(game.done||game.picks.length>=2)return;
   const learn=$('practiceMode').value==='learn';
   if(!learn && game.phase!=='answer')return;
   const rect=e.currentTarget.getBoundingClientRect();
   toggleDefenderPick(game.picks,{x:(e.clientX-rect.left)/rect.width,y:(e.clientY-rect.top)/rect.height});
   renderPendingPicks(e.currentTarget,game.picks);
-  $('pickStatus').textContent=game.picks.length===0?'Pick 2 defenders':game.picks.length===1?'Pick 1 more defender':'2 selected · Lock answer';
+  $('pickStatus').textContent=game.picks.length===0?'Pick 2 defenders':game.picks.length===1?'Pick 1 more defender':'Locked';
+  if(game.picks.length===2)finishSnap();
 });
-
-$('pickStatus').onclick=()=>{if(!game.done&&game.picks.length===2)finishSnap()};
-$('liveJoinPickStatus').onclick=()=>{const st=livePlayerState;if(st&&!st.locked&&st.phase==='answer'&&st.picks.length===2)lockLivePlayerAnswer()};
 
 function toggleDefenderPick(picks,p){
   let nearest=-1,distance=.065;
@@ -2563,10 +2561,11 @@ function startLivePlayerSnap(msg){
 
 $('liveJoinImage').addEventListener('click',e=>{
   const st=livePlayerState;
-  if(!st||st.locked||st.phase!=='answer'||Date.now()<st.answerStartsAt )return;
+  if(!st||st.locked||st.phase!=='answer'||Date.now()<st.answerStartsAt||st.picks.length>=2)return;
   const r=e.currentTarget.getBoundingClientRect(),p={x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};
   toggleDefenderPick(st.picks,p);renderPendingPicks(e.currentTarget,st.picks);
-  $('liveJoinPickStatus').textContent=st.picks.length===0?'Pick 2 defenders':st.picks.length===1?'Pick 1 more':'2 selected · Lock answer';
+  $('liveJoinPickStatus').textContent=st.picks.length===0?'Pick 2 defenders':st.picks.length===1?'Pick 1 more':'Locked';
+  if(st.picks.length===2)lockLivePlayerAnswer();
 });
 
 async function lockLivePlayerAnswer(){
