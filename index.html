@@ -681,7 +681,6 @@ body.game-mode #finalScreen #goCoach{
   background:linear-gradient(145deg,#151a20,#090d11);border:1px solid #363e47;
   box-shadow:0 30px 90px rgba(0,0,0,.55)
 }
-.publicProfileDialog{color:var(--text);max-height:85dvh;overflow:auto}.publicProfileDialog::backdrop{background:rgba(0,0,0,.78)}
 .pinClose{position:absolute;right:13px;top:10px;border:0;background:none;color:#89939f;font-size:28px;cursor:pointer}
 .pinProfileHead{display:flex;align-items:center;gap:12px;margin:14px 0 20px;padding:10px;border-radius:13px;background:#10151a;border:1px solid #2c333b}
 .pinProfileHead img{width:62px;height:62px;object-fit:cover;object-position:top;border-radius:11px;background:#111}
@@ -1027,7 +1026,7 @@ body.game-mode #finalScreen #goCoach{
         <div class="brandWords">
           <div class="brandTitle">Conflict Defender</div>
           <div class="brandSub">Pre-Snap Recognition</div>
-          <div class="brandDivision">ULM Football Intelligence</div><div class="liveVersionBadge">Player Access Fix v7.8</div>
+          <div class="brandDivision">ULM Football Intelligence</div><div class="liveVersionBadge">Staff Practice Fix v7.9</div>
         </div>
       </div>
     </div>
@@ -1304,6 +1303,7 @@ const SUPABASE_PUBLISHABLE_KEY='sb_publishable_FtmUeN1QkLlkRIqCIdQ5gw_KDbEFy1H';
 const QB_IMAGE_BUCKET='qb-conflict-images';
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 let currentUser=null;
+let pendingStaffSelection=null;
 
 const STORE_Q='qb_conflict_questions_v1', STORE_L='qb_conflict_leaderboard_v1';
 const STORE_P='qb_conflict_profiles_v3';
@@ -1331,7 +1331,11 @@ function renderPlayerAccess(){
   const qb=sessionQB();
   for(const id of ['playerAccessBar','joinAccessBar']){
     const el=$(id);if(!el)continue;
-    if(qb){
+    const staff=currentUser&&QB_PROFILES.find(q=>q.demo&&q.id===(id==='playerAccessBar'?selectedPracticeQB:selectedJoinQB));
+    if(staff){
+      el.classList.add('signedIn');
+      el.innerHTML=`<span class="accessDot"></span><span>Coach signed in · Playing as <strong>${escapeHtml(staff.name)}</strong></span><button type="button" data-staff-account>Coach Account</button>`;
+    }else if(qb){
       el.classList.add('signedIn');
       el.innerHTML=`<span class="accessDot"></span><span>Signed in as <strong>${escapeHtml(qb.name)}</strong> · profile locked to this device</span><button type="button" data-player-signout>Sign Out</button>`;
     }else{
@@ -1342,6 +1346,7 @@ function renderPlayerAccess(){
 }
 
 function completeProfileSelection(qb,mode){
+  if(qb.demo&&!currentUser){selectStaffProfile(qb,mode);return}
   if(!qb.demo&&playerSession?.mustChange){openRequiredPinChange(qb,mode);return}
   if(mode==='practice'){
     selectedPracticeQB=qb.id;
@@ -1496,6 +1501,7 @@ async function playerSignOut(){
 }
 document.addEventListener('click',e=>{
   if(e.target.closest('[data-player-signout]'))playerSignOut();
+  if(e.target.closest('[data-staff-account]'))show('coachView');
 });
 
 
@@ -1632,7 +1638,7 @@ function pCard(qb,stats,mode,selected){
   const sessionMatch=playerSession?.profileId===qb.id;
   const locked=!qb.demo&&!sessionMatch;
   const accessBadge=sessionMatch?'<span class="accessBadge">SIGNED IN</span>':'';
-  return `<button class="profileCard ${selected?'selected':''} ${qb.demo?'demoProfile':''} ${locked?'lockedProfile':''} ${sessionMatch?'activeAccess':''}" data-profile="${qb.id}" data-mode="${qb.demo?'view':mode}" data-play-mode="${mode}">
+  return `<button class="profileCard ${selected?'selected':''} ${qb.demo?'demoProfile':''} ${locked?'lockedProfile':''} ${sessionMatch?'activeAccess':''}" data-profile="${qb.id}" data-mode="${mode}">
     ${demoBadge}${accessBadge}
     <img class="profilePhoto" src="${qb.photo}" alt="${qb.name}">
     <span class="profileCheck">✓</span>
@@ -1646,35 +1652,25 @@ function pCard(qb,stats,mode,selected){
     </div>
   </button>`;
 }
-const STAFF_BIOS={
-  'taylor-dupuis':{text:'Taylor Dupuis coaches the ULM quarterbacks. Before joining ULM, he worked on the UAB staff as a graduate assistant, offensive analyst and senior offensive analyst. He began coaching as a student assistant at South Alabama.',url:'https://ulmwarhawks.com/sports/football/roster/coaches/taylor-dupuis/4195'},
-  'brayden-burkhardt':{text:'Brayden Burkhardt serves as Assistant Director of Football Operations and Assistant Quarterbacks Coach at ULM.',url:'https://ulmwarhawks.com/sports/football/coaches/2026'},
-  'tommy-denison':{text:'Tommy Denison has coached offenses at York, Toronto and Saint Mary’s. As a quarterback at Queen’s, he won consecutive Hec Crighton Trophies in 2002 and 2003.',url:'https://yorkulions.ca/sports/football/roster/coaches/tommy-denison/1227'}
-};
-function openPublicProfile(qb,mode){
-  const dialog=document.createElement('dialog');
-  dialog.className='pinCard publicProfileDialog';dialog.setAttribute('aria-label',qb.name+' profile');
-  const title=document.createElement('h2');title.textContent=qb.name;
-  const role=document.createElement('p');role.textContent=qb.classYear;
-  const details=document.createElement('p');
-  details.textContent=qb.demo?'Staff profile · Coach sign-in is required to play or administer the app.':`QB #${qb.number} · ${qb.hometown}`;
-  const close=document.createElement('button');close.className='btn';close.textContent='Close';
-  close.onclick=()=>dialog.close();
-  dialog.append(title,role,details);
-  const bio=STAFF_BIOS[qb.id];
-  if(bio){
-    const text=document.createElement('p');text.textContent=bio.text;
-    const source=document.createElement('a');source.href=bio.url;source.target='_blank';source.rel='noopener noreferrer';source.textContent='Official biography / staff listing ↗';
-    dialog.append(text,source);
+function selectStaffProfile(qb,mode){
+  if(!qb?.demo||!['practice','join'].includes(mode))return;
+  if(!currentUser){
+    pendingStaffSelection={profileId:qb.id,mode};
+    show('coachView');
+    $('authMessage').textContent=`Sign in with your coach account to play as ${qb.name}. You will return to ${mode==='practice'?'Practice':'Join Game'} after signing in.`;
+    $('coachEmail').focus();
+    return;
   }
-  if(qb.demo&&currentUser&&['practice','join'].includes(mode)){
-    const use=document.createElement('button');use.className='btn primary';use.textContent=mode==='practice'?'Use for Practice':'Use for Live Game';
-    use.onclick=()=>{if(!currentUser)return;completeProfileSelection(qb,mode);dialog.close()};
-    dialog.append(use);
-  }
-  dialog.append(close);
-  dialog.addEventListener('close',()=>dialog.remove());
-  document.body.append(dialog);dialog.showModal();
+  pendingStaffSelection=null;
+  completeProfileSelection(qb,mode);
+  show(mode==='practice'?'playView':'joinView');
+}
+function resumeStaffSelection(){
+  if(!currentUser||!pendingStaffSelection)return;
+  const pending=pendingStaffSelection;
+  pendingStaffSelection=null;
+  const qb=QB_PROFILES.find(q=>q.id===pending.profileId&&q.demo);
+  if(qb)selectStaffProfile(qb,pending.mode);
 }
 function renderProfiles(){
   const all=getProfileStats();
@@ -1701,12 +1697,11 @@ document.addEventListener('click',e=>{
   if(!b)return;
   const id=b.dataset.profile,mode=b.dataset.mode,qb=QB_PROFILES.find(q=>q.id===id);
   if(!qb)return;
-  if(mode==='view'){openPublicProfile(qb,b.dataset.playMode);return;}
+  if(mode==='view')return;
 
   // Staff/demo profiles use the existing authenticated coach account.
   if(qb.demo){
-    if(!currentUser){alert('Coach sign-in is required to use a staff/demo profile.');return}
-    completeProfileSelection(qb,mode);
+    selectStaffProfile(qb,mode);
     return;
   }
 
@@ -1801,6 +1796,8 @@ async function refreshAuth(){
     $('authIdentity').textContent=currentUser?currentUser.email:'Not signed in';
     $('signInBtn').classList.toggle('hidden',!!currentUser);
     $('signOutBtn').classList.toggle('hidden',!currentUser);
+    resumeStaffSelection();
+    renderPlayerAccess();
 
     // Published questions must load for QBs even when they are not signed in.
     // RLS decides which rows an anonymous device may read.
@@ -2285,7 +2282,7 @@ $('startGame').onclick=async()=>{
   const selectedQB=QB_PROFILES.find(q=>q.id===selectedPracticeQB);
   if(selectedQB&&!selectedQB.demo&&playerSession?.profileId!==selectedPracticeQB){alert('Sign in to this QB profile before starting practice.');return}
   if(selectedQB&&!selectedQB.demo&&playerSession?.mustChange){openRequiredPinChange(selectedQB,'practice');return}
-  if(selectedQB?.demo&&!currentUser){alert('Coach sign-in required for staff/demo practice.');return}
+  if(selectedQB?.demo&&!currentUser){selectStaffProfile(selectedQB,'practice');return}
   await confirmLandscapeBeforeFirstSnap();
   const availableQuestions=questions.filter(q=>q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='practice'||q.availability==='both'));if(!availableQuestions.length){alert('No published practice questions are available yet.');show('coachView');return}const name=$('playerName').value.trim()||'QB';let n=$('snapCount').value==='all'?availableQuestions.length:+$('snapCount').value;const pool=$('randomizeOrder')?.checked?shuffle(availableQuestions):[...availableQuestions];game={name,items:pool.slice(0,Math.min(n,availableQuestions.length)),index:0,score:0,both:0,partial:0,streak:0,bestStreak:0,times:[],picks:[],startedAt:0,done:false,timerId:null,lastPoints:0,lastResult:'',lastTime:6};$('startScreen').classList.add('hidden');$('finalScreen').classList.add('hidden');$('scoreScreen').classList.add('hidden');$('gameScreen').classList.remove('hidden');await enterLandscapeGameMode();loadSnap()};
 function loadSnap(){
@@ -2515,7 +2512,7 @@ $('joinRoom').onclick=async()=>{
   const selectedQB=QB_PROFILES.find(q=>q.id===selectedJoinQB);
   if(selectedQB&&!selectedQB.demo&&playerSession?.profileId!==selectedJoinQB){alert('Sign in to this QB profile before joining.');return}
   if(selectedQB&&!selectedQB.demo&&playerSession?.mustChange){openRequiredPinChange(selectedQB,'join');return}
-  if(selectedQB?.demo&&!currentUser){alert('Coach sign-in required for staff/demo join.');return}
+  if(selectedQB?.demo&&!currentUser){selectStaffProfile(selectedQB,'join');return}
   await confirmLandscapeBeforeFirstSnap();
   const room=$('joinCode').value.trim().toUpperCase(),name=$('joinName').value.trim();if(!room||!name||!selectedJoinQB){alert('Enter the room code and select your QB profile.');return}await cleanupLiveChannel();livePlayer={room,name,profileId:selectedJoinQB};$('joinedRoomCode').textContent=room;$('joinedQBName').textContent=name;$('joinSetup').classList.add('hidden');$('joinLobby').classList.remove('hidden');await subscribePlayerRoom(room);$('joinStatus').innerHTML='<div class="resultBanner good">READY</div><p class="muted">Connected. Waiting for coach to release the first snap.</p>'}
 async function playerBroadcastAnswer(payload){if(liveRealtimeChannel)await liveRealtimeChannel.send({type:'broadcast',event:'answer',payload:{room:livePlayer.room,profileId:livePlayer.profileId,name:livePlayer.name,...payload}})}

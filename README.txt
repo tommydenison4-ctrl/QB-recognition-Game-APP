@@ -1,4 +1,4 @@
-ULM QB Conflict Defender v7.8 — Player access repair
+ULM QB Conflict Defender v7.9 — Staff Practice selection
 
 - Qualifies expires_at in qb_player_login and qb_validate_player_session.
 - FIX_PLAYER_AUTH.sql replaces only those functions; it does not reset PINs,
@@ -7,8 +7,11 @@ ULM QB Conflict Defender v7.8 — Player access repair
   keyboard hint, normal text selection, and an explicit Clear PIN action.
 - Remembered sessions restore when the app starts. Players who still need
   to change their initial PIN return to the required PIN change screen.
-- Staff cards open public biography dialogs. Staff profile selection for
-  Practice/Live Game remains available only to authenticated coaches.
+- Staff cards select their playing identity directly in Practice/Join.
+- Signed-out staff are sent to coach sign-in; successful sign-in resumes
+  the selected staff identity and mode automatically.
+- Staff biographies removed at the user's request.
+- Coach access bar shows the selected staff identity.
 - Existing staff play, host, admin, and server result-write checks remain.
 
 Verification performed 2026-10-16:
@@ -19,3 +22,14 @@ Verification performed 2026-10-16:
   reaches required new-PIN screen, session restore reopens that requirement.
 - Chrome desktop and 390x844 viewport checks; actual iPhone Safari untested.
 - No player PIN was changed and no test game results were saved.
+
+Verification performed 2026-10-19:
+- Live v7.8 reproduction: Tommy card opened a biography without a play action
+  when signed out.
+- Local real app: Tommy card routes to coach sign-in with return instructions.
+- Isolated full-app UI test (mock authentication/data, no live writes):
+  sign-in returns to Practice with Tommy selected and first snap starts.
+- Logic checks: staff card modes, signed-out guard, auth resumption, Join mode,
+  player exclusion, no staff biographies; scripts and whitespace pass.
+- Real coach account login and result saving require the user's session and
+  were not verified with live credentials. No database changes were made.
