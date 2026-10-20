@@ -968,6 +968,8 @@ body.game-mode #finalScreen #goCoach{
   }
 }
 
+
+.decisionHeading{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding:6vh 5vw;pointer-events:none;z-index:50;text-align:center;font-size:clamp(28px,5vw,72px);font-weight:950;color:white;text-shadow:0 3px 10px #000;background:linear-gradient(#0009,transparent 65%)}
 </style>
 </head>
 <body>
@@ -1036,7 +1038,7 @@ body.game-mode #finalScreen #goCoach{
       <button class="btn" id="joinTab">Join Game</button>
       <button class="btn" id="profilesTab">QB Profiles</button>
       <button class="btn" id="defenseTab">Defense Intel</button>
-      <button class="btn primary" id="practiceTab">Practice</button>
+      <button class="btn primary" id="practiceTab">Practice</button><button class="btn" id="readProgressionTab">QB Read Progression</button>
       <button class="btn primary" id="playTab">Take-Home Practice</button>
     </div>
   </div>
@@ -1045,7 +1047,7 @@ body.game-mode #finalScreen #goCoach{
     <div class="grid">
       <div class="card">
         <h2>Create Question</h2>
-        <p class="muted">Upload the film screenshot, then click the two conflict defenders. Order does not matter. Saving publishes the same question to every connected device.</p>
+        <p class="muted">Upload the screenshot at the decision point, choose the drill type, then tag the defender or receivers. Receiver progression tags must be in read order. Saving publishes the same question to every connected device.</p>
 
         <div class="connectionBar">
           <div class="connectionState"><span class="connectionDot" id="connectionDot"></span><span id="connectionText">Checking Supabase…</span></div>
@@ -1066,7 +1068,11 @@ body.game-mode #finalScreen #goCoach{
         <div class="field"><label>Question name</label><input id="qName" placeholder="e.g. Mississippi State - Q1 10:42" /></div>
         <div class="coachMetaGrid">
           <div class="field"><label>Opponent / Team</label><input id="qOpponent" placeholder="e.g. Mississippi State" /></div>
-          <div class="field"><label>Question use</label><select id="qAvailability"><option value="practice">Practice</option><option value="live">Live Game</option><option value="both" selected>Practice + Live</option></select></div>
+          <div class="field"><label for="qReadType">Drill / read type</label><select id="qReadType"><option value="conflict">Conflict defenders (existing)</option><option value="defender">QB Read · Defender</option><option value="progression">QB Read · Progression</option></select></div>
+<div class="field" id="qReadCountWrap" hidden><label for="qReadCount">Receivers in progression</label><select id="qReadCount"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></div>
+<div class="field" id="qHeadingWrap" hidden><label for="qReadHeading">Decision heading · first 1.5 seconds of LOOK</label><input id="qReadHeading" maxlength="160" placeholder="e.g. DICE RT · 3RD AND 6" /></div>
+<p class="muted" id="qReadInstructions">Tag two conflict defenders.</p>
+<div class="field"><label>Question use</label><select id="qAvailability"><option value="practice">Practice</option><option value="live">Live Game</option><option value="both" selected>Practice + Live</option></select></div>
           <div class="field"><label>Status</label><select id="qStatus"><option value="draft">Draft</option><option value="ready">Ready</option><option value="published" selected>Published</option></select></div>
           <div class="field"><label>Library</label><select id="qLibraryStatus"><option value="live" selected>LIVE - current opponent</option><option value="stored">STORED - archive</option></select></div>
         </div>
@@ -1114,7 +1120,7 @@ body.game-mode #finalScreen #goCoach{
       <p class="muted">Create a room, let the QBs join from their phones, then release every snap together.</p>
       <div id="hostSetupFields">
         <div class="liveSetupGrid">
-          <div class="field"><label>Room code</label><input id="hostCode" maxlength="6" placeholder="QB27" /></div>
+          <div class="field"><label for="hostSection">Training section</label><select id="hostSection"><option value="conflict">Conflict Defenders</option><option value="read">QB Read Progression</option></select></div><div class="field"><label>Room code</label><input id="hostCode" maxlength="6" placeholder="QB27" /></div>
           <div class="field"><label>Number of snaps</label><select id="hostSnaps"><option>5</option><option selected>10</option><option>15</option><option>20</option></select></div>
           <div class="field"><label>Question order</label><select id="hostOrder"><option value="random" selected>Random</option><option value="bank">Question Bank Order</option></select></div>
         </div>
@@ -1219,7 +1225,7 @@ body.game-mode #finalScreen #goCoach{
     <div id="startScreen" class="card">
       <div class="practiceHero">
         <div class="practiceEyebrow">Practice Mode · ULM Quarterback Development</div>
-        <h1>Take-Home Practice</h1>
+        <h1 id="practiceSectionTitle">Take-Home Practice</h1><div class="field"><label for="practiceSection">Training section</label><select id="practiceSection"><option value="conflict">Conflict Defenders</option><option value="read">QB Read Progression</option></select></div>
         <p class="muted">Study the formation for 3.0 seconds before the answer window opens.<br>Then you get 1.5 seconds at full value, followed by 6.0 seconds of continuously declining value to zero.</p>
       </div>
       <div class="liveBankStrip"><span>LIVE GAME-WEEK BANK</span><strong id="practiceLiveOpponent">—</strong></div>
@@ -1256,7 +1262,7 @@ body.game-mode #finalScreen #goCoach{
         </div>
         <div class="card">
           <h3>Current Game</h3>
-          <div class="stats"><div class="stat"><strong id="liveScore">0</strong><span>Points</span></div><div class="stat"><strong id="liveCorrect">0</strong><span>Both Correct</span></div><div class="stat"><strong id="livePartial">0</strong><span>One Correct</span></div><div class="stat"><strong id="liveStreak">0</strong><span>Streak</span></div></div>
+          <div class="stats"><div class="stat"><strong id="liveScore">0</strong><span>Points</span></div><div class="stat"><strong id="liveCorrect">0</strong><span id="perfectStatLabel">Both Correct</span></div><div class="stat"><strong id="livePartial">0</strong><span>One Correct</span></div><div class="stat"><strong id="liveStreak">0</strong><span>Streak</span></div></div>
           <p class="muted">After each snap, the correct defenders are shown before the scoreboard.</p>
         </div>
       </div>
@@ -1770,13 +1776,20 @@ let game={name:'',items:[],index:0,score:0,both:0,partial:0,streak:0,bestStreak:
 function storagePublicUrl(path){
   return sb.storage.from(QB_IMAGE_BUCKET).getPublicUrl(path).data.publicUrl;
 }
+function readQuestionMeta(title){
+  if(!String(title).startsWith('QBREAD1:'))return null;
+  try{const m=JSON.parse(title.slice(8));if(!['defender','progression'].includes(m.type)||!Array.isArray(m.targets)||m.targets.length<1||m.targets.length>5||m.targets.some(t=>!Number.isFinite(t.x)||!Number.isFinite(t.y)||t.x<0||t.x>1||t.y<0||t.y>1))return null;return m}catch(e){return null}
+}
+function sectionMatches(q,section){return section==='read'?q.readType!=='conflict':q.readType==='conflict'}
 function rowToQuestion(r){
+  const meta=readQuestionMeta(r.title);
   return {
     id:r.id,
-    name:r.title||'Question',
+    name:meta?.name||r.title||'Question',
+    readType:meta?.type||'conflict',heading:meta?.heading||'',
     image:storagePublicUrl(r.image_path),
     imagePath:r.image_path,
-    targets:[
+    targets:meta?.targets||[
       {x:+r.defender_1_x,y:+r.defender_1_y,radius:+(r.defender_1_radius||.065)},
       {x:+r.defender_2_x,y:+r.defender_2_y,radius:+(r.defender_2_radius||.065)}
     ],
@@ -1924,7 +1937,7 @@ async function loadQuestionsFromSupabase(){
   renderQuestionList();updateBankCount();
 
   refreshLibraryControls();
-  const livePractice=questions.filter(q=>q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='practice'||q.availability==='both')).length;
+  const livePractice=questions.filter(q=>sectionMatches(q,$('practiceSection').value)&&q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='practice'||q.availability==='both')).length;
   const liveOpponents=[...new Set(questions.filter(q=>q.libraryStatus==='live'&&q.opponent).map(q=>q.opponent))];
   const liveName=liveOpponents.length===1?liveOpponents[0]:liveOpponents.length>1?'Multiple opponents':'None selected';
   if($('practiceLiveOpponent'))$('practiceLiveOpponent').textContent=liveName;
@@ -1936,7 +1949,7 @@ async function loadQuestionsFromSupabase(){
 }
 function saveQuestions(){ renderQuestionList();updateBankCount(); }
 function updateBankCount(){
-  const publishedPractice=questions.filter(q=>q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='practice'||q.availability==='both')).length;
+  const publishedPractice=questions.filter(q=>sectionMatches(q,$('practiceSection').value)&&q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='practice'||q.availability==='both')).length;
   $('bankCount').textContent=`${publishedPractice} LIVE practice question${publishedPractice===1?'':'s'} loaded`;
   if($('practiceCloudText')){
     $('practiceCloudText').textContent=publishedPractice===1
@@ -1951,10 +1964,40 @@ $('profilesTab').onclick=()=>{show('profilesView');loadProfileStatsFromSupabase(
 loadCloudBoard();};
 $('playTab').onclick=()=>{show('playView');loadQuestionsFromSupabase();loadProfileStatsFromSupabase();};
 $('defenseTab').onclick=()=>{show('defenseView');showDefenseDepth();loadQBDefenseRoster();};
-$('practiceTab').onclick=()=>{show('playView');renderProfiles();updateBankCount();loadQuestionsFromSupabase();loadProfileStatsFromSupabase();};
+$('practiceTab').onclick=()=>{$('practiceSection').value='conflict';updatePracticeSection();show('playView');renderProfiles();updateBankCount();loadQuestionsFromSupabase();loadProfileStatsFromSupabase();};
 $('goCoach').onclick=async()=>{await exitLandscapeGameMode();show('coachView');};
 $('viewMyStats').onclick=()=>{show('profilesView');loadProfileStatsFromSupabase();};
 $('snapCount').addEventListener('change',()=>{$('startSnapLabel').textContent=$('snapCount').value==='all'?'ALL SNAPS':$('snapCount').value+' SNAPS'});
+
+function updatePracticeSection(){
+  $('practiceSectionTitle').textContent=$('practiceSection').value==='read'?'QB Read Progression':'Take-Home Practice';updateBankCount();
+}
+$('practiceSection').onchange=updatePracticeSection;
+$('readProgressionTab').onclick=()=>{$('practiceSection').value='read';updatePracticeSection();show('playView');loadQuestionsFromSupabase();renderProfiles()};
+function coachTargetCount(){return $('qReadType').value==='defender'?1:$('qReadType').value==='progression'?+$('qReadCount').value:2}
+function updateReadEditor(clear=true){
+  const type=$('qReadType').value;
+  $('qReadCountWrap').hidden=type!=='progression';$('qHeadingWrap').hidden=type==='conflict';
+  $('qReadInstructions').textContent=type==='defender'?'Tag the one defender the QB must identify.':type==='progression'?'Tag receivers in read order: 1, 2, 3… Tap a tag again to remove it.':'Tag two conflict defenders.';
+  if(clear)coachMarks=[];renderCoachImage();
+}
+$('qReadType').onchange=()=>updateReadEditor();$('qReadCount').onchange=()=>updateReadEditor();
+function questionMatch(picks,q){
+  if(q.readType==='conflict'||!q.readType)return matchPicks(picks,q.targets);
+  return picks.length===q.targets.length&&picks.every((p,i)=>dist(p,q.targets[i])<=.065)?2:0;
+}
+function pickPrompt(q,n=0){return q.readType==='defender'?'Select the read defender':q.readType==='progression'?`Select receiver ${n+1} of ${q.targets.length}`:n===1?'Pick 1 more defender':'Pick 2 defenders'}
+function showDecisionHeading(w,q,elapsed){
+  let h=w.querySelector('.decisionHeading');
+  if(q.readType==='conflict'||!q.heading||elapsed<0||elapsed>=1.5){if(h)h.remove();return}
+  if(!h){h=document.createElement('div');h.className='decisionHeading';w.appendChild(h)}h.textContent=q.heading;
+}
+function questionFeedback(w,picks,q){
+  if(!q.readType||q.readType==='conflict'){renderDefenderFeedback(w,picks,q.targets);return}
+  w.querySelectorAll('.marker').forEach(m=>m.remove());
+  picks.forEach((p,i)=>{if(!q.targets[i]||dist(p,q.targets[i])>.065)addMarker(w,p,i+1,'wrong')});
+  q.targets.forEach((t,i)=>addMarker(w,t,i+1,picks[i]&&dist(picks[i],t)<=.065?'correct':'target'));
+}
 
 $('imageInput').addEventListener('change',e=>{
   const f=e.target.files[0];if(!f)return;
@@ -1968,12 +2011,14 @@ function renderCoachImage(){
   if(!coachImg){w.innerHTML='<div class="placeholder">Upload a screenshot to begin.</div>';$('saveQuestion').disabled=true;return}
   const img=document.createElement('img');img.src=coachImg;w.appendChild(img);
   coachMarks.forEach((m,i)=>addMarker(w,m,i+1,'target'));
-  $('saveQuestion').disabled=coachMarks.length!==2||(!coachFile&&!editingQuestionId)
+  $('saveQuestion').disabled=coachMarks.length!==coachTargetCount()||(!coachFile&&!editingQuestionId)
 }
 $('coachImageWrap').addEventListener('click',e=>{
   if(!coachImg)return;
   const rect=e.currentTarget.getBoundingClientRect();
-  toggleDefenderPick(coachMarks,{x:(e.clientX-rect.left)/rect.width,y:(e.clientY-rect.top)/rect.height,radius:.065});
+  const p={x:(e.clientX-rect.left)/rect.width,y:(e.clientY-rect.top)/rect.height,radius:.065};
+  const existing=coachMarks.findIndex(t=>dist(t,p)<=.065);
+  if(existing>=0)coachMarks.splice(existing,1);else if(coachMarks.length<coachTargetCount())coachMarks.push(p);
   renderCoachImage()
 });
 $('clearMarks').onclick=()=>{coachMarks=[];renderCoachImage()};
@@ -1997,6 +2042,7 @@ function renderDefenderFeedback(w,picks,targets){
 
 function resetQuestionEditor(){
   editingQuestionId=null;editingOriginalImagePath=null;
+  $('qReadType').value='conflict';$('qReadHeading').value='';updateReadEditor();
   $('qName').value='';$('qOpponent').value='';$('qAvailability').value='both';$('qStatus').value='published';$('qLibraryStatus').value='live';
   $('imageInput').value='';coachImg=null;coachFile=null;coachMarks=[];
   $('editingBanner').classList.add('hidden');$('cancelQuestionEdit').classList.add('hidden');
@@ -2007,6 +2053,7 @@ function editQuestion(q){
   if(!currentUser){alert('Coach sign-in required.');return}
   editingQuestionId=q.id;editingOriginalImagePath=q.imagePath;
   $('qName').value=q.name||'';$('qOpponent').value=q.opponent||'';$('qAvailability').value=q.availability||'both';$('qStatus').value=q.status||'published';$('qLibraryStatus').value=q.libraryStatus||'live';
+  $('qReadType').value=q.readType||'conflict';$('qReadCount').value=String(Math.max(2,q.targets.length));$('qReadHeading').value=q.heading||'';updateReadEditor(false);
   coachImg=q.image;coachFile=null;coachMarks=q.targets.map(t=>({...t}));
   $('imageInput').value='';
   $('editingQuestionName').textContent=q.name;
@@ -2025,7 +2072,7 @@ function safeFileName(name){
   return base+ext;
 }
 $('saveQuestion').onclick=async()=>{
-  if(coachMarks.length!==2)return;
+  if(coachMarks.length!==coachTargetCount())return;
   if(!currentUser){$('saveMessage').textContent='Sign in with your coach account before saving.';return}
   if(!editingQuestionId&&!coachFile)return;
 
@@ -2044,11 +2091,11 @@ $('saveQuestion').onclick=async()=>{
     }
 
     const payload={
-      title:$('qName').value.trim()||`Question ${questions.length+1}`,
+      title:$('qReadType').value==='conflict'?($('qName').value.trim()||`Question ${questions.length+1}`):'QBREAD1:'+JSON.stringify({name:$('qName').value.trim()||'QB Read',type:$('qReadType').value,heading:$('qReadHeading').value.trim(),targets:coachMarks}),
       opponent:$('qOpponent').value.trim()||null,
       image_path:imagePath,
       defender_1_x:coachMarks[0].x,defender_1_y:coachMarks[0].y,defender_1_radius:coachMarks[0].radius||.065,
-      defender_2_x:coachMarks[1].x,defender_2_y:coachMarks[1].y,defender_2_radius:coachMarks[1].radius||.065,
+      defender_2_x:(coachMarks[1]||coachMarks[0]).x,defender_2_y:(coachMarks[1]||coachMarks[0]).y,defender_2_radius:(coachMarks[1]||coachMarks[0]).radius||.065,
       availability:$('qAvailability').value,
       status:$('qStatus').value,
       library_status:$('qLibraryStatus').value
@@ -2079,7 +2126,7 @@ $('saveQuestion').onclick=async()=>{
     $('saveMessage').textContent=(editingQuestionId?'Update failed: ':'Save failed: ')+(err.message||String(err));
   }finally{
     btn.textContent=editingQuestionId?'Update Question':'Save Question to Supabase';
-    btn.disabled=coachMarks.length!==2||(!coachFile&&!editingQuestionId);
+    btn.disabled=coachMarks.length!==coachTargetCount()||(!coachFile&&!editingQuestionId);
   }
 };
 async function deleteQuestion(q){
@@ -2131,7 +2178,7 @@ function renderQuestionList(){
     const lib=q.libraryStatus||'live';
     row.innerHTML=`<div class="qmeta">
       <strong>${escapeHtml(q.name)}</strong>
-      <small><span class="libraryPill ${lib}">${lib}</span>${escapeHtml(q.opponent||'No opponent')} · ${escapeHtml(q.availability)} · ${escapeHtml(q.status)} · 2 defenders tagged</small>
+      <small><span class="libraryPill ${lib}">${lib}</span>${escapeHtml(q.opponent||'No opponent')} · ${escapeHtml(q.availability)} · ${escapeHtml(q.status)} · ${q.targets.length} ${q.readType==='progression'?'receivers in order':q.readType==='defender'?'read defender':'defenders'} tagged</small>
     </div>
     <div class="qactions">
       <button class="btn editQuestionBtn">Edit</button>
@@ -2287,7 +2334,8 @@ function showLookOverlay(id,value,go=false){
   const small=el.querySelector('small');
   if(strong)strong.textContent=String(value);
   if(span)span.textContent=go?'GO':'LOOK';
-  if(small)small.textContent=go?'Identify both conflict defenders':'Study the formation';
+  const q=id==='lookCountdown'?game.items[game.index]:livePlayerState?.question;
+  if(small)small.textContent=go?(q?pickPrompt(q):'Select your answer'):'Study the formation';
 }
 function hideLookOverlay(id){$(id)?.classList.add('hidden')}
 
@@ -2299,11 +2347,12 @@ $('startGame').onclick=async()=>{
   if(selectedQB&&!selectedQB.demo&&playerSession?.mustChange){openRequiredPinChange(selectedQB,'practice');return}
   if(selectedQB?.demo&&!currentUser){selectStaffProfile(selectedQB,'practice');return}
   await confirmLandscapeBeforeFirstSnap();
-  const availableQuestions=questions.filter(q=>q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='practice'||q.availability==='both'));if(!availableQuestions.length){alert('No published practice questions are available yet.');show('coachView');return}const name=$('playerName').value.trim()||'QB';let n=$('snapCount').value==='all'?availableQuestions.length:+$('snapCount').value;const pool=$('randomizeOrder')?.checked?shuffle(availableQuestions):[...availableQuestions];game={name,items:pool.slice(0,Math.min(n,availableQuestions.length)),index:0,score:0,both:0,partial:0,streak:0,bestStreak:0,times:[],picks:[],startedAt:0,done:false,timerId:null,lastPoints:0,lastResult:'',lastTime:6};$('startScreen').classList.add('hidden');$('finalScreen').classList.add('hidden');$('scoreScreen').classList.add('hidden');$('gameScreen').classList.remove('hidden');await enterLandscapeGameMode();loadSnap()};
+  const availableQuestions=questions.filter(q=>sectionMatches(q,$('practiceSection').value)&&q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='practice'||q.availability==='both'));if(!availableQuestions.length){alert('No published practice questions are available yet.');show('coachView');return}const name=$('playerName').value.trim()||'QB';let n=$('snapCount').value==='all'?availableQuestions.length:+$('snapCount').value;const pool=$('randomizeOrder')?.checked?shuffle(availableQuestions):[...availableQuestions];game={name,items:pool.slice(0,Math.min(n,availableQuestions.length)),index:0,score:0,both:0,partial:0,streak:0,bestStreak:0,times:[],picks:[],startedAt:0,done:false,timerId:null,lastPoints:0,lastResult:'',lastTime:6};$('startScreen').classList.add('hidden');$('finalScreen').classList.add('hidden');$('scoreScreen').classList.add('hidden');$('gameScreen').classList.remove('hidden');await enterLandscapeGameMode();loadSnap()};
 function loadSnap(){
   clearInterval(game.timerId);
   game.picks=[];game.done=false;game.phase='loading';game.answerStartedAt=0;
   const q=game.items[game.index];
+  $('perfectStatLabel').textContent=q.readType==='conflict'?'Both Correct':'Correct Reads';
   $('playLabel').textContent=`Snap ${game.index+1} of ${game.items.length} · ${q.name}`;
   $('progressBar').style.width=`${(game.index/game.items.length)*100}%`;
   $('resultArea').classList.add('hidden');
@@ -2316,9 +2365,11 @@ function loadSnap(){
   const begin=()=>{
     if(game.done)return;
     game.startedAt=performance.now();
+    showDecisionHeading(w,q,0);
+    if(learn)setTimeout(()=>showDecisionHeading(w,q,1.5),1500);
     if(learn){
       game.phase='answer';game.answerStartedAt=game.startedAt;
-      $('pickStatus').textContent='Pick 2 defenders';$('timer').textContent='LEARN';$('timer').classList.remove('low');
+      $('pickStatus').textContent=pickPrompt(q);$('timer').textContent='LEARN';$('timer').classList.remove('low');
       return;
     }
     game.phase='look';
@@ -2329,6 +2380,7 @@ function loadSnap(){
 
     game.timerId=setInterval(()=>{
       const totalElapsed=(performance.now()-game.startedAt)/1000;
+      showDecisionHeading(w,q,totalElapsed);
       if(totalElapsed<LOOK_SECONDS){
         const countdown=Math.max(1,Math.ceil(LOOK_SECONDS-totalElapsed));
         showLookOverlay('lookCountdown',countdown,false);
@@ -2339,7 +2391,7 @@ function loadSnap(){
       if(game.phase!=='answer'){
         game.phase='answer';
         game.answerStartedAt=game.startedAt+(LOOK_SECONDS*1000);
-        $('pickStatus').textContent='Pick 2 defenders';
+        $('pickStatus').textContent=pickPrompt(q);
         showLookOverlay('lookCountdown',0,true);
         setTimeout(()=>hideLookOverlay('lookCountdown'),180);
       }
@@ -2356,21 +2408,22 @@ function loadSnap(){
 }
 
 $('gameImageWrap').addEventListener('click',e=>{
-  if(game.done||game.picks.length>=2)return;
+  if(game.done||game.picks.length>=game.items[game.index].targets.length)return;
   const learn=$('practiceMode').value==='learn';
   if(!learn && game.phase!=='answer')return;
   const rect=e.currentTarget.getBoundingClientRect();
-  toggleDefenderPick(game.picks,{x:(e.clientX-rect.left)/rect.width,y:(e.clientY-rect.top)/rect.height});
+  toggleReadPick(game.picks,game.items[game.index].targets.length,{x:(e.clientX-rect.left)/rect.width,y:(e.clientY-rect.top)/rect.height});
   renderPendingPicks(e.currentTarget,game.picks);
-  $('pickStatus').textContent=game.picks.length===0?'Pick 2 defenders':game.picks.length===1?'Pick 1 more defender':'Locked';
-  if(game.picks.length===2)finishSnap();
+  const q=game.items[game.index];$('pickStatus').textContent=pickPrompt(q,game.picks.length);
+  if(game.picks.length===q.targets.length)finishSnap();
 });
 
-function toggleDefenderPick(picks,p){
+function toggleDefenderPick(picks,p){toggleReadPick(picks,2,p)}
+function toggleReadPick(picks,max,p){
   let nearest=-1,distance=.065;
   picks.forEach((pick,i)=>{const d=dist(pick,p);if(d<=distance){nearest=i;distance=d}});
   if(nearest>=0)picks.splice(nearest,1);
-  else if(picks.length<2)picks.push(p);
+  else if(picks.length<max)picks.push(p);
 }
 function renderPendingPicks(w,picks){
   w.querySelectorAll('.marker').forEach(m=>m.remove());
@@ -2394,18 +2447,18 @@ function matchPicks(picks,targets){
 }
 function finishSnap(){
   if(game.done)return;
-  game.done=true;clearInterval(game.timerId);hideLookOverlay('lookCountdown');
+  game.done=true;clearInterval(game.timerId);hideLookOverlay('lookCountdown');showDecisionHeading($('gameImageWrap'),game.items[game.index],1.5);
   const q=game.items[game.index];
   const learn=$('practiceMode').value==='learn';
   const answerElapsed=learn
     ? Math.max(0,(performance.now()-game.answerStartedAt)/1000)
     : Math.max(0,Math.min(ANSWER_SECONDS,(performance.now()-game.answerStartedAt)/1000));
-  const correct=matchPicks(game.picks,q.targets);
+  const correct=questionMatch(game.picks,q);
   game.times.push(answerElapsed);
   let points=0,result='';
   if(correct===2){
     points=learn?1000:scoreByTime(1000,answerElapsed);
-    game.both++;game.streak++;game.bestStreak=Math.max(game.bestStreak,game.streak);result='Both correct';
+    game.both++;game.streak++;game.bestStreak=Math.max(game.bestStreak,game.streak);result=q.readType==='conflict'?'Both correct':'Correct read';
   }else if(correct===1){
     points=learn?500:scoreByTime(500,answerElapsed);
     game.partial++;game.streak=0;result='One correct';
@@ -2413,14 +2466,14 @@ function finishSnap(){
   game.score+=points;game.lastPoints=points;game.lastResult=result;game.lastTime=answerElapsed;
   saveProfileResult({profileId:selectedPracticeQB,questionId:q.id,mode:'practice',correct,time:answerElapsed,points,gameScore:game.score});
   const w=$('gameImageWrap');
-  renderDefenderFeedback(w,game.picks,q.targets);
-  $('pickStatus').textContent=`${correct}/2 correct`;
+  questionFeedback(w,game.picks,q);
+  $('pickStatus').textContent=q.readType==='conflict'?`${correct}/2 correct`:correct===2?'Correct read':'Incorrect read';
   $('timer').textContent=answerElapsed.toFixed(2)+'s';
   renderLive();
   setTimeout(showScore,900);
 }
 function renderLive(){$('liveScore').textContent=game.score;$('liveCorrect').textContent=game.both;$('livePartial').textContent=game.partial;$('liveStreak').textContent=game.streak}
-function showScore(){$('gameScreen').classList.add('hidden');$('scoreScreen').classList.remove('hidden');const b=$('snapResult');b.textContent=`${game.lastResult} · ${game.lastTime.toFixed(2)}s`;b.className='resultBanner '+(game.lastResult==='Both correct'?'good':game.lastResult==='One correct'?'partial':'bad');$('snapPoints').textContent='+'+game.lastPoints;$('scoreTotal').textContent=game.score;$('scoreAccuracy').textContent=Math.round(game.both/(game.index+1)*100)+'%';$('scoreAvgTime').textContent=(game.times.reduce((a,b)=>a+b,0)/game.times.length).toFixed(2)+'s';$('scoreStreak').textContent=game.streak;renderBoard($('scoreboard'),true);$('nextSnap').textContent=game.index===game.items.length-1?'Finish Game':'Next Snap'}
+function showScore(){$('gameScreen').classList.add('hidden');$('scoreScreen').classList.remove('hidden');const b=$('snapResult');b.textContent=`${game.lastResult} · ${game.lastTime.toFixed(2)}s`;b.className='resultBanner '+(['Both correct','Correct read'].includes(game.lastResult)?'good':game.lastResult==='One correct'?'partial':'bad');$('snapPoints').textContent='+'+game.lastPoints;$('scoreTotal').textContent=game.score;$('scoreAccuracy').textContent=Math.round(game.both/(game.index+1)*100)+'%';$('scoreAvgTime').textContent=(game.times.reduce((a,b)=>a+b,0)/game.times.length).toFixed(2)+'s';$('scoreStreak').textContent=game.streak;renderBoard($('scoreboard'),true);$('nextSnap').textContent=game.index===game.items.length-1?'Finish Game':'Next Snap'}
 $('nextSnap').onclick=()=>{if(game.index>=game.items.length-1){finishGame();return}game.index++;$('scoreScreen').classList.add('hidden');$('gameScreen').classList.remove('hidden');loadSnap()};
 
 let cloudBoardCache=[];
@@ -2493,7 +2546,7 @@ function livePresencePlayers(){if(!liveRealtimeChannel)return[];const st=liveRea
 function renderHostLive(){if(!liveRoom)return;const pres=livePresencePlayers();pres.forEach(p=>{if(!liveRoom.players[p.profileId])liveRoom.players[p.profileId]={profileId:p.profileId,name:p.name||'QB',score:0,locked:false,last:null,online:true};else liveRoom.players[p.profileId].online=true});Object.values(liveRoom.players).forEach(p=>p.online=pres.some(x=>x.profileId===p.profileId));const ps=Object.values(liveRoom.players).sort((a,b)=>b.score-a.score);$('hostPlayers').innerHTML=ps.length?ps.map(p=>`<div class="livePlayerTile ${p.locked?'locked':''}">${p.locked?'<div class="lockTag">LOCKED</div>':''}<strong>${escapeHtml(p.name)}</strong><span>${p.online?'ONLINE':'OFFLINE'}${p.last?` · ${p.last.correct}/2 · ${p.last.time.toFixed(2)}s`:''}</span><div class="livePoints">${p.score||0} pts</div></div>`).join(''):'<p class="muted">No QBs joined yet.</p>';$('hostLiveBoard').innerHTML=ps.length?ps.map((p,i)=>`<div class="row"><div class="rank">${i+1}</div><div><strong>${escapeHtml(p.name)}</strong><div class="fine">${p.locked?'LOCKED':'READY'}</div></div><div class="pts">${p.score||0}</div></div>`).join(''):'<p class="muted">Scoreboard appears when players join.</p>'}
 async function hostBroadcast(event,payload={}){if(liveRealtimeChannel)await liveRealtimeChannel.send({type:'broadcast',event,payload:{room:liveRoom.code,...payload}})}
 function subscribeHostRoom(code){return new Promise((resolve,reject)=>{liveRealtimeChannel=sb.channel(liveTopic(code),{config:{broadcast:{self:false},presence:{key:'host'}}});liveRealtimeChannel.on('presence',{event:'sync'},renderHostLive).on('broadcast',{event:'player-ready'},({payload})=>{if(payload?.room!==liveRoom.code)return;if(!liveRoom.players[payload.profileId])liveRoom.players[payload.profileId]={profileId:payload.profileId,name:payload.name,score:0,locked:false,last:null,online:true};renderHostLive()}).on('broadcast',{event:'answer'},({payload})=>{if(!payload||payload.room!==liveRoom.code||!liveRoom.roundOpen||payload.roundToken!==liveRoom.roundToken)return;const p=liveRoom.players[payload.profileId]||(liveRoom.players[payload.profileId]={profileId:payload.profileId,name:payload.name,score:0,locked:false});if(p.locked)return;p.locked=true;p.last=payload;p.score=(p.score||0)+(payload.points||0);renderHostLive();const online=livePresencePlayers();if(online.length&&online.every(x=>liveRoom.players[x.profileId]?.locked))hostRevealRound()}).subscribe(async(status,err)=>{if(status==='SUBSCRIBED'){$('hostRealtimeDot').classList.add('good');$('hostRealtimeText').textContent='Live room connected';try{await liveRealtimeChannel.track({role:'host',room:code,online_at:new Date().toISOString()})}catch(e){}resolve()}else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){reject(err||new Error(status))}})})}
-$('createRoom').onclick=async()=>{const qs=questions.filter(q=>q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='live'||q.availability==='both'));if(!qs.length){alert('No published Live or Both questions are available yet.');return}await cleanupLiveChannel();const code=liveCode(),n=Math.min(+$('hostSnaps').value,qs.length),bank=$('hostOrder').value==='random'?shuffle(qs):[...qs];liveRoom={code,items:bank.slice(0,n),index:-1,players:{},roundOpen:false,roundToken:null,revealed:false};$('hostCode').value=code;$('hostRoomCodeDisplay').textContent=code;$('hostSetupFields').classList.add('hidden');$('hostRoomPanel').classList.remove('hidden');await subscribeHostRoom(code);$('hostRoundStatus').textContent='Room open. Waiting for QBs to join.';renderHostLive()}
+$('createRoom').onclick=async()=>{const qs=questions.filter(q=>sectionMatches(q,$('hostSection').value)&&q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='live'||q.availability==='both'));if(!qs.length){alert('No published Live or Both questions are available yet.');return}await cleanupLiveChannel();const code=liveCode(),n=Math.min(+$('hostSnaps').value,qs.length),bank=$('hostOrder').value==='random'?shuffle(qs):[...qs];liveRoom={code,items:bank.slice(0,n),index:-1,players:{},roundOpen:false,roundToken:null,revealed:false};$('hostCode').value=code;$('hostRoomCodeDisplay').textContent=code;$('hostSetupFields').classList.add('hidden');$('hostRoomPanel').classList.remove('hidden');await subscribeHostRoom(code);$('hostRoundStatus').textContent='Room open. Waiting for QBs to join.';renderHostLive()}
 $('hostNext').onclick=async()=>{
   if(!liveRoom||liveRoom.roundOpen)return;
   if(liveRoom.index>=liveRoom.items.length-1){
@@ -2513,7 +2566,7 @@ $('hostNext').onclick=async()=>{
   await hostBroadcast('start-snap',{
     index:liveRoom.index,total:liveRoom.items.length,roundToken:liveRoom.roundToken,
     startsAt,answerStartsAt,endsAt,
-    question:{id:q.id,name:q.name,image:q.image,targets:q.targets,opponent:q.opponent||''}
+    question:{id:q.id,name:q.name,image:q.image,targets:q.targets,readType:q.readType,heading:q.heading,opponent:q.opponent||''}
   });
 
   if(liveRoundTimer)clearInterval(liveRoundTimer);
@@ -2556,34 +2609,35 @@ function startLivePlayerSnap(msg){
   $('liveLockedOverlay').classList.add('hidden');$('liveRevealOverlay').classList.add('hidden');
   const w=$('liveJoinImage');w.innerHTML='';const img=document.createElement('img');img.src=q.image;w.appendChild(img);
 
-  livePlayerTimer=setInterval(()=>{if(!livePlayerState||livePlayerState.locked)return;const totalElapsed=(Date.now()-livePlayerState.startsAt)/1000;if(totalElapsed<0){$('liveJoinTimer').textContent='READY';return}if(totalElapsed<LOOK_SECONDS){livePlayerState.phase='look';const countdown=Math.max(1,Math.ceil(LOOK_SECONDS-totalElapsed));showLookOverlay('liveLookCountdown',countdown,false);$('liveJoinTimer').textContent='LOOK';$('liveJoinPickStatus').textContent='Study formation';return}if(livePlayerState.phase!=='answer'){livePlayerState.phase='answer';livePlayerState.answerStartsAt=livePlayerState.startsAt+(LOOK_SECONDS*1000);showLookOverlay('liveLookCountdown',0,true);setTimeout(()=>hideLookOverlay('liveLookCountdown'),180);$('liveJoinPickStatus').textContent='Pick 2 defenders'}const answerElapsed=Math.max(0,totalElapsed-LOOK_SECONDS),left=Math.max(0,ANSWER_SECONDS-answerElapsed);$('liveJoinTimer').textContent=left.toFixed(1);if(answerElapsed>=ANSWER_SECONDS)lockLivePlayerAnswer()},40);
+  livePlayerTimer=setInterval(()=>{if(!livePlayerState||livePlayerState.locked)return;const totalElapsed=(Date.now()-livePlayerState.startsAt)/1000;showDecisionHeading(w,q,totalElapsed);if(totalElapsed<0){$('liveJoinTimer').textContent='READY';return}if(totalElapsed<LOOK_SECONDS){livePlayerState.phase='look';const countdown=Math.max(1,Math.ceil(LOOK_SECONDS-totalElapsed));showLookOverlay('liveLookCountdown',countdown,false);$('liveJoinTimer').textContent='LOOK';$('liveJoinPickStatus').textContent='Study formation';return}if(livePlayerState.phase!=='answer'){livePlayerState.phase='answer';livePlayerState.answerStartsAt=livePlayerState.startsAt+(LOOK_SECONDS*1000);showLookOverlay('liveLookCountdown',0,true);setTimeout(()=>hideLookOverlay('liveLookCountdown'),180);$('liveJoinPickStatus').textContent=pickPrompt(q)}const answerElapsed=Math.max(0,totalElapsed-LOOK_SECONDS),left=Math.max(0,ANSWER_SECONDS-answerElapsed);$('liveJoinTimer').textContent=left.toFixed(1);if(answerElapsed>=ANSWER_SECONDS)lockLivePlayerAnswer()},40);
 }
 
 $('liveJoinImage').addEventListener('click',e=>{
   const st=livePlayerState;
-  if(!st||st.locked||st.phase!=='answer'||Date.now()<st.answerStartsAt||st.picks.length>=2)return;
+  if(!st||st.locked||st.phase!=='answer'||Date.now()<st.answerStartsAt||st.picks.length>=st.question.targets.length)return;
   const r=e.currentTarget.getBoundingClientRect(),p={x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};
-  toggleDefenderPick(st.picks,p);renderPendingPicks(e.currentTarget,st.picks);
-  $('liveJoinPickStatus').textContent=st.picks.length===0?'Pick 2 defenders':st.picks.length===1?'Pick 1 more':'Locked';
-  if(st.picks.length===2)lockLivePlayerAnswer();
+  toggleReadPick(st.picks,st.question.targets.length,p);renderPendingPicks(e.currentTarget,st.picks);
+  $('liveJoinPickStatus').textContent=pickPrompt(st.question,st.picks.length);
+  if(st.picks.length===st.question.targets.length)lockLivePlayerAnswer();
 });
 
 async function lockLivePlayerAnswer(){
   const st=livePlayerState;if(!st||st.locked)return;
   st.locked=true;if(livePlayerTimer)clearInterval(livePlayerTimer);
   st.elapsed=Math.max(0,Math.min(ANSWER_SECONDS,(Date.now()-st.answerStartsAt)/1000));
-  st.correct=matchPicks(st.picks,st.question.targets);
+  st.correct=questionMatch(st.picks,st.question);
   st.points=st.correct===2?scoreByTime(1000,st.elapsed):st.correct===1?scoreByTime(500,st.elapsed):0;
   $('liveJoinTimer').textContent='LOCK';
-  $('liveLockedTime').textContent=`${st.picks.length}/2 selected · ${st.elapsed.toFixed(2)}s`;
+  $('liveLockedTime').textContent=`${st.picks.length}/${st.question.targets.length} selected · ${st.elapsed.toFixed(2)}s`;
+  showDecisionHeading($('liveJoinImage'),st.question,1.5);
   $('liveLockedOverlay').classList.remove('hidden');
   await Promise.all([
     playerBroadcastAnswer({roundToken:st.roundToken,questionId:st.question.id,correct:st.correct,points:st.points,time:st.elapsed,picks:st.picks}),
     saveProfileResult({profileId:livePlayer.profileId,questionId:st.question.id,mode:'live',correct:st.correct,time:st.elapsed,points:st.points,roomCode:livePlayer.room})
   ]);
 }
-function revealLivePlayerSnap(msg){const s=livePlayerState;if(!s||msg.roundToken!==s.roundToken)return;if(livePlayerTimer)clearInterval(livePlayerTimer);const w=$('liveJoinImage');renderDefenderFeedback(w,s.picks,msg.targets||s.question.targets);const txt=s.correct===2?'BOTH CORRECT':s.correct===1?'ONE CORRECT':'INCORRECT';$('liveRevealOverlay').innerHTML=`<strong>${txt}</strong><span>+${s.points}</span>`;$('liveRevealOverlay').classList.remove('hidden');setTimeout(()=>showLivePlayerBoard(msg.scoreboard||[]),1200)}
-function showLivePlayerBoard(board){$('livePlayerGame').classList.add('hidden');$('livePlayerScoreboard').classList.remove('hidden');const mine=board.find(x=>x.profileId===livePlayer.profileId),last=mine?.last;$('livePlayerRoundTitle').textContent=last?`${last.correct}/2 correct · ${last.time.toFixed(2)}s`:'Round Complete';$('livePlayerResult').textContent=last?`+${last.points} · Total ${mine.score}`:'No answer recorded';$('livePlayerBoard').innerHTML=board.map((p,i)=>`<div class="row"><div class="rank">${i+1}</div><div><strong>${escapeHtml(p.name)}</strong></div><div class="pts">${p.score||0}</div></div>`).join('')}
+function revealLivePlayerSnap(msg){const s=livePlayerState;if(!s||msg.roundToken!==s.roundToken)return;if(livePlayerTimer)clearInterval(livePlayerTimer);const w=$('liveJoinImage');questionFeedback(w,s.picks,{...s.question,targets:msg.targets||s.question.targets});const txt=s.correct===2?(s.question.readType==='conflict'?'BOTH CORRECT':'CORRECT READ'):s.correct===1?'ONE CORRECT':'INCORRECT';$('liveRevealOverlay').innerHTML=`<strong>${txt}</strong><span>+${s.points}</span>`;$('liveRevealOverlay').classList.remove('hidden');setTimeout(()=>showLivePlayerBoard(msg.scoreboard||[]),1200)}
+function showLivePlayerBoard(board){$('livePlayerGame').classList.add('hidden');$('livePlayerScoreboard').classList.remove('hidden');const mine=board.find(x=>x.profileId===livePlayer.profileId),last=mine?.last;$('livePlayerRoundTitle').textContent=last?`${livePlayerState?.question?.readType==='conflict'?`${last.correct}/2 correct`:last.correct===2?'Correct read':'Incorrect read'} · ${last.time.toFixed(2)}s`:'Round Complete';$('livePlayerResult').textContent=last?`+${last.points} · Total ${mine.score}`:'No answer recorded';$('livePlayerBoard').innerHTML=board.map((p,i)=>`<div class="row"><div class="rank">${i+1}</div><div><strong>${escapeHtml(p.name)}</strong></div><div class="pts">${p.score||0}</div></div>`).join('')}
 function showLivePlayerFinal(board){$('livePlayerGame').classList.add('hidden');$('livePlayerScoreboard').classList.remove('hidden');$('livePlayerRoundTitle').textContent='Game Complete';$('livePlayerResult').textContent='Final Scoreboard';$('livePlayerBoard').innerHTML=(board||[]).sort((a,b)=>b.score-a.score).map((p,i)=>`<div class="row"><div class="rank">${i+1}</div><div><strong>${escapeHtml(p.name)}</strong></div><div class="pts">${p.score||0}</div></div>`).join('')}
 window.addEventListener('beforeunload',()=>{try{cleanupLiveChannel()}catch(e){}});
 
