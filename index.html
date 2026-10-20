@@ -979,6 +979,10 @@ body.game-mode #playLabel{top:max(68px,calc(env(safe-area-inset-top) + 60px))!im
 body.game-mode #playLabel{left:max(10px,env(safe-area-inset-left))!important;right:auto!important;transform:none!important;max-width:26vw!important;text-align:left!important}
 .liveHudLeft:has(#liveJoinLabel){left:max(10px,env(safe-area-inset-left));right:auto;transform:none;max-width:26vw;text-align:left}
 .decisionHeading{inset:auto auto 12% 0;width:28%;padding:12px;justify-content:flex-start;align-items:center;text-align:left;background:none;overflow-wrap:anywhere;font-size:clamp(28px,5vw,72px)}
+
+body.game-mode #gameScreen[data-direction="left"] #playLabel{left:auto!important;right:max(10px,env(safe-area-inset-right))!important;text-align:right!important}
+#livePlayerGame[data-direction="left"] .liveHudLeft:has(#liveJoinLabel){left:auto;right:max(10px,env(safe-area-inset-right));text-align:right;flex-direction:row-reverse}
+.decisionHeading[data-direction="left"]{left:auto;right:0;text-align:right;justify-content:flex-end}
 </style>
 </head>
 <body>
@@ -1080,6 +1084,7 @@ body.game-mode #playLabel{left:max(10px,env(safe-area-inset-left))!important;rig
           <div class="field"><label for="qReadType">Drill / read type</label><select id="qReadType"><option value="conflict">Conflict defenders (existing)</option><option value="defender">QB Read · Defender</option><option value="progression">QB Read · Progression</option></select></div>
 <div class="field" id="qReadCountWrap" hidden><label for="qReadCount">Receivers in progression</label><select id="qReadCount"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></div>
 <div class="field" id="qHeadingWrap" hidden><label for="qReadHeading">Decision heading · first 1.5 seconds of LOOK</label><input id="qReadHeading" maxlength="160" placeholder="e.g. DICE RT · 3RD AND 6" /></div>
+<div class="field"><label for="qDirection">Offense moving</label><select id="qDirection"><option value="right">→ Right · title on left</option><option value="left">← Left · title on right</option></select></div>
 <p class="muted" id="qReadInstructions">Tag two conflict defenders.</p>
 <div class="field"><label>Question use</label><select id="qAvailability"><option value="practice">Practice</option><option value="live">Live Game</option><option value="both" selected>Practice + Live</option></select></div>
           <div class="field"><label>Status</label><select id="qStatus"><option value="draft">Draft</option><option value="ready">Ready</option><option value="published" selected>Published</option></select></div>
@@ -1787,7 +1792,7 @@ function storagePublicUrl(path){
 }
 function readQuestionMeta(title){
   if(!String(title).startsWith('QBREAD1:'))return null;
-  try{const m=JSON.parse(title.slice(8));if(!['defender','progression'].includes(m.type)||!Array.isArray(m.targets)||m.targets.length<1||m.targets.length>5||m.targets.some(t=>!Number.isFinite(t.x)||!Number.isFinite(t.y)||t.x<0||t.x>1||t.y<0||t.y>1))return null;return m}catch(e){return null}
+  try{const m=JSON.parse(title.slice(8));if(!['conflict','defender','progression'].includes(m.type)||!Array.isArray(m.targets)||m.targets.length<1||m.targets.length>5||m.targets.some(t=>!Number.isFinite(t.x)||!Number.isFinite(t.y)||t.x<0||t.x>1||t.y<0||t.y>1))return null;return m}catch(e){return null}
 }
 function sectionMatches(q,section){return section==='read'?q.readType!=='conflict':q.readType==='conflict'}
 function rowToQuestion(r){
@@ -1795,7 +1800,7 @@ function rowToQuestion(r){
   return {
     id:r.id,
     name:meta?.name||r.title||'Question',
-    readType:meta?.type||'conflict',heading:meta?.heading||'',
+    readType:meta?.type||'conflict',heading:meta?.heading||'',direction:meta?.direction==='left'?'left':'right',
     image:storagePublicUrl(r.image_path),
     imagePath:r.image_path,
     targets:meta?.targets||[
@@ -1999,7 +2004,7 @@ function pickPrompt(q,n=0){return q.readType==='defender'?'Select the read defen
 function showDecisionHeading(w,q,elapsed){
   let h=w.querySelector('.decisionHeading');
   if(q.readType==='conflict'||!q.heading||elapsed<0||elapsed>=1.5){if(h)h.remove();return}
-  if(!h){h=document.createElement('div');h.className='decisionHeading';w.appendChild(h)}h.textContent=q.heading;
+  if(!h){h=document.createElement('div');h.className='decisionHeading';w.appendChild(h)}h.textContent=q.heading;h.dataset.direction=q.direction||'right';
 }
 function questionFeedback(w,picks,q){
   if(!q.readType||q.readType==='conflict'){renderDefenderFeedback(w,picks,q.targets);return}
@@ -2051,7 +2056,7 @@ function renderDefenderFeedback(w,picks,targets){
 
 function resetQuestionEditor(){
   editingQuestionId=null;editingOriginalImagePath=null;
-  $('qReadType').value='conflict';$('qReadHeading').value='';updateReadEditor();
+  $('qReadType').value='conflict';$('qReadHeading').value='';$('qDirection').value='right';updateReadEditor();
   $('qName').value='';$('qOpponent').value='';$('qAvailability').value='both';$('qStatus').value='published';$('qLibraryStatus').value='live';
   $('imageInput').value='';coachImg=null;coachFile=null;coachMarks=[];
   $('editingBanner').classList.add('hidden');$('cancelQuestionEdit').classList.add('hidden');
@@ -2062,7 +2067,7 @@ function editQuestion(q){
   if(!currentUser){alert('Coach sign-in required.');return}
   editingQuestionId=q.id;editingOriginalImagePath=q.imagePath;
   $('qName').value=q.name||'';$('qOpponent').value=q.opponent||'';$('qAvailability').value=q.availability||'both';$('qStatus').value=q.status||'published';$('qLibraryStatus').value=q.libraryStatus||'live';
-  $('qReadType').value=q.readType||'conflict';$('qReadCount').value=String(Math.max(2,q.targets.length));$('qReadHeading').value=q.heading||'';updateReadEditor(false);
+  $('qDirection').value=q.direction||'right';$('qReadType').value=q.readType||'conflict';$('qReadCount').value=String(Math.max(2,q.targets.length));$('qReadHeading').value=q.heading||'';updateReadEditor(false);
   coachImg=q.image;coachFile=null;coachMarks=q.targets.map(t=>({...t}));
   $('imageInput').value='';
   $('editingQuestionName').textContent=q.name;
@@ -2100,7 +2105,7 @@ $('saveQuestion').onclick=async()=>{
     }
 
     const payload={
-      title:$('qReadType').value==='conflict'?($('qName').value.trim()||`Question ${questions.length+1}`):'QBREAD1:'+JSON.stringify({name:$('qName').value.trim()||'QB Read',type:$('qReadType').value,heading:$('qReadHeading').value.trim(),targets:coachMarks}),
+      title:'QBREAD1:'+JSON.stringify({name:$('qName').value.trim()||`Question ${questions.length+1}`,type:$('qReadType').value,heading:$('qReadHeading').value.trim(),direction:$('qDirection').value,targets:coachMarks}),
       opponent:$('qOpponent').value.trim()||null,
       image_path:imagePath,
       defender_1_x:coachMarks[0].x,defender_1_y:coachMarks[0].y,defender_1_radius:coachMarks[0].radius||.065,
@@ -2363,6 +2368,7 @@ function loadSnap(){
   const q=game.items[game.index];
   $('perfectStatLabel').textContent=q.readType==='conflict'?'Both Correct':'Correct Reads';
   $('playLabel').textContent=q.name;
+  $('gameScreen').dataset.direction=q.direction||'right';
   $('progressBar').style.width=`${(game.index/game.items.length)*100}%`;
   $('resultArea').classList.add('hidden');
   hideLookOverlay('lookCountdown');
@@ -2575,7 +2581,7 @@ $('hostNext').onclick=async()=>{
   await hostBroadcast('start-snap',{
     index:liveRoom.index,total:liveRoom.items.length,roundToken:liveRoom.roundToken,
     startsAt,answerStartsAt,endsAt,
-    question:{id:q.id,name:q.name,image:q.image,targets:q.targets,readType:q.readType,heading:q.heading,opponent:q.opponent||''}
+    question:{id:q.id,name:q.name,image:q.image,targets:q.targets,readType:q.readType,heading:q.heading,direction:q.direction,opponent:q.opponent||''}
   });
 
   if(liveRoundTimer)clearInterval(liveRoundTimer);
@@ -2614,6 +2620,7 @@ function startLivePlayerSnap(msg){
     picks:[],locked:false,correct:0,points:0,elapsed:ANSWER_SECONDS,phase:'look'
   };
   $('liveJoinLabel').textContent=q.name;
+  $('livePlayerGame').dataset.direction=q.direction||'right';
   $('liveJoinPickStatus').textContent='Study formation';$('liveJoinTimer').textContent=`LOOK ${LOOK_SECONDS.toFixed(1)}`;
   $('liveLockedOverlay').classList.add('hidden');$('liveRevealOverlay').classList.add('hidden');
   const w=$('liveJoinImage');w.innerHTML='';const img=document.createElement('img');img.src=q.image;w.appendChild(img);
