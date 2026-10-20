@@ -975,6 +975,10 @@ body.game-mode #finalScreen #goCoach{
 body.game-mode #playLabel{top:max(68px,calc(env(safe-area-inset-top) + 60px))!important;font-size:clamp(39px,6.6vw,54px)!important;width:max-content;max-width:86vw!important;white-space:normal!important}
 #liveJoinLabel{font-size:36px;line-height:1.08;overflow-wrap:anywhere}
 .liveHudLeft:has(#liveJoinLabel){top:max(68px,calc(env(safe-area-inset-top) + 60px));left:50%;transform:translateX(-50%);max-width:86vw;text-align:center;width:max-content}
+
+body.game-mode #playLabel{left:max(10px,env(safe-area-inset-left))!important;right:auto!important;transform:none!important;max-width:26vw!important;text-align:left!important}
+.liveHudLeft:has(#liveJoinLabel){left:max(10px,env(safe-area-inset-left));right:auto;transform:none;max-width:26vw;text-align:left}
+.decisionHeading{inset:auto auto 12% 0;width:28%;padding:12px;justify-content:flex-start;align-items:center;text-align:left;background:none;overflow-wrap:anywhere;font-size:clamp(28px,5vw,72px)}
 </style>
 </head>
 <body>
