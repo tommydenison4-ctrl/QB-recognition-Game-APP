@@ -970,6 +970,11 @@ body.game-mode #finalScreen #goCoach{
 
 
 .decisionHeading{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding:6vh 5vw;pointer-events:none;z-index:50;text-align:center;font-size:clamp(28px,5vw,72px);font-weight:950;color:white;text-shadow:0 3px 10px #000;background:linear-gradient(#0009,transparent 65%)}
+
+#gameScreen #playLabel{font-size:51px!important;line-height:1.08;white-space:normal!important;overflow-wrap:anywhere;text-align:center}
+body.game-mode #playLabel{top:max(68px,calc(env(safe-area-inset-top) + 60px))!important;font-size:clamp(39px,6.6vw,54px)!important;width:max-content;max-width:86vw!important;white-space:normal!important}
+#liveJoinLabel{font-size:36px;line-height:1.08;overflow-wrap:anywhere}
+.liveHudLeft:has(#liveJoinLabel){top:max(68px,calc(env(safe-area-inset-top) + 60px));left:50%;transform:translateX(-50%);max-width:86vw;text-align:center;width:max-content}
 </style>
 </head>
 <body>
@@ -1159,7 +1164,7 @@ body.game-mode #finalScreen #goCoach{
       <div class="liveFilmStage">
         <div class="liveFilmWrap" id="liveJoinImage"></div>
         <div class="lookCountdown liveLookCountdown hidden" id="liveLookCountdown"><span>LOOK</span><strong>3</strong><small>Study the formation</small></div>
-        <div class="liveHud liveHudLeft"><span class="miniULM">ULM</span><span id="liveJoinLabel">Snap 1</span></div>
+        <div class="liveHud liveHudLeft"><span class="miniULM">ULM</span><span id="liveJoinLabel"></span></div>
         <div class="liveHud liveHudCenter" id="liveJoinTimer">LOOK 3.0</div>
         <div class="liveHud liveHudRight" id="liveJoinPickStatus">Pick 2 defenders</div>
         <div class="liveLockedOverlay hidden" id="liveLockedOverlay"><strong>LOCKED</strong><span id="liveLockedTime">—</span></div>
@@ -1253,7 +1258,7 @@ body.game-mode #finalScreen #goCoach{
       <div class="grid">
         <div class="card">
           <div class="gameBrandStrip"><span class="miniULM">ULM</span><span>QB Conflict Recognition</span></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px"><strong id="playLabel">Snap 1</strong><span class="pill" id="pickStatus">Pick 2 defenders</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px"><strong id="playLabel"></strong><span class="pill" id="pickStatus">Pick 2 defenders</span></div>
           <div class="progress"><div id="progressBar"></div></div>
           <div class="timer" id="timer">LOOK 3.0</div>
           <div class="imageWrap" id="gameImageWrap"></div>
@@ -2353,7 +2358,7 @@ function loadSnap(){
   game.picks=[];game.done=false;game.phase='loading';game.answerStartedAt=0;
   const q=game.items[game.index];
   $('perfectStatLabel').textContent=q.readType==='conflict'?'Both Correct':'Correct Reads';
-  $('playLabel').textContent=`Snap ${game.index+1} of ${game.items.length} · ${q.name}`;
+  $('playLabel').textContent=q.name;
   $('progressBar').style.width=`${(game.index/game.items.length)*100}%`;
   $('resultArea').classList.add('hidden');
   hideLookOverlay('lookCountdown');
@@ -2604,7 +2609,7 @@ function startLivePlayerSnap(msg){
     endsAt:+msg.endsAt||(+msg.startsAt+TOTAL_TIMED_SECONDS*1000),
     picks:[],locked:false,correct:0,points:0,elapsed:ANSWER_SECONDS,phase:'look'
   };
-  $('liveJoinLabel').textContent=`Snap ${msg.index+1} of ${msg.total} · ${q.name}`;
+  $('liveJoinLabel').textContent=q.name;
   $('liveJoinPickStatus').textContent='Study formation';$('liveJoinTimer').textContent=`LOOK ${LOOK_SECONDS.toFixed(1)}`;
   $('liveLockedOverlay').classList.add('hidden');$('liveRevealOverlay').classList.add('hidden');
   const w=$('liveJoinImage');w.innerHTML='';const img=document.createElement('img');img.src=q.image;w.appendChild(img);
