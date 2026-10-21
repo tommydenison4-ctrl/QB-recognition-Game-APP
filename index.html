@@ -991,6 +991,7 @@ body.game-mode #playLabel{font-size:clamp(19.5px,3.3vw,27px)!important;padding:4
 #gameScreen .timer{font-size:21.5px!important}
 body.game-mode #timer{font-size:clamp(17px,3.5vw,31px)!important;min-width:41px!important;padding:4px 6px!important}
 .liveHudCenter{font-size:clamp(14px,3vw,25px);padding:3.5px 8px}
+.coachUsageTable{width:100%;border-collapse:collapse;min-width:850px}.coachUsageTable th,.coachUsageTable td{text-align:left;padding:12px 9px;border-bottom:1px solid #ffffff18;font-size:14px}.coachUsageTable th{color:var(--muted);font-size:12px}
 </style>
 </head>
 <body>
@@ -1065,6 +1066,12 @@ body.game-mode #timer{font-size:clamp(17px,3.5vw,31px)!important;min-width:41px!
   </div>
 
   <section id="coachView" class="hidden">
+<div id="coachUsagePanel" class="card hidden" style="margin-bottom:20px">
+<div class="row" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h2>QB Usage · Coaches Only</h2><p class="muted">Saved practice and live attempts across devices.</p></div><button class="btn" id="coachUsageRefresh">Refresh usage</button></div>
+<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin:12px 0"><label for="coachUsageRange">Period</label><select id="coachUsageRange"><option value="week">This week</option><option value="lastweek">Last week</option><option value="30">Last 30 days</option><option value="all">All saved results</option></select><label><input type="checkbox" id="coachUsageStaff"> Include staff/demo profiles</label></div>
+<strong id="coachUsageSummary"></strong><p class="muted" id="coachUsageStatus" role="status">Coach sign-in required.</p>
+<div style="overflow-x:auto"><table class="coachUsageTable"><thead><tr><th>QB</th><th>Last active in period</th><th>Attempts</th><th>Practice</th><th>Live</th><th>Days practised</th><th>Fully correct</th><th>Avg response</th></tr></thead><tbody id="coachUsageRows"></tbody></table></div>
+<p class="muted">Weeks run Monday–Sunday in Central time. Fully correct means the entire answer was correct. These are saved attempts, not completed sessions or total practice time. Reset All Scores also clears this history.</p></div>
     <div class="grid">
       <div class="card">
         <h2>Create Question</h2>
@@ -1826,6 +1833,7 @@ async function refreshAuth(){
   try{
     const {data:{session}}=await sb.auth.getSession();
     currentUser=session?.user||null;
+    syncCoachUsage();if(currentUser&&!$('coachView').classList.contains('hidden'))loadCoachUsage();
     $('connectionDot')?.classList.toggle('on',!!currentUser);
     $('connectionText').textContent=currentUser?'Supabase connected':'Supabase connected · sign in to build';
     $('authIdentity').textContent=currentUser?currentUser.email:'Not signed in';
@@ -1852,7 +1860,7 @@ $('signInBtn').onclick=async()=>{
   $('authMessage').textContent='Signed in.';
   await refreshAuth();
 };
-$('signOutBtn').onclick=async()=>{await sb.auth.signOut();currentUser=null;questions=[];
+$('signOutBtn').onclick=async()=>{await sb.auth.signOut();currentUser=null;clearCoachUsage();questions=[];
 $('defPlayerSearch').addEventListener('input',renderDefensePlayers);
 document.querySelectorAll('[data-def-group]').forEach(b=>b.onclick=()=>{qbDefGroup=b.dataset.defGroup;document.querySelectorAll('[data-def-group]').forEach(x=>x.classList.toggle('active',x===b));renderDefensePlayers()});
 $('defProfileOverlay').addEventListener('click',closeDefenseProfile);
@@ -1981,7 +1989,7 @@ function updateBankCount(){
   }
 }
 function show(view){['coachView','hostView','joinView','profilesView','defenseView','playView','recoveryView'].forEach(v=>$(v).classList.add('hidden'));$(view).classList.remove('hidden');$('coachTab').classList.toggle('primary',view==='coachView');$('playTab').classList.toggle('primary',view==='playView');$('defenseTab').classList.toggle('primary',view==='defenseView')}
-$('coachTab').onclick=()=>show('coachView'); $('hostTab').onclick=()=>show('hostView'); $('joinTab').onclick=()=>show('joinView');
+$('coachTab').onclick=()=>{show('coachView');loadCoachUsage()}; $('hostTab').onclick=()=>show('hostView'); $('joinTab').onclick=()=>show('joinView');
 $('profilesTab').onclick=()=>{show('profilesView');loadProfileStatsFromSupabase();
 loadCloudBoard();};
 $('playTab').onclick=()=>{show('playView');loadQuestionsFromSupabase();loadProfileStatsFromSupabase();};
@@ -2272,6 +2280,13 @@ $('clearBank').onclick=async()=>{
   $('saveMessage').textContent=`✓ Deleted ${data.length} question${data.length===1?'':'s'} from Supabase.`;
 };
 
+let coachUsageRequest=0,coachUsageData=null;
+function clearCoachUsage(){coachUsageRequest++;coachUsageData=null;$('coachUsagePanel').classList.add('hidden');$('coachUsageRows').replaceChildren();$('coachUsageSummary').textContent='';$('coachUsageStatus').textContent='Coach sign-in required.'}
+function syncCoachUsage(){if(!currentUser){clearCoachUsage();return}$('coachUsagePanel').classList.remove('hidden')}
+function renderCoachUsage(){if(!currentUser||!coachUsageData)return;const includeStaff=$('coachUsageStaff').checked;const roster=QB_PROFILES.filter(p=>includeStaff||!p.demo);const rows=new Map(coachUsageData.rows.map(r=>[r.profileId,r]));$('coachUsageRows').replaceChildren();let attempts=0,perfect=0,active=0;for(const p of roster){const r=rows.get(p.id)||{attempts:0,perfect:0,practice:0,live:0,daysPractised:0,accuracy:null,averageResponse:null,lastActive:null};attempts+=r.attempts;perfect+=r.perfect;if(r.attempts)active++;const last=r.lastActive?new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}).format(new Date(r.lastActive)):'No attempts';const tr=document.createElement('tr');for(const value of [p.name+(p.demo?' (Staff)':''),last,r.attempts,r.practice,r.live,r.daysPractised,r.accuracy==null?'—':Math.round(r.accuracy*100)+'%',r.averageResponse==null?'—':r.averageResponse.toFixed(2)+'s']){const td=document.createElement('td');td.textContent=value;tr.appendChild(td)}$('coachUsageRows').appendChild(tr)}$('coachUsageSummary').textContent=`${active}/${roster.length} active · ${attempts} attempts · ${attempts?Math.round(perfect/attempts*100)+'%':'—'} fully correct`;}
+async function loadCoachUsage(){syncCoachUsage();if(!currentUser)return;const request=++coachUsageRequest;$('coachUsageStatus').textContent='Loading usage…';$('coachUsageRows').replaceChildren();$('coachUsageSummary').textContent='';coachUsageData=null;try{const {data:{session}}=await sb.auth.getSession();if(!session?.access_token)throw new Error('Coach sign-in required.');if(request!==coachUsageRequest||!currentUser)return;const response=await fetch('/api/coach-usage?range='+encodeURIComponent($('coachUsageRange').value),{headers:{Authorization:'Bearer '+session.access_token},cache:'no-store'});const data=await response.json();if(!response.ok)throw new Error(data.error||'Usage unavailable');if(request!==coachUsageRequest||!currentUser)return;coachUsageData=data;renderCoachUsage();$('coachUsageStatus').textContent=`${data.period} · Updated ${new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',hour:'numeric',minute:'2-digit'}).format(new Date(data.updatedAt))} Central`;}catch(e){if(request===coachUsageRequest&&currentUser)$('coachUsageStatus').textContent=e.message||'Usage unavailable. Try Refresh.'}}
+$('coachUsageRefresh').onclick=loadCoachUsage;$('coachUsageRange').onchange=loadCoachUsage;$('coachUsageStaff').onchange=renderCoachUsage;
+
 $('resetAllScores').onclick=async()=>{
   if(!currentUser){alert('Coach sign-in required.');return}
   if(!confirm('RESET ALL QB AND STAFF SCORES TO ZERO? This permanently deletes all saved practice and live results. Questions are not affected.'))return;
@@ -2292,6 +2307,7 @@ $('resetAllScores').onclick=async()=>{
   renderBoard($('finalBoard'));
   $('saveMessage').textContent=`✓ Scores reset. ${data?.length||0} cloud result rows deleted.`;
   alert('All QB and staff scores are now zero.');
+  if(currentUser)loadCoachUsage();
 };
 
 $('exportBank').onclick=()=>{
