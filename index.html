@@ -851,50 +851,54 @@ body.game-mode #finalScreen #goCoach{
 
 
 /* =========================================================
-   v7.6 TRANSPARENT LOOK COUNTDOWN
-   Keep the formation/players visible underneath the timer.
+   TOP-EDGE LOOK COUNTDOWN
+   Keep the formation visible with a clear red countdown above the action.
    ========================================================= */
 .lookCountdown{
+  top:max(4px,env(safe-area-inset-top))!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
   min-width:0!important;
   width:auto!important;
-  padding:0!important;
+  max-width:calc(100vw - 24px);
+  padding:2px 10px!important;
   background:transparent!important;
   border:0!important;
   border-radius:0!important;
   backdrop-filter:none!important;
   -webkit-backdrop-filter:none!important;
   box-shadow:none!important;
-  transition:opacity .32s ease, transform .22s ease!important;
+  opacity:1!important;
+  transition:none!important;
   pointer-events:none!important;
-  text-shadow:0 2px 12px rgba(0,0,0,.9),0 0 24px rgba(0,0,0,.7);
 }
 .lookCountdown span{
-  font-size:clamp(10px,2vw,16px)!important;
-  letter-spacing:.28em!important;
-  color:rgba(246,185,39,.78)!important;
-  text-shadow:0 2px 8px rgba(0,0,0,.95)!important;
+  font-size:clamp(16px,3vh,22px)!important;
+  letter-spacing:.08em!important;
 }
 .lookCountdown strong{
-  font-size:clamp(64px,15vw,128px)!important;
+  font-size:clamp(44px,10vh,76px)!important;
+  line-height:1;
+  margin:0!important;
+}
+.lookCountdown span,.lookCountdown strong,
+.lookCountdown.go span,.lookCountdown.go strong{
   font-weight:1000!important;
-  color:rgba(255,255,255,.38)!important;
-  -webkit-text-stroke:1px rgba(255,255,255,.12);
-  text-shadow:0 3px 18px rgba(0,0,0,.85)!important;
-  margin:4px 0!important;
+  color:#b30918!important;
+  -webkit-text-stroke:2px #fff;
+  paint-order:stroke fill;
+  text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff,0 2px 5px #0008!important;
 }
-.lookCountdown small{
-  color:rgba(255,255,255,.66)!important;
-  font-size:clamp(9px,1.4vw,12px)!important;
-  text-shadow:0 2px 8px rgba(0,0,0,.95)!important;
+.lookCountdown small{display:none}
+.lookCountdown.look3,.lookCountdown.look2,.lookCountdown.look1,.lookCountdown.look0{opacity:1!important}
+#gameScreen:has(#lookCountdown:not(.hidden)) #timer,
+.liveFilmStage:has(#liveLookCountdown:not(.hidden)) #liveJoinTimer{
+  visibility:hidden;
 }
-.lookCountdown.go span,
-.lookCountdown.go strong{
-  color:rgba(121,233,154,.34)!important;
-}
-.lookCountdown.look3{opacity:.58!important}
-.lookCountdown.look2{opacity:.46!important}
-.lookCountdown.look1{opacity:.34!important}
-.lookCountdown.look0{opacity:.20!important;transform:translate(-50%,-50%) scale(.96)!important}
 
 
 /* =========================================================
@@ -992,6 +996,12 @@ body.game-mode #playLabel{font-size:clamp(19.5px,3.3vw,27px)!important;padding:4
 body.game-mode #timer{font-size:clamp(17px,3.5vw,31px)!important;min-width:41px!important;padding:4px 6px!important}
 .liveHudCenter{font-size:clamp(14px,3vw,25px);padding:3.5px 8px}
 .coachUsageTable{width:100%;border-collapse:collapse;min-width:850px}.coachUsageTable th,.coachUsageTable td{text-align:left;padding:12px 9px;border-bottom:1px solid #ffffff18;font-size:14px}.coachUsageTable th{color:var(--muted);font-size:12px}
+.snapIntro{position:fixed;inset:0;z-index:23050;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:max(24px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left));background:#000;color:#fff;text-align:center;touch-action:none}
+.snapIntro small{font-size:14px;font-weight:800;letter-spacing:.2em;color:#b8b8b8}
+.snapIntro strong{max-width:100%;font-size:clamp(32px,6vw,76px);line-height:1.12;font-weight:1000;overflow-wrap:anywhere}
+.snapIntro span{font-size:clamp(14px,2vw,22px);font-weight:800;color:var(--ulm-gold)}
+.snapIntro.waiting>*{visibility:hidden}
+
 </style>
 </head>
 <body>
@@ -1002,11 +1012,11 @@ body.game-mode #timer{font-size:clamp(17px,3.5vw,31px)!important;min-width:41px!
     <div class="heroTitle">BEFORE THE FIRST SNAP</div>
     <div class="landscapeRotateIcon">↻</div>
     <h2>Rotate to Landscape</h2>
-    <p>Play the recognition game with your phone sideways. The film will use the full screen and the LOOK countdown will not begin until after you continue.</p>
+    <p>Play the recognition game with your phone sideways. Each play starts with the play call on a black screen for 3 seconds, then full-screen film with the 3-second LOOK countdown.</p>
     <div class="landscapeReadySteps">
       <div class="landscapeReadyStep"><strong>1</strong><span>Rotate Phone</span></div>
-      <div class="landscapeReadyStep"><strong>2</strong><span>Full Screen Film</span></div>
-      <div class="landscapeReadyStep"><strong>3</strong><span>LOOK Begins</span></div>
+      <div class="landscapeReadyStep"><strong>2</strong><span>Play Call · 3 seconds</span></div>
+      <div class="landscapeReadyStep"><strong>3</strong><span>Film · 3-second LOOK</span></div>
     </div>
     <div class="landscapeOrientationStatus" id="landscapeOrientationStatus">Rotate your phone sideways, then continue.</div>
     <button class="btn primary" id="landscapeReadyContinue" type="button">I'M READY · CONTINUE</button>
@@ -1075,7 +1085,7 @@ body.game-mode #timer{font-size:clamp(17px,3.5vw,31px)!important;min-width:41px!
     <div class="grid">
       <div class="card">
         <h2>Create Question</h2>
-        <p class="muted">Upload the screenshot at the decision point, choose the drill type, then tag the defender or receivers. Receiver progression tags must be in read order. Saving publishes the same question to every connected device.</p>
+        <p class="muted">Upload the screenshot at the decision point, choose the drill type, then tag the defender or receivers. Receiver progression tags must be in read order. Save with any number of tags, including none, to let Taylor finish the reads later. Incomplete reads are saved as Draft and stay out of player drills until completed and published.</p>
 
         <div class="connectionBar">
           <div class="connectionState"><span class="connectionDot" id="connectionDot"></span><span id="connectionText">Checking Supabase…</span></div>
@@ -1114,7 +1124,7 @@ body.game-mode #timer{font-size:clamp(17px,3.5vw,31px)!important;min-width:41px!
           <button class="btn primary" id="saveQuestion" disabled>Save Question to Supabase</button>
         </div>
         <div class="saveState" id="saveMessage"></div>
-        <p class="fine" style="margin-top:10px">Tip: crop screenshots before upload if you want the QB focused on the exact pre-snap picture.</p>
+        <p class="fine" style="margin-top:10px">Save at any point with no tags or partial reads. Draft plays stay in the coach library for Taylor to finish. For progressions, tag receivers in read order, then choose Published when ready.</p>
       </div>
       <div class="card">
         <div class="libraryHeader">
@@ -1187,7 +1197,8 @@ body.game-mode #timer{font-size:clamp(17px,3.5vw,31px)!important;min-width:41px!
       <div class="liveRotatePrompt"><div><div class="rotateIcon">↻</div><strong>Rotate to Landscape</strong><span>The live snap will fill the screen when your phone is sideways.</span></div></div>
       <div class="liveFilmStage">
         <div class="liveFilmWrap" id="liveJoinImage"></div>
-        <div class="lookCountdown liveLookCountdown hidden" id="liveLookCountdown"><span>LOOK</span><strong>3</strong><small>Study the formation</small></div>
+        <div class="snapIntro hidden" id="liveSnapIntro" aria-live="polite"><small>PLAY CALL</small><strong></strong><span></span></div>
+          <div class="lookCountdown liveLookCountdown hidden" id="liveLookCountdown"><span>LOOK</span><strong>3</strong><small>Study the formation</small></div>
         <div class="liveHud liveHudLeft"><span class="miniULM">ULM</span><span id="liveJoinLabel"></span></div>
         <div class="liveHud liveHudCenter" id="liveJoinTimer">LOOK 3.0</div>
         <div class="liveHud liveHudRight" id="liveJoinPickStatus">Pick 2 defenders</div>
@@ -1255,7 +1266,7 @@ body.game-mode #timer{font-size:clamp(17px,3.5vw,31px)!important;min-width:41px!
       <div class="practiceHero">
         <div class="practiceEyebrow">Practice Mode · ULM Quarterback Development</div>
         <h1 id="practiceSectionTitle">Take-Home Practice</h1><div class="field"><label for="practiceSection">Training section</label><select id="practiceSection"><option value="conflict">Conflict Defenders</option><option value="read">QB Read Progression</option></select></div>
-        <p class="muted">Study the formation for 3.0 seconds before the answer window opens.<br>Then you get 1.5 seconds at full value, followed by 6.0 seconds of continuously declining value to zero.</p>
+        <p class="muted">Read the play call on a black screen for 3 seconds, then study the formation during the 3-second LOOK countdown.<br>Then you get 1.5 seconds at full value, followed by 6.0 seconds of continuously declining value to zero.</p>
       </div>
       <div class="liveBankStrip"><span>LIVE GAME-WEEK BANK</span><strong id="practiceLiveOpponent">—</strong></div>
       <div class="cloudStatus">
@@ -1266,7 +1277,7 @@ body.game-mode #timer{font-size:clamp(17px,3.5vw,31px)!important;min-width:41px!
       <div class="playerAccessBar" id="playerAccessBar"><span class="accessDot"></span><span>Choose your profile to sign in.</span></div>
       <div class="profileGrid" id="practiceProfiles"></div><div class="profileCloudNote">Cloud stats · all devices</div><input id="playerName" class="hidden" /><div id="practiceSelected"></div>
       <div class="practiceSettings">
-        <div class="field"><label>Practice Mode</label><select id="practiceMode"><option value="timed" selected>⏱ Timed – 3s Look + 7.5s Answer</option><option value="learn">Learn – No Timer</option></select></div>
+        <div class="field"><label>Practice Mode</label><select id="practiceMode"><option value="timed" selected>⏱ Timed – 3s Call + 3s Look + 7.5s Answer</option><option value="learn">Learn – No Timer</option></select></div>
         <div class="field"><label>Number of Snaps</label><select id="snapCount"><option value="5">5 Snaps</option><option value="10" selected>10 Snaps</option><option value="15">15 Snaps</option><option value="20">20 Snaps</option><option value="all">All Snaps</option></select></div>
         <div class="practiceToggles">
           <label class="practiceToggle"><input type="checkbox" checked disabled><span>Show correct defenders after each snap<small>See the correct defenders before moving on.</small></span></label>
@@ -1274,7 +1285,7 @@ body.game-mode #timer{font-size:clamp(17px,3.5vw,31px)!important;min-width:41px!
         </div>
       </div>
       <div class="practiceActions"><button class="btn statsBtn" id="viewMyStats">▥ &nbsp; VIEW MY STATS</button><button class="btn primary startPracticeBtn" id="startGame"><span>START PRACTICE</span><span id="startSnapLabel">10 SNAPS</span></button></div>
-      <div class="bankNote"><span class="pill" id="bankCount">0 questions loaded</span> &nbsp; Timed mode: 3.0s LOOK + 7.5s answer. Full credit first 1.5s, then value declines for 6.0s.</div>
+      <div class="bankNote"><span class="pill" id="bankCount">0 questions loaded</span> &nbsp; Timed mode: 3.0s play call + 3.0s LOOK + 7.5s answer. Full credit first 1.5s, then value declines for 6.0s.</div>
       <div class="cloudSaveStatus" id="cloudSaveStatus"><span class="cloudDot" id="cloudSaveDot"></span><span id="cloudSaveText">Cloud results ready</span></div>
     </div>
 
@@ -1286,6 +1297,7 @@ body.game-mode #timer{font-size:clamp(17px,3.5vw,31px)!important;min-width:41px!
           <div class="progress"><div id="progressBar"></div></div>
           <div class="timer" id="timer">LOOK 3.0</div>
           <div class="imageWrap" id="gameImageWrap"></div>
+          <div class="snapIntro hidden" id="practiceSnapIntro" aria-live="polite"><small>PLAY CALL</small><strong></strong><span></span></div>
           <div class="lookCountdown hidden" id="lookCountdown"><span>LOOK</span><strong>3</strong><small>Study the formation</small></div>
           <div id="resultArea" class="hidden" style="margin-top:12px"></div>
         </div>
@@ -1794,11 +1806,12 @@ document.addEventListener('click',e=>{const p=e.target.closest('[data-def-player
 let questions=[];
 let coachImg=null, coachFile=null, coachMarks=[];
 let editingQuestionId=null, editingOriginalImagePath=null;
+const PLAY_CALL_SECONDS=3.0;
 const LOOK_SECONDS=3.0;
 const FULL_CREDIT_SECONDS=1.5;
 const DECAY_SECONDS=6.0;
 const ANSWER_SECONDS=FULL_CREDIT_SECONDS+DECAY_SECONDS;
-const TOTAL_TIMED_SECONDS=LOOK_SECONDS+ANSWER_SECONDS;
+const TOTAL_TIMED_SECONDS=PLAY_CALL_SECONDS+LOOK_SECONDS+ANSWER_SECONDS;
 
 let game={name:'',items:[],index:0,score:0,both:0,partial:0,streak:0,bestStreak:0,times:[],picks:[],startedAt:0,done:false,timerId:null,lastPoints:0,lastResult:'',lastTime:6};
 
@@ -1807,15 +1820,18 @@ function storagePublicUrl(path){
 }
 function readQuestionMeta(title){
   if(!String(title).startsWith('QBREAD1:'))return null;
-  try{const m=JSON.parse(title.slice(8));if(!['conflict','defender','progression'].includes(m.type)||!Array.isArray(m.targets)||m.targets.length<1||m.targets.length>5||m.targets.some(t=>!Number.isFinite(t.x)||!Number.isFinite(t.y)||t.x<0||t.x>1||t.y<0||t.y>1))return null;return m}catch(e){return null}
+  try{const m=JSON.parse(title.slice(8));if(!['conflict','defender','progression'].includes(m.type)||!Array.isArray(m.targets)||m.targets.length>5||(m.targetCount!==undefined&&(!Number.isInteger(m.targetCount)||m.targetCount<1||m.targetCount>5))||m.targets.some(t=>!Number.isFinite(t.x)||!Number.isFinite(t.y)||t.x<0||t.x>1||t.y<0||t.y>1))return null;return m}catch(e){return null}
 }
+function expectedTargetCount(q){return q.readType==='defender'?1:q.readType==='progression'?(q.targetCount||Math.max(2,q.targets.length)):2}
+function completeQuestion(q){return q.targets.length===expectedTargetCount(q)}
+function playableQuestion(q){return completeQuestion(q)&&q.status==='published'&&q.libraryStatus==='live'}
 function sectionMatches(q,section){return section==='read'?q.readType!=='conflict':q.readType==='conflict'}
 function rowToQuestion(r){
   const meta=readQuestionMeta(r.title);
   return {
     id:r.id,
     name:meta?.name||r.title||'Question',
-    readType:meta?.type||'conflict',heading:meta?.heading||'',direction:meta?.direction==='left'?'left':'right',
+    readType:meta?.type||'conflict',targetCount:meta?.targetCount||(meta?.type==='defender'?1:meta?.type==='progression'?Math.max(2,meta.targets.length):2),heading:meta?.heading||'',direction:meta?.direction==='left'?'left':'right',
     image:storagePublicUrl(r.image_path),
     imagePath:r.image_path,
     targets:meta?.targets||[
@@ -1967,7 +1983,7 @@ async function loadQuestionsFromSupabase(){
   renderQuestionList();updateBankCount();
 
   refreshLibraryControls();
-  const livePractice=questions.filter(q=>sectionMatches(q,$('practiceSection').value)&&q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='practice'||q.availability==='both')).length;
+  const livePractice=questions.filter(q=>sectionMatches(q,$('practiceSection').value)&&playableQuestion(q)&&(q.availability==='practice'||q.availability==='both')).length;
   const liveOpponents=[...new Set(questions.filter(q=>q.libraryStatus==='live'&&q.opponent).map(q=>q.opponent))];
   const liveName=liveOpponents.length===1?liveOpponents[0]:liveOpponents.length>1?'Multiple opponents':'None selected';
   if($('practiceLiveOpponent'))$('practiceLiveOpponent').textContent=liveName;
@@ -1979,7 +1995,7 @@ async function loadQuestionsFromSupabase(){
 }
 function saveQuestions(){ renderQuestionList();updateBankCount(); }
 function updateBankCount(){
-  const publishedPractice=questions.filter(q=>sectionMatches(q,$('practiceSection').value)&&q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='practice'||q.availability==='both')).length;
+  const publishedPractice=questions.filter(q=>sectionMatches(q,$('practiceSection').value)&&playableQuestion(q)&&(q.availability==='practice'||q.availability==='both')).length;
   $('bankCount').textContent=`${publishedPractice} LIVE practice question${publishedPractice===1?'':'s'} loaded`;
   if($('practiceCloudText')){
     $('practiceCloudText').textContent=publishedPractice===1
@@ -2041,7 +2057,9 @@ function renderCoachImage(){
   if(!coachImg){w.innerHTML='<div class="placeholder">Upload a screenshot to begin.</div>';$('saveQuestion').disabled=true;return}
   const img=document.createElement('img');img.src=coachImg;w.appendChild(img);
   coachMarks.forEach((m,i)=>addMarker(w,m,i+1,'target'));
-  $('saveQuestion').disabled=coachMarks.length!==coachTargetCount()||(!coachFile&&!editingQuestionId)
+  $('saveQuestion').disabled=!coachFile&&!editingQuestionId;
+  const instructions=$('qReadInstructions');
+  instructions.textContent=coachMarks.length===coachTargetCount()?'All reads tagged. Choose Published when ready for players.':`${coachMarks.length}/${coachTargetCount()} reads tagged · Save a draft now for Taylor to finish, or continue tagging.`
 }
 $('coachImageWrap').addEventListener('click',e=>{
   if(!coachImg)return;
@@ -2083,7 +2101,7 @@ function editQuestion(q){
   if(!currentUser){alert('Coach sign-in required.');return}
   editingQuestionId=q.id;editingOriginalImagePath=q.imagePath;
   $('qName').value=q.name||'';$('qOpponent').value=q.opponent||'';$('qAvailability').value=q.availability||'both';$('qStatus').value=q.status||'published';$('qLibraryStatus').value=q.libraryStatus||'live';
-  $('qDirection').value=q.direction||'right';$('qReadType').value=q.readType||'conflict';$('qReadCount').value=String(Math.max(2,q.targets.length));$('qReadHeading').value=q.heading||'';updateReadEditor(false);
+  $('qDirection').value=q.direction||'right';$('qReadType').value=q.readType||'conflict';$('qReadCount').value=String(Math.max(2,q.targetCount||q.targets.length));$('qReadHeading').value=q.heading||'';updateReadEditor(false);
   coachImg=q.image;coachFile=null;coachMarks=q.targets.map(t=>({...t}));
   $('imageInput').value='';
   $('editingQuestionName').textContent=q.name;
@@ -2091,7 +2109,7 @@ function editQuestion(q){
   $('saveQuestion').textContent='Update Question';
   renderCoachImage();
   document.querySelector('#coachView .grid')?.scrollIntoView({behavior:'smooth',block:'start'});
-  $('saveMessage').textContent='Editing play. Change the name, opponent, library state, or clear/re-tag the two defenders.';
+  $('saveMessage').textContent='Editing play. Save at any point; Taylor can finish the defender or ordered progression reads later. Incomplete reads stay in Draft.';
 }
 $('cancelQuestionEdit').onclick=()=>resetQuestionEditor();
 
@@ -2102,7 +2120,6 @@ function safeFileName(name){
   return base+ext;
 }
 $('saveQuestion').onclick=async()=>{
-  if(coachMarks.length!==coachTargetCount())return;
   if(!currentUser){$('saveMessage').textContent='Sign in with your coach account before saving.';return}
   if(!editingQuestionId&&!coachFile)return;
 
@@ -2120,31 +2137,33 @@ $('saveQuestion').onclick=async()=>{
       imagePath=newPath;
     }
 
+    const first=coachMarks[0]||{x:0,y:0,radius:.065},second=coachMarks[1]||first;
+    const readsComplete=coachMarks.length===coachTargetCount();
     const payload={
-      title:'QBREAD1:'+JSON.stringify({name:$('qName').value.trim()||`Question ${questions.length+1}`,type:$('qReadType').value,heading:$('qReadHeading').value.trim(),direction:$('qDirection').value,targets:coachMarks}),
+      title:'QBREAD1:'+JSON.stringify({name:$('qName').value.trim()||`Question ${questions.length+1}`,type:$('qReadType').value,heading:$('qReadHeading').value.trim(),direction:$('qDirection').value,targetCount:coachTargetCount(),targets:coachMarks}),
       opponent:$('qOpponent').value.trim()||null,
       image_path:imagePath,
-      defender_1_x:coachMarks[0].x,defender_1_y:coachMarks[0].y,defender_1_radius:coachMarks[0].radius||.065,
-      defender_2_x:(coachMarks[1]||coachMarks[0]).x,defender_2_y:(coachMarks[1]||coachMarks[0]).y,defender_2_radius:(coachMarks[1]||coachMarks[0]).radius||.065,
+      defender_1_x:first.x,defender_1_y:first.y,defender_1_radius:first.radius||.065,
+      defender_2_x:second.x,defender_2_y:second.y,defender_2_radius:second.radius||.065,
       availability:$('qAvailability').value,
-      status:$('qStatus').value,
+      status:readsComplete?$('qStatus').value:'draft',
       library_status:$('qLibraryStatus').value
     };
 
     if(editingQuestionId){
-      $('saveMessage').textContent='Updating play and defender tags…';
+      $('saveMessage').textContent='Updating play and reads…';
       const upd=await sb.from('qb_questions').update(payload).eq('id',editingQuestionId).select().single();
       if(upd.error)throw upd.error;
       if(newPath&&editingOriginalImagePath&&newPath!==editingOriginalImagePath){
         const rm=await sb.storage.from(QB_IMAGE_BUCKET).remove([editingOriginalImagePath]);
         if(rm.error)console.warn('Old image cleanup failed:',rm.error);
       }
-      $('saveMessage').textContent='✓ Play updated everywhere.';
+      $('saveMessage').textContent=readsComplete?'✓ Play updated everywhere.':'✓ Draft saved. Awaiting reads from Taylor.';
     }else{
-      $('saveMessage').textContent='Saving defender tags…';
+      $('saveMessage').textContent='Saving play and reads…';
       const ins=await sb.from('qb_questions').insert(payload).select().single();
       if(ins.error)throw ins.error;
-      $('saveMessage').textContent='✓ Question saved to Supabase.';
+      $('saveMessage').textContent=readsComplete?'✓ Question saved to Supabase.':'✓ Draft saved. Awaiting reads from Taylor.';
     }
 
     resetQuestionEditor();
@@ -2156,7 +2175,7 @@ $('saveQuestion').onclick=async()=>{
     $('saveMessage').textContent=(editingQuestionId?'Update failed: ':'Save failed: ')+(err.message||String(err));
   }finally{
     btn.textContent=editingQuestionId?'Update Question':'Save Question to Supabase';
-    btn.disabled=coachMarks.length!==coachTargetCount()||(!coachFile&&!editingQuestionId);
+    btn.disabled=!coachFile&&!editingQuestionId;
   }
 };
 async function deleteQuestion(q){
@@ -2208,7 +2227,7 @@ function renderQuestionList(){
     const lib=q.libraryStatus||'live';
     row.innerHTML=`<div class="qmeta">
       <strong>${escapeHtml(q.name)}</strong>
-      <small><span class="libraryPill ${lib}">${lib}</span>${escapeHtml(q.opponent||'No opponent')} · ${escapeHtml(q.availability)} · ${escapeHtml(q.status)} · ${q.targets.length} ${q.readType==='progression'?'receivers in order':q.readType==='defender'?'read defender':'defenders'} tagged</small>
+      <small><span class="libraryPill ${lib}">${lib}</span>${escapeHtml(q.opponent||'No opponent')} · ${escapeHtml(q.availability)} · ${escapeHtml(q.status)}${completeQuestion(q)?'':' · Awaiting reads'} · ${q.targets.length}/${expectedTargetCount(q)} ${q.readType==='progression'?'receivers in order':q.readType==='defender'?'read defender':'defenders'} tagged</small>
     </div>
     <div class="qactions">
       <button class="btn editQuestionBtn">Edit</button>
@@ -2361,6 +2380,20 @@ async function exitLandscapeGameMode(){
 }
 
 
+function snapTiming(elapsed,learn=false){
+ if(elapsed<PLAY_CALL_SECONDS)return {phase:'intro'};
+ const filmElapsed=elapsed-PLAY_CALL_SECONDS;
+ if(!learn&&filmElapsed<LOOK_SECONDS)return {phase:'look',countdown:Math.max(1,Math.ceil(LOOK_SECONDS-filmElapsed))};
+ const answerElapsed=Math.max(0,filmElapsed-(learn?0:LOOK_SECONDS));
+ return {phase:'answer',answerElapsed,left:Math.max(0,ANSWER_SECONDS-answerElapsed)};
+}
+function showSnapIntro(id,q,started=true){
+ const el=$(id);if(!el)return;
+ el.querySelector('strong').textContent=q.heading?.trim()||q.name||'Play call';
+ el.querySelector('span').textContent=q.readType==='progression'?'QB Read · Progression':q.readType==='defender'?'QB Read · Key Defender':'Conflict Defenders';
+ el.classList.toggle('waiting',!started);el.classList.remove('hidden');
+}
+function hideSnapIntro(id){$(id)?.classList.add('hidden')}
 function showLookOverlay(id,value,go=false){
   const el=$(id);if(!el)return;
   el.classList.remove('hidden','go','look3','look2','look1','look0');
@@ -2385,7 +2418,7 @@ $('startGame').onclick=async()=>{
   if(selectedQB&&!selectedQB.demo&&playerSession?.mustChange){openRequiredPinChange(selectedQB,'practice');return}
   if(selectedQB?.demo&&!currentUser){selectStaffProfile(selectedQB,'practice');return}
   await confirmLandscapeBeforeFirstSnap();
-  const availableQuestions=questions.filter(q=>sectionMatches(q,$('practiceSection').value)&&q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='practice'||q.availability==='both'));if(!availableQuestions.length){alert('No published practice questions are available yet.');show('coachView');return}const name=$('playerName').value.trim()||'QB';let n=$('snapCount').value==='all'?availableQuestions.length:+$('snapCount').value;const pool=$('randomizeOrder')?.checked?shuffle(availableQuestions):[...availableQuestions];game={name,items:pool.slice(0,Math.min(n,availableQuestions.length)),index:0,score:0,both:0,partial:0,streak:0,bestStreak:0,times:[],picks:[],startedAt:0,done:false,timerId:null,lastPoints:0,lastResult:'',lastTime:6};$('startScreen').classList.add('hidden');$('finalScreen').classList.add('hidden');$('scoreScreen').classList.add('hidden');$('gameScreen').classList.remove('hidden');await enterLandscapeGameMode();loadSnap()};
+  const availableQuestions=questions.filter(q=>sectionMatches(q,$('practiceSection').value)&&playableQuestion(q)&&(q.availability==='practice'||q.availability==='both'));if(!availableQuestions.length){alert('No published practice questions are available yet.');show('coachView');return}const name=$('playerName').value.trim()||'QB';let n=$('snapCount').value==='all'?availableQuestions.length:+$('snapCount').value;const pool=$('randomizeOrder')?.checked?shuffle(availableQuestions):[...availableQuestions];game={name,items:pool.slice(0,Math.min(n,availableQuestions.length)),index:0,score:0,both:0,partial:0,streak:0,bestStreak:0,times:[],picks:[],startedAt:0,done:false,timerId:null,lastPoints:0,lastResult:'',lastTime:6};$('startScreen').classList.add('hidden');$('finalScreen').classList.add('hidden');$('scoreScreen').classList.add('hidden');$('gameScreen').classList.remove('hidden');await enterLandscapeGameMode();loadSnap()};
 function loadSnap(){
   clearInterval(game.timerId);
   game.picks=[];game.done=false;game.phase='loading';game.answerStartedAt=0;
@@ -2396,50 +2429,47 @@ function loadSnap(){
   $('progressBar').style.width=`${(game.index/game.items.length)*100}%`;
   $('resultArea').classList.add('hidden');
   hideLookOverlay('lookCountdown');
+  showSnapIntro('practiceSnapIntro',q,false);
 
   const w=$('gameImageWrap');w.innerHTML='';
   const img=document.createElement('img');img.src=q.image;w.appendChild(img);
   const learn=$('practiceMode').value==='learn';
 
+  let began=false;
   const begin=()=>{
-    if(game.done)return;
+    if(began||game.done||game.items[game.index]!==q)return;began=true;
     game.startedAt=performance.now();
-    showDecisionHeading(w,q,0);
-    if(learn)setTimeout(()=>showDecisionHeading(w,q,1.5),1500);
-    if(learn){
-      game.phase='answer';game.answerStartedAt=game.startedAt;
-      $('pickStatus').textContent=pickPrompt(q);$('timer').textContent='LEARN';$('timer').classList.remove('low');
-      return;
-    }
-    game.phase='look';
-    $('pickStatus').textContent='Study formation';
-    $('timer').textContent='LOOK';
+    game.phase='intro';showSnapIntro('practiceSnapIntro',q);
+    $('pickStatus').textContent='Read play call';$('timer').textContent='READY';
     $('timer').classList.remove('low');
-    showLookOverlay('lookCountdown',3,false);
-
-    game.timerId=setInterval(()=>{
+    const tick=()=>{
       const totalElapsed=(performance.now()-game.startedAt)/1000;
-      showDecisionHeading(w,q,totalElapsed);
-      if(totalElapsed<LOOK_SECONDS){
-        const countdown=Math.max(1,Math.ceil(LOOK_SECONDS-totalElapsed));
-        showLookOverlay('lookCountdown',countdown,false);
+      const timing=snapTiming(totalElapsed,learn);
+      if(timing.phase==='intro')return;
+      hideSnapIntro('practiceSnapIntro');showDecisionHeading(w,q,totalElapsed-PLAY_CALL_SECONDS);
+      if(learn){
+        game.phase='answer';game.answerStartedAt=game.startedAt+PLAY_CALL_SECONDS*1000;
+        $('pickStatus').textContent=pickPrompt(q);$('timer').textContent='LEARN';clearInterval(game.timerId);setTimeout(()=>{if(game.items[game.index]===q)showDecisionHeading(w,q,1.5)},1500);return;
+      }
+      if(timing.phase==='look'){
+        game.phase='look';showLookOverlay('lookCountdown',timing.countdown,false);
         $('timer').textContent='LOOK';
         $('pickStatus').textContent='Study formation';
         return;
       }
       if(game.phase!=='answer'){
         game.phase='answer';
-        game.answerStartedAt=game.startedAt+(LOOK_SECONDS*1000);
+        game.answerStartedAt=game.startedAt+((PLAY_CALL_SECONDS+LOOK_SECONDS)*1000);
         $('pickStatus').textContent=pickPrompt(q);
         showLookOverlay('lookCountdown',0,true);
         setTimeout(()=>hideLookOverlay('lookCountdown'),180);
       }
-      const answerElapsed=Math.max(0,totalElapsed-LOOK_SECONDS);
-      const left=Math.max(0,ANSWER_SECONDS-answerElapsed);
+      const {answerElapsed,left}=timing;
       $('timer').textContent=left.toFixed(1);
       $('timer').classList.toggle('low',left<=2);
       if(answerElapsed>=ANSWER_SECONDS)finishSnap();
-    },40);
+    };
+    game.timerId=setInterval(tick,40);
   };
 
   if(img.complete)begin(); else {img.onload=begin;img.onerror=begin;}
@@ -2449,7 +2479,7 @@ function loadSnap(){
 $('gameImageWrap').addEventListener('click',e=>{
   if(game.done||game.picks.length>=game.items[game.index].targets.length)return;
   const learn=$('practiceMode').value==='learn';
-  if(!learn && game.phase!=='answer')return;
+  if(game.phase!=='answer')return;
   const rect=e.currentTarget.getBoundingClientRect();
   toggleReadPick(game.picks,game.items[game.index].targets.length,{x:(e.clientX-rect.left)/rect.width,y:(e.clientY-rect.top)/rect.height});
   renderPendingPicks(e.currentTarget,game.picks);
@@ -2486,7 +2516,7 @@ function matchPicks(picks,targets){
 }
 function finishSnap(){
   if(game.done)return;
-  game.done=true;clearInterval(game.timerId);hideLookOverlay('lookCountdown');showDecisionHeading($('gameImageWrap'),game.items[game.index],1.5);
+  game.done=true;clearInterval(game.timerId);hideLookOverlay('lookCountdown');hideSnapIntro('practiceSnapIntro');showDecisionHeading($('gameImageWrap'),game.items[game.index],1.5);
   const q=game.items[game.index];
   const learn=$('practiceMode').value==='learn';
   const answerElapsed=learn
@@ -2585,7 +2615,7 @@ function livePresencePlayers(){if(!liveRealtimeChannel)return[];const st=liveRea
 function renderHostLive(){if(!liveRoom)return;const pres=livePresencePlayers();pres.forEach(p=>{if(!liveRoom.players[p.profileId])liveRoom.players[p.profileId]={profileId:p.profileId,name:p.name||'QB',score:0,locked:false,last:null,online:true};else liveRoom.players[p.profileId].online=true});Object.values(liveRoom.players).forEach(p=>p.online=pres.some(x=>x.profileId===p.profileId));const ps=Object.values(liveRoom.players).sort((a,b)=>b.score-a.score);$('hostPlayers').innerHTML=ps.length?ps.map(p=>`<div class="livePlayerTile ${p.locked?'locked':''}">${p.locked?'<div class="lockTag">LOCKED</div>':''}<strong>${escapeHtml(p.name)}</strong><span>${p.online?'ONLINE':'OFFLINE'}${p.last?` · ${p.last.correct}/2 · ${p.last.time.toFixed(2)}s`:''}</span><div class="livePoints">${p.score||0} pts</div></div>`).join(''):'<p class="muted">No QBs joined yet.</p>';$('hostLiveBoard').innerHTML=ps.length?ps.map((p,i)=>`<div class="row"><div class="rank">${i+1}</div><div><strong>${escapeHtml(p.name)}</strong><div class="fine">${p.locked?'LOCKED':'READY'}</div></div><div class="pts">${p.score||0}</div></div>`).join(''):'<p class="muted">Scoreboard appears when players join.</p>'}
 async function hostBroadcast(event,payload={}){if(liveRealtimeChannel)await liveRealtimeChannel.send({type:'broadcast',event,payload:{room:liveRoom.code,...payload}})}
 function subscribeHostRoom(code){return new Promise((resolve,reject)=>{liveRealtimeChannel=sb.channel(liveTopic(code),{config:{broadcast:{self:false},presence:{key:'host'}}});liveRealtimeChannel.on('presence',{event:'sync'},renderHostLive).on('broadcast',{event:'player-ready'},({payload})=>{if(payload?.room!==liveRoom.code)return;if(!liveRoom.players[payload.profileId])liveRoom.players[payload.profileId]={profileId:payload.profileId,name:payload.name,score:0,locked:false,last:null,online:true};renderHostLive()}).on('broadcast',{event:'answer'},({payload})=>{if(!payload||payload.room!==liveRoom.code||!liveRoom.roundOpen||payload.roundToken!==liveRoom.roundToken)return;const p=liveRoom.players[payload.profileId]||(liveRoom.players[payload.profileId]={profileId:payload.profileId,name:payload.name,score:0,locked:false});if(p.locked)return;p.locked=true;p.last=payload;p.score=(p.score||0)+(payload.points||0);renderHostLive();const online=livePresencePlayers();if(online.length&&online.every(x=>liveRoom.players[x.profileId]?.locked))hostRevealRound()}).subscribe(async(status,err)=>{if(status==='SUBSCRIBED'){$('hostRealtimeDot').classList.add('good');$('hostRealtimeText').textContent='Live room connected';try{await liveRealtimeChannel.track({role:'host',room:code,online_at:new Date().toISOString()})}catch(e){}resolve()}else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){reject(err||new Error(status))}})})}
-$('createRoom').onclick=async()=>{const qs=questions.filter(q=>sectionMatches(q,$('hostSection').value)&&q.libraryStatus==='live'&&q.status==='published'&&(q.availability==='live'||q.availability==='both'));if(!qs.length){alert('No published Live or Both questions are available yet.');return}await cleanupLiveChannel();const code=liveCode(),n=Math.min(+$('hostSnaps').value,qs.length),bank=$('hostOrder').value==='random'?shuffle(qs):[...qs];liveRoom={code,items:bank.slice(0,n),index:-1,players:{},roundOpen:false,roundToken:null,revealed:false};$('hostCode').value=code;$('hostRoomCodeDisplay').textContent=code;$('hostSetupFields').classList.add('hidden');$('hostRoomPanel').classList.remove('hidden');await subscribeHostRoom(code);$('hostRoundStatus').textContent='Room open. Waiting for QBs to join.';renderHostLive()}
+$('createRoom').onclick=async()=>{const qs=questions.filter(q=>sectionMatches(q,$('hostSection').value)&&playableQuestion(q)&&(q.availability==='live'||q.availability==='both'));if(!qs.length){alert('No published Live or Both questions are available yet.');return}await cleanupLiveChannel();const code=liveCode(),n=Math.min(+$('hostSnaps').value,qs.length),bank=$('hostOrder').value==='random'?shuffle(qs):[...qs];liveRoom={code,items:bank.slice(0,n),index:-1,players:{},roundOpen:false,roundToken:null,revealed:false};$('hostCode').value=code;$('hostRoomCodeDisplay').textContent=code;$('hostSetupFields').classList.add('hidden');$('hostRoomPanel').classList.remove('hidden');await subscribeHostRoom(code);$('hostRoundStatus').textContent='Room open. Waiting for QBs to join.';renderHostLive()}
 $('hostNext').onclick=async()=>{
   if(!liveRoom||liveRoom.roundOpen)return;
   if(liveRoom.index>=liveRoom.items.length-1){
@@ -2597,20 +2627,25 @@ $('hostNext').onclick=async()=>{
   Object.values(liveRoom.players).forEach(p=>{p.locked=false;p.last=null});
   const q=liveRoom.items[liveRoom.index];
   const startsAt=Date.now()+900;
-  const answerStartsAt=startsAt+(LOOK_SECONDS*1000);
+  const lookStartsAt=startsAt+(PLAY_CALL_SECONDS*1000);
+  const answerStartsAt=lookStartsAt+(LOOK_SECONDS*1000);
   const endsAt=answerStartsAt+(ANSWER_SECONDS*1000);
   liveRoom.roundStartAt=startsAt;liveRoom.answerStartsAt=answerStartsAt;
   $('hostNext').disabled=true;$('hostRevealBtn').disabled=false;$('hostNext').textContent='Round Active';
 
   await hostBroadcast('start-snap',{
     index:liveRoom.index,total:liveRoom.items.length,roundToken:liveRoom.roundToken,
-    startsAt,answerStartsAt,endsAt,
+    startsAt,lookStartsAt,answerStartsAt,endsAt,
     question:{id:q.id,name:q.name,image:q.image,targets:q.targets,readType:q.readType,heading:q.heading,direction:q.direction,opponent:q.opponent||''}
   });
 
   if(liveRoundTimer)clearInterval(liveRoundTimer);
   liveRoundTimer=setInterval(()=>{
     const now=Date.now();
+    if(now<lookStartsAt){
+      $('hostRoundStatus').textContent=`Snap ${liveRoom.index+1} of ${liveRoom.items.length} · PLAY CALL ${Math.max(0,(lookStartsAt-Math.max(now,startsAt))/1000).toFixed(1)}s`;
+      return;
+    }
     if(now<answerStartsAt){
       $('hostRoundStatus').textContent=`Snap ${liveRoom.index+1} of ${liveRoom.items.length} · LOOK ${Math.max(0,(answerStartsAt-now)/1000).toFixed(1)}s`;
       return;
@@ -2639,17 +2674,33 @@ function startLivePlayerSnap(msg){
   const q=msg.question;
   livePlayerState={
     question:q,roundToken:msg.roundToken,startsAt:+msg.startsAt,
-    answerStartsAt:+msg.answerStartsAt||(+msg.startsAt+LOOK_SECONDS*1000),
+    answerStartsAt:+msg.answerStartsAt||(+msg.startsAt+(PLAY_CALL_SECONDS+LOOK_SECONDS)*1000),
     endsAt:+msg.endsAt||(+msg.startsAt+TOTAL_TIMED_SECONDS*1000),
-    picks:[],locked:false,correct:0,points:0,elapsed:ANSWER_SECONDS,phase:'look'
+    picks:[],locked:false,correct:0,points:0,elapsed:ANSWER_SECONDS,phase:'intro'
   };
   $('liveJoinLabel').textContent=q.name;
   $('livePlayerGame').dataset.direction=q.direction||'right';
-  $('liveJoinPickStatus').textContent='Study formation';$('liveJoinTimer').textContent=`LOOK ${LOOK_SECONDS.toFixed(1)}`;
+  $('liveJoinPickStatus').textContent='Read play call';$('liveJoinTimer').textContent='READY';
   $('liveLockedOverlay').classList.add('hidden');$('liveRevealOverlay').classList.add('hidden');
+  hideLookOverlay('liveLookCountdown');showSnapIntro('liveSnapIntro',q,Date.now()>=livePlayerState.startsAt);
   const w=$('liveJoinImage');w.innerHTML='';const img=document.createElement('img');img.src=q.image;w.appendChild(img);
 
-  livePlayerTimer=setInterval(()=>{if(!livePlayerState||livePlayerState.locked)return;const totalElapsed=(Date.now()-livePlayerState.startsAt)/1000;showDecisionHeading(w,q,totalElapsed);if(totalElapsed<0){$('liveJoinTimer').textContent='READY';return}if(totalElapsed<LOOK_SECONDS){livePlayerState.phase='look';const countdown=Math.max(1,Math.ceil(LOOK_SECONDS-totalElapsed));showLookOverlay('liveLookCountdown',countdown,false);$('liveJoinTimer').textContent='LOOK';$('liveJoinPickStatus').textContent='Study formation';return}if(livePlayerState.phase!=='answer'){livePlayerState.phase='answer';livePlayerState.answerStartsAt=livePlayerState.startsAt+(LOOK_SECONDS*1000);showLookOverlay('liveLookCountdown',0,true);setTimeout(()=>hideLookOverlay('liveLookCountdown'),180);$('liveJoinPickStatus').textContent=pickPrompt(q)}const answerElapsed=Math.max(0,totalElapsed-LOOK_SECONDS),left=Math.max(0,ANSWER_SECONDS-answerElapsed);$('liveJoinTimer').textContent=left.toFixed(1);if(answerElapsed>=ANSWER_SECONDS)lockLivePlayerAnswer()},40);
+  livePlayerTimer=setInterval(()=>{
+    if(!livePlayerState||livePlayerState.locked)return;
+    const totalElapsed=(Date.now()-livePlayerState.startsAt)/1000,timing=snapTiming(totalElapsed);
+    if(timing.phase==='intro'){livePlayerState.phase='intro';showSnapIntro('liveSnapIntro',q,totalElapsed>=0);return}
+    hideSnapIntro('liveSnapIntro');showDecisionHeading(w,q,totalElapsed-PLAY_CALL_SECONDS);
+    if(timing.phase==='look'){
+      livePlayerState.phase='look';showLookOverlay('liveLookCountdown',timing.countdown,false);
+      $('liveJoinTimer').textContent='LOOK';$('liveJoinPickStatus').textContent='Study formation';return;
+    }
+    if(livePlayerState.phase!=='answer'){
+      livePlayerState.phase='answer';showLookOverlay('liveLookCountdown',0,true);
+      setTimeout(()=>hideLookOverlay('liveLookCountdown'),180);$('liveJoinPickStatus').textContent=pickPrompt(q);
+    }
+    const answerElapsed=Math.max(0,(Date.now()-livePlayerState.answerStartsAt)/1000),left=Math.max(0,ANSWER_SECONDS-answerElapsed);
+    $('liveJoinTimer').textContent=left.toFixed(1);if(answerElapsed>=ANSWER_SECONDS)lockLivePlayerAnswer();
+  },40);
 }
 
 $('liveJoinImage').addEventListener('click',e=>{
@@ -2676,9 +2727,9 @@ async function lockLivePlayerAnswer(){
     saveProfileResult({profileId:livePlayer.profileId,questionId:st.question.id,mode:'live',correct:st.correct,time:st.elapsed,points:st.points,roomCode:livePlayer.room})
   ]);
 }
-function revealLivePlayerSnap(msg){const s=livePlayerState;if(!s||msg.roundToken!==s.roundToken)return;if(livePlayerTimer)clearInterval(livePlayerTimer);const w=$('liveJoinImage');questionFeedback(w,s.picks,{...s.question,targets:msg.targets||s.question.targets});const txt=s.correct===2?(s.question.readType==='conflict'?'BOTH CORRECT':'CORRECT READ'):s.correct===1?'ONE CORRECT':'INCORRECT';$('liveRevealOverlay').innerHTML=`<strong>${txt}</strong><span>+${s.points}</span>`;$('liveRevealOverlay').classList.remove('hidden');setTimeout(()=>showLivePlayerBoard(msg.scoreboard||[]),1200)}
+function revealLivePlayerSnap(msg){const s=livePlayerState;if(!s||msg.roundToken!==s.roundToken)return;if(livePlayerTimer)clearInterval(livePlayerTimer);hideSnapIntro('liveSnapIntro');hideLookOverlay('liveLookCountdown');const w=$('liveJoinImage');questionFeedback(w,s.picks,{...s.question,targets:msg.targets||s.question.targets});const txt=s.correct===2?(s.question.readType==='conflict'?'BOTH CORRECT':'CORRECT READ'):s.correct===1?'ONE CORRECT':'INCORRECT';$('liveRevealOverlay').innerHTML=`<strong>${txt}</strong><span>+${s.points}</span>`;$('liveRevealOverlay').classList.remove('hidden');setTimeout(()=>showLivePlayerBoard(msg.scoreboard||[]),1200)}
 function showLivePlayerBoard(board){$('livePlayerGame').classList.add('hidden');$('livePlayerScoreboard').classList.remove('hidden');const mine=board.find(x=>x.profileId===livePlayer.profileId),last=mine?.last;$('livePlayerRoundTitle').textContent=last?`${livePlayerState?.question?.readType==='conflict'?`${last.correct}/2 correct`:last.correct===2?'Correct read':'Incorrect read'} · ${last.time.toFixed(2)}s`:'Round Complete';$('livePlayerResult').textContent=last?`+${last.points} · Total ${mine.score}`:'No answer recorded';$('livePlayerBoard').innerHTML=board.map((p,i)=>`<div class="row"><div class="rank">${i+1}</div><div><strong>${escapeHtml(p.name)}</strong></div><div class="pts">${p.score||0}</div></div>`).join('')}
-function showLivePlayerFinal(board){$('livePlayerGame').classList.add('hidden');$('livePlayerScoreboard').classList.remove('hidden');$('livePlayerRoundTitle').textContent='Game Complete';$('livePlayerResult').textContent='Final Scoreboard';$('livePlayerBoard').innerHTML=(board||[]).sort((a,b)=>b.score-a.score).map((p,i)=>`<div class="row"><div class="rank">${i+1}</div><div><strong>${escapeHtml(p.name)}</strong></div><div class="pts">${p.score||0}</div></div>`).join('')}
+function showLivePlayerFinal(board){hideSnapIntro('liveSnapIntro');hideLookOverlay('liveLookCountdown');$('livePlayerGame').classList.add('hidden');$('livePlayerScoreboard').classList.remove('hidden');$('livePlayerRoundTitle').textContent='Game Complete';$('livePlayerResult').textContent='Final Scoreboard';$('livePlayerBoard').innerHTML=(board||[]).sort((a,b)=>b.score-a.score).map((p,i)=>`<div class="row"><div class="rank">${i+1}</div><div><strong>${escapeHtml(p.name)}</strong></div><div class="pts">${p.score||0}</div></div>`).join('')}
 window.addEventListener('beforeunload',()=>{try{cleanupLiveChannel()}catch(e){}});
 
 
